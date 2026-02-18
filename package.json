@@ -1,6 +1,11 @@
 {
     "name": "b2b-marketplace-root",
     "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "frontend",
+        "backend"
+    ],
     "scripts": {
         "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
         "backend": "cd backend && npm run start:dev",
