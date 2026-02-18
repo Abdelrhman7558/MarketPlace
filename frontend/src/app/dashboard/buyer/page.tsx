@@ -1,0 +1,12 @@
+'use client';
+
+export const dynamic = 'force-dynamic';
+
+export default function BuyerDashboard() {
+    return (
+        <div className="p-8">
+            <h1 className="text-3xl font-bold">Buyer Dashboard</h1>
+            <p>Welcome, Buyer.</p>
+        </div>
+    );
+}
