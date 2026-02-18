@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: marketplace_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3000"
+    environment:
+      DATABASE_URL: postgres://admin:password@postgres:5432/marketplace_db
+      JWT_SECRET: supersecretkey
+    depends_on:
+      - postgres
+
+  # Placeholder for AI Service (Python/FastAPI)
+  # ai_service:
+  #   build: ./ai-service
+  #   ports: ["8000:8000"]
+
+volumes:
+  postgres_data:

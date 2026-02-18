@@ -1,0 +1,118 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  SUPER_ADMIN
+  PLATFORM_ADMIN
+  FINANCE_ADMIN
+  OPS_ADMIN
+  CATEGORY_MANAGER
+  SUPPLIER
+  BUYER
+  MANAGER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURN_REQUESTED
+  RETURNED
+  DISPUTED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  supplierProfile SupplierProfile?
+  buyerProfile    BuyerProfile?
+  orders          Order[]          @relation("BuyerOrders")
+}
+
+model SupplierProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  companyName     String
+  taxId           String   @unique
+  isVerified      Boolean  @default(false)
+  commissionRate  Float    @default(10.0) // %
+  
+  user     User      @relation(fields: [userId], references: [id])
+  products Product[]
+  orders   Order[]   @relation("SupplierOrders")
+}
+
+model BuyerProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  companyName String
+  creditLimit Float    @default(0.0)
+  
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  supplierId  String
+  name        String
+  description String?
+  price       Float
+  stock       Int
+  sku         String   @unique
+  isActive    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  supplier SupplierProfile @relation(fields: [supplierId], references: [id])
+  orderItems OrderItem[]
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  buyerId     String
+  supplierId  String
+  totalAmount Float
+  status      OrderStatus @default(PENDING)
+  trackingId  String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  buyer    User            @relation("BuyerOrders", fields: [buyerId], references: [id])
+  supplier SupplierProfile @relation("SupplierOrders", fields: [supplierId], references: [id])
+  items    OrderItem[]
+  invoice  Invoice?
+}
+
+model OrderItem {
+  id        String @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float // Snapshot price at time of order
+  
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model Invoice {
+  id        String   @id @default(uuid())
+  orderId   String   @unique
+  url       String   // S3 Link
+  issuedAt  DateTime @default(now())
+  
+  order Order @relation(fields: [orderId], references: [id])
+}
