@@ -185,13 +185,6 @@
     background: linear-gradient(to bottom, #3a4573, #2a3563);
 }
 
-/* Animated counter */
-/* @property --num {
-    syntax: '<integer>';
-    initial-value: 0;
-    inherits: false;
-} */
-
 /* Ripple Effect */
 .ripple-effect {
     position: relative;
