@@ -118,7 +118,7 @@
 
     /* Dashboard Stat Card */
     .stat-card {
-        @apply bg-white rounded-2xl p-6 border border-gray-100 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-500 group;
+        @apply bg-white rounded-2xl p-6 border border-gray-100 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-500;
     }
 
     /* Table Styles */
