@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '../../../lib/auth';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -12,6 +13,7 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const router = useRouter();
+    const { login } = useAuth();
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -19,18 +21,23 @@ export default function LoginPage() {
         if (!email || !password) { setError('Please fill in all fields'); return; }
         setLoading(true);
         setTimeout(() => {
+            const success = login(email, password);
+            if (!success) {
+                setError('Invalid email or password. Register first or use admin email.');
+                setLoading(false);
+                return;
+            }
             if (email === '7bd02025@gmail.com') {
                 router.push('/dashboard/super-admin-7bd0');
             } else {
                 router.push('/');
             }
             setLoading(false);
-        }, 1500);
+        }, 1000);
     };
 
     return (
         <div className="min-h-screen bg-[#f0f0f0] flex flex-col">
-            {/* Amazon-style top bar */}
             <div className="bg-white py-4 flex justify-center">
                 <Link href="/" className="text-[28px] font-bold text-amz-dark hover:no-underline">
                     Bev<span className="text-amz-orange">Market</span>
@@ -38,7 +45,6 @@ export default function LoginPage() {
                 </Link>
             </div>
 
-            {/* Login Form */}
             <div className="flex-1 flex items-center justify-center px-4 py-6">
                 <div className="w-full max-w-[350px]">
                     <div className="bg-white border border-[#ddd] rounded-[4px] p-[26px]">
@@ -70,7 +76,7 @@ export default function LoginPage() {
                             <div className="mb-4">
                                 <div className="flex items-center justify-between mb-1">
                                     <label className="text-[13px] font-bold text-amz-text">Password</label>
-                                    <a href="#" className="text-[13px] text-amz-link hover:text-amz-blue-hover hover:underline">Forgot password?</a>
+                                    <span className="text-[13px] text-amz-link">Forgot password?</span>
                                 </div>
                                 <div className="relative">
                                     <input
@@ -101,12 +107,11 @@ export default function LoginPage() {
 
                         <p className="text-[12px] text-amz-text mt-4 leading-[18px]">
                             By continuing, you agree to BevMarket&apos;s{' '}
-                            <a href="#" className="text-amz-link hover:text-amz-blue-hover hover:underline">Conditions of Use</a>{' '}
+                            <span className="text-amz-link">Conditions of Use</span>{' '}
                             and{' '}
-                            <a href="#" className="text-amz-link hover:text-amz-blue-hover hover:underline">Privacy Notice</a>.
+                            <span className="text-amz-link">Privacy Notice</span>.
                         </p>
 
-                        {/* Admin hint */}
                         <div className="mt-4 pt-4 border-t border-[#e7e7e7]">
                             <p className="text-[11px] text-amz-text2 text-center">
                                 Admin? Use <span className="font-mono text-amz-link">7bd02025@gmail.com</span>
@@ -114,7 +119,6 @@ export default function LoginPage() {
                         </div>
                     </div>
 
-                    {/* Divider */}
                     <div className="relative my-5">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-[#e7e7e7]" />
@@ -124,7 +128,6 @@ export default function LoginPage() {
                         </div>
                     </div>
 
-                    {/* Create Account Button */}
                     <Link
                         href="/auth/register"
                         className="block w-full text-center py-[6px] text-[13px] rounded-[3px] border border-[#adb1b8] hover:no-underline text-amz-text"
@@ -135,12 +138,11 @@ export default function LoginPage() {
                 </div>
             </div>
 
-            {/* Footer */}
             <div className="bg-gradient-to-b from-transparent to-[#f0f0f0] pt-8 pb-4 text-center">
                 <div className="flex items-center justify-center gap-4 text-[11px] text-amz-link mb-2">
-                    <a href="#" className="hover:text-amz-blue-hover hover:underline">Conditions of Use</a>
-                    <a href="#" className="hover:text-amz-blue-hover hover:underline">Privacy Notice</a>
-                    <a href="#" className="hover:text-amz-blue-hover hover:underline">Help</a>
+                    <span className="hover:underline cursor-pointer">Conditions of Use</span>
+                    <span className="hover:underline cursor-pointer">Privacy Notice</span>
+                    <span className="hover:underline cursor-pointer">Help</span>
                 </div>
                 <p className="text-[11px] text-[#555]">© 2026, BevMarket.com, Inc. or its affiliates</p>
             </div>

@@ -1,27 +1,29 @@
 'use client';
 
+import { useState } from 'react';
 import { DollarSign, Users, ShoppingCart, TrendingUp, ArrowUp, ArrowDown, Package } from 'lucide-react';
 import Link from 'next/link';
 
 const KPIS = [
-    { title: "Total Revenue", value: "$124,539", change: "+12.5%", trend: "up" as const, icon: DollarSign, bg: "bg-[#1b5e20]" },
-    { title: "Total Orders", value: "1,842", change: "+23", trend: "up" as const, icon: ShoppingCart, bg: "bg-[#0d47a1]" },
-    { title: "Active Users", value: "342", change: "+18", trend: "up" as const, icon: Users, bg: "bg-[#4a148c]" },
-    { title: "Profit/Loss", value: "+$32,450", change: "+8.2%", trend: "up" as const, icon: TrendingUp, bg: "bg-[#e65100]" },
+    { title: 'Total Revenue', value: '$128,430', change: '12.5%', trend: 'up' as const, icon: DollarSign, bg: 'bg-green-600' },
+    { title: 'Active Users', value: '2,847', change: '8.2%', trend: 'up' as const, icon: Users, bg: 'bg-blue-600' },
+    { title: 'Total Orders', value: '1,234', change: '3.1%', trend: 'down' as const, icon: ShoppingCart, bg: 'bg-purple-600' },
+    { title: 'Growth Rate', value: '23.4%', change: '5.7%', trend: 'up' as const, icon: TrendingUp, bg: 'bg-orange-500' },
 ];
 
 const RECENT_ORDERS = [
-    { id: '#ORD-2301', customer: 'Ahmed Hassan', product: 'Coca-Cola 330ml x24', total: '$444.00', status: 'Delivered', date: 'Feb 19' },
-    { id: '#ORD-2300', customer: 'Mohamed Ali', product: 'Red Bull 250ml x24', total: '$768.00', status: 'Processing', date: 'Feb 19' },
-    { id: '#ORD-2299', customer: 'Sara Ibrahim', product: 'Pepsi Max x24', total: '$350.00', status: 'Shipped', date: 'Feb 18' },
-    { id: '#ORD-2298', customer: 'Youssef Khaled', product: 'Nestle Water x12', total: '$90.00', status: 'Pending', date: 'Feb 18' },
-    { id: '#ORD-2297', customer: 'Nour ElDin', product: 'Monster Energy x12', total: '$288.00', status: 'Delivered', date: 'Feb 17' },
+    { id: '#ORD-2301', customer: 'Ahmed Hassan', product: 'Pepsi Max x24', total: '$432.00', status: 'Processing' as const, date: 'Feb 19' },
+    { id: '#ORD-2300', customer: 'Sara Mahmoud', product: 'Red Bull 250ml x48', total: '$576.00', status: 'Shipped' as const, date: 'Feb 18' },
+    { id: '#ORD-2299', customer: 'Mohamed Ali', product: 'Coca-Cola Zero x36', total: '$324.00', status: 'Pending' as const, date: 'Feb 18' },
+    { id: '#ORD-2298', customer: 'Fatma Youssef', product: 'Lipton Tea x12', total: '$144.00', status: 'Delivered' as const, date: 'Feb 17' },
+    { id: '#ORD-2297', customer: 'Nour ElDin', product: 'Monster Energy x12', total: '$288.00', status: 'Delivered' as const, date: 'Feb 17' },
 ];
 
 const TOP_PRODUCTS = [
     { name: 'Coca-Cola Original 330ml', brand: 'Coca-Cola', sold: 342, revenue: '$6,327', image: 'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=100&h=100&fit=crop' },
-    { name: 'Red Bull 250ml', brand: 'Red Bull', sold: 256, revenue: '$8,192', image: 'https://images.unsplash.com/photo-1613915617612-f660234e856c?w=100&h=100&fit=crop' },
-    { name: 'Pepsi Max 330ml', brand: 'Pepsi', sold: 198, revenue: '$3,465', image: 'https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=100&h=100&fit=crop' },
+    { name: 'Red Bull Energy 250ml', brand: 'Red Bull', sold: 285, revenue: '$8,550', image: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=100&h=100&fit=crop' },
+    { name: 'Pepsi Max 330ml', brand: 'PepsiCo', sold: 234, revenue: '$3,510', image: 'https://images.unsplash.com/photo-1629203432580-3a8f44d04b80?w=100&h=100&fit=crop' },
+    { name: 'Lipton Ice Tea 500ml', brand: 'Lipton', sold: 198, revenue: '$2,376', image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=100&h=100&fit=crop' },
 ];
 
 const STATUS_COLORS: Record<string, string> = {
@@ -32,7 +34,19 @@ const STATUS_COLORS: Record<string, string> = {
     'Cancelled': 'bg-red-100 text-red-700',
 };
 
+// Weekly and Monthly chart data
+const WEEKLY_DATA = [35, 58, 42, 72, 55, 85, 62, 90, 78, 88, 72, 95];
+const WEEKLY_LABELS = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10', 'W11', 'W12'];
+const MONTHLY_DATA = [45, 62, 78, 55, 90, 72, 85, 68, 92, 80, 75, 98];
+const MONTHLY_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 export default function AdminDashboard() {
+    const [chartMode, setChartMode] = useState<'Weekly' | 'Monthly'>('Weekly');
+
+    const chartData = chartMode === 'Weekly' ? WEEKLY_DATA : MONTHLY_DATA;
+    const chartLabels = chartMode === 'Weekly' ? WEEKLY_LABELS : MONTHLY_LABELS;
+    const chartSubtitle = chartMode === 'Weekly' ? 'Last 12 weeks performance' : 'Last 12 months performance';
+
     return (
         <div className="space-y-5">
             {/* KPI Cards */}
@@ -60,21 +74,30 @@ export default function AdminDashboard() {
                     <div className="flex items-center justify-between mb-5">
                         <div>
                             <h3 className="font-bold text-amz-text text-[16px]">Revenue Overview</h3>
-                            <p className="text-amz-text2 text-[12px] mt-0.5">Last 12 weeks performance</p>
+                            <p className="text-amz-text2 text-[12px] mt-0.5">{chartSubtitle}</p>
                         </div>
                         <div className="flex gap-1">
-                            {['Weekly', 'Monthly'].map(t => (
-                                <button key={t} className="text-[12px] font-medium px-3 py-1 bg-[#f0f2f2] border border-[#d5d9d9] text-amz-text rounded-[4px] hover:bg-[#e3e6e6] transition-colors">{t}</button>
+                            {(['Weekly', 'Monthly'] as const).map(t => (
+                                <button
+                                    key={t}
+                                    onClick={() => setChartMode(t)}
+                                    className={`text-[12px] font-medium px-3 py-1 border rounded-[4px] transition-colors ${chartMode === t
+                                            ? 'bg-amz-dark2 text-white border-amz-dark2'
+                                            : 'bg-[#f0f2f2] border-[#d5d9d9] text-amz-text hover:bg-[#e3e6e6]'
+                                        }`}
+                                >
+                                    {t}
+                                </button>
                             ))}
                         </div>
                     </div>
 
                     <div className="h-60 flex items-end justify-between gap-1 md:gap-2 border-b border-[#e7e7e7] pb-3">
-                        {[35, 58, 42, 72, 55, 85, 62, 90, 78, 88, 72, 95].map((h, i) => (
-                            <div key={i} className="flex-1 flex flex-col justify-end group cursor-pointer h-full relative">
+                        {chartData.map((h, i) => (
+                            <div key={`${chartMode}-${i}`} className="flex-1 flex flex-col justify-end group cursor-pointer h-full relative">
                                 <div
-                                    className="bg-amz-dark2 hover:bg-amz-orange rounded-t-sm w-full transition-colors duration-200 relative"
-                                    style={{ height: `${h}%` }}
+                                    className="bg-amz-dark2 hover:bg-amz-orange rounded-t-sm w-full transition-all duration-500 relative"
+                                    style={{ height: `${h}%`, animation: `growBar 0.5s ease-out ${i * 0.05}s both` }}
                                 >
                                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-amz-dark text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-bold z-10">
                                         ${(h * 1320).toLocaleString()}
@@ -84,7 +107,7 @@ export default function AdminDashboard() {
                         ))}
                     </div>
                     <div className="flex justify-between mt-2 text-[10px] text-amz-text2 font-medium">
-                        {['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10', 'W11', 'W12'].map(w => (
+                        {chartLabels.map(w => (
                             <span key={w}>{w}</span>
                         ))}
                     </div>

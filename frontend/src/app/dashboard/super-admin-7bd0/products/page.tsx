@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Plus, Search, Edit3, Trash2, X, Package, Check, AlertTriangle, Upload, Link as LinkIcon, Image as ImageIcon } from 'lucide-react';
+import { Plus, Search, Edit3, Trash2, X, Package, Check, AlertTriangle, Upload, Link as LinkIcon, Image as ImageIcon, Eye, Star, ShoppingCart } from 'lucide-react';
 import { PRODUCTS as INITIAL_PRODUCTS } from '@/lib/products';
 import { Product } from '@/components/product/ProductCard';
 
@@ -11,6 +11,7 @@ export default function ProductsPage() {
     const [showModal, setShowModal] = useState(false);
     const [editProduct, setEditProduct] = useState<Product | null>(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+    const [previewProduct, setPreviewProduct] = useState<Product | null>(null);
 
     const [form, setForm] = useState({
         name: '', brand: '', price: '', unit: 'unit', minOrder: '', image: '', inStock: true, category: '', bulkSave: false
@@ -145,10 +146,13 @@ export default function ProductsPage() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center justify-end gap-2">
-                                            <button onClick={() => openEdit(p)} className="w-8 h-8 rounded-[4px] hover:bg-blue-50 text-gray-400 hover:text-blue-500 flex items-center justify-center transition-all">
+                                            <button onClick={() => setPreviewProduct(p)} title="Preview" className="w-8 h-8 rounded-[4px] hover:bg-green-50 text-gray-400 hover:text-green-600 flex items-center justify-center transition-all">
+                                                <Eye className="w-4 h-4" />
+                                            </button>
+                                            <button onClick={() => openEdit(p)} title="Edit" className="w-8 h-8 rounded-[4px] hover:bg-blue-50 text-gray-400 hover:text-blue-500 flex items-center justify-center transition-all">
                                                 <Edit3 className="w-4 h-4" />
                                             </button>
-                                            <button onClick={() => setShowDeleteConfirm(p.id)} className="w-8 h-8 rounded-[4px] hover:bg-red-50 text-gray-400 hover:text-red-500 flex items-center justify-center transition-all">
+                                            <button onClick={() => setShowDeleteConfirm(p.id)} title="Delete" className="w-8 h-8 rounded-[4px] hover:bg-red-50 text-gray-400 hover:text-red-500 flex items-center justify-center transition-all">
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
                                         </div>
@@ -305,6 +309,58 @@ export default function ProductsPage() {
                         <div className="flex gap-3">
                             <button onClick={() => setShowDeleteConfirm(null)} className="flex-1 px-4 py-2.5 text-sm font-medium border border-[#d5d9d9] rounded-[4px] hover:bg-gray-50 transition-colors">Cancel</button>
                             <button onClick={() => handleDelete(showDeleteConfirm)} className="flex-1 bg-red-600 text-white text-sm font-bold py-2.5 rounded-[4px] hover:bg-red-700 transition-colors">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Product Preview Popup */}
+            {previewProduct && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setPreviewProduct(null)}>
+                    <div className="bg-white rounded-lg shadow-2xl max-w-sm w-full overflow-hidden" onClick={e => e.stopPropagation()}
+                        style={{ animation: 'fadeIn 0.2s ease-out' }}>
+                        {/* Header */}
+                        <div className="px-4 py-3 bg-[#f7f7f7] border-b border-[#e7e7e7] flex items-center justify-between">
+                            <h3 className="text-[15px] font-bold text-amz-text">Product Preview</h3>
+                            <button onClick={() => setPreviewProduct(null)} className="p-1 hover:bg-gray-200 rounded transition-colors">
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+
+                        {/* Card Preview */}
+                        <div className="p-5">
+                            <div className="border border-[#d5d9d9] rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                                <div className="relative aspect-square bg-[#f7f7f7]">
+                                    <img src={previewProduct.image} alt={previewProduct.name} className="w-full h-full object-cover" />
+                                    {previewProduct.bulkSave && (
+                                        <span className="absolute top-2 left-2 bg-[#CC0C39] text-white text-[11px] font-bold px-2 py-0.5 rounded">Bulk Save</span>
+                                    )}
+                                    <span className={`absolute top-2 right-2 text-[11px] font-bold px-2 py-0.5 rounded ${previewProduct.inStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                        {previewProduct.inStock ? 'In Stock' : 'Out of Stock'}
+                                    </span>
+                                </div>
+                                <div className="p-3">
+                                    <p className="text-[13px] text-amz-text font-medium leading-tight line-clamp-2">{previewProduct.name}</p>
+                                    <p className="text-[11px] text-amz-text2 mt-1">{previewProduct.brand}</p>
+                                    <div className="flex items-center gap-1 mt-1.5">
+                                        {[1, 2, 3, 4].map(i => <Star key={i} className="w-3 h-3 fill-[#FFA41C] text-[#FFA41C]" />)}
+                                        <Star className="w-3 h-3 fill-[#e7e7e7] text-[#e7e7e7]" />
+                                        <span className="text-[11px] text-amz-link ml-1">128</span>
+                                    </div>
+                                    <div className="mt-2">
+                                        <span className="text-[20px] font-bold text-amz-text">${previewProduct.price.toFixed(2)}</span>
+                                        <span className="text-[12px] text-amz-text2 ml-1">/{previewProduct.unit}</span>
+                                    </div>
+                                    <p className="text-[11px] text-amz-text2 mt-1">Min. order: {previewProduct.minOrder} {previewProduct.unit}s</p>
+                                    <button className="w-full mt-3 btn-amz flex items-center justify-center gap-2 !py-2 !text-[13px] !rounded-lg font-bold">
+                                        <ShoppingCart className="w-4 h-4" /> Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="px-5 pb-4 text-center">
+                            <p className="text-[11px] text-amz-text2">This is how the product will appear to customers</p>
                         </div>
                     </div>
                 </div>
