@@ -2,79 +2,66 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, ShoppingBag, ShieldCheck, TrendingUp } from 'lucide-react';
 
 export default function Hero() {
     return (
-        <div className="relative overflow-hidden bg-white">
-            <div className="absolute inset-0 z-0 opacity-30">
-                <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-blue-100 blur-3xl"></div>
-                <div className="absolute top-1/2 right-0 w-64 h-64 rounded-full bg-indigo-100 blur-3xl"></div>
-            </div>
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#0D0D1A] via-[#1A1A2E] to-[#16213E] py-20 md:py-28">
+            {/* Background Glow Effects */}
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#FF6B00] opacity-[0.06] blur-[120px] rounded-full"></div>
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#E94560] opacity-[0.04] blur-[100px] rounded-full"></div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-20 pb-16 md:pt-28 md:pb-24">
-                <div className="text-center max-w-4xl mx-auto">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    {/* Left Content */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
+                        transition={{ duration: 0.7 }}
                     >
-                        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 mb-6">
-                            The Premium <span className="text-blue-600">B2B Marketplace</span> for Your Business
+                        <span className="inline-block bg-[#FF6B00] text-white text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-full mb-6">
+                            Wholesale B2B Marketplace
+                        </span>
+                        <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
+                            Sourcing Beverages<br />
+                            <span className="text-gray-400">Made Simple & Fast</span>
                         </h1>
-                        <p className="mt-4 text-xl text-slate-600 mb-10 max-w-2xl mx-auto">
-                            Connect with top suppliers, streamline your procurement, and scale your operations with our all-in-one B2B platform.
+                        <p className="text-gray-400 text-lg mb-8 leading-relaxed max-w-lg">
+                            Connect directly with top beverage suppliers. Get bulk pricing, automated logistics, and net-terms financing for your business.
                         </p>
+                        <div className="flex flex-wrap gap-4">
+                            <Link href="/catalog" className="btn-primary text-lg px-8 py-4 inline-flex items-center gap-2 rounded-xl">
+                                Browse Catalog
+                            </Link>
+                            <Link href="/auth/register" className="btn-secondary text-lg px-8 py-4 inline-flex items-center gap-2 rounded-xl">
+                                Register Business
+                            </Link>
+                        </div>
                     </motion.div>
 
+                    {/* Right - Dashboard Preview */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        className="flex flex-col sm:flex-row items-center justify-center gap-4"
+                        initial={{ opacity: 0, x: 40 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        className="hidden lg:block"
                     >
-                        <Link href="/dashboard/super-admin-7bd0" className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2">
-                            Go to Dashboard <ArrowRight className="w-5 h-5" />
-                        </Link>
-                        <Link href="/auth/register" className="w-full sm:w-auto px-8 py-4 bg-white text-slate-700 border-2 border-slate-200 rounded-xl font-bold text-lg hover:border-blue-600 hover:text-blue-600 transition-colors flex items-center justify-center">
-                            Register Now
-                        </Link>
+                        <div className="glass-card p-6 relative">
+                            <div className="absolute top-4 left-4 flex gap-2">
+                                <div className="w-8 h-8 bg-[#FF6B00] rounded-full flex items-center justify-center text-white font-bold text-sm">RB</div>
+                            </div>
+                            <div className="mt-12 space-y-4">
+                                <div className="h-3 bg-white/10 rounded-full w-3/4"></div>
+                                <div className="h-3 bg-white/10 rounded-full w-1/2"></div>
+                                <div className="h-20 bg-white/5 rounded-xl mt-4"></div>
+                                <div className="flex gap-3 mt-4">
+                                    <div className="h-8 bg-white/10 rounded-lg flex-1"></div>
+                                    <div className="h-8 bg-[#FF6B00] rounded-lg w-24"></div>
+                                </div>
+                            </div>
+                        </div>
                     </motion.div>
                 </div>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.4 }}
-                    className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8"
-                >
-                    {[
-                        {
-                            icon: <ShoppingBag className="w-8 h-8 text-blue-600" />,
-                            title: "Wide Catalog",
-                            desc: "Access thousands of verified products from top-tier suppliers."
-                        },
-                        {
-                            icon: <ShieldCheck className="w-8 h-8 text-indigo-600" />,
-                            title: "Secure Trading",
-                            desc: "Bank-grade security for all your transactions and data."
-                        },
-                        {
-                            icon: <TrendingUp className="w-8 h-8 text-cyan-600" />,
-                            title: "Growth Analytics",
-                            desc: "Real-time insights to help you make smarter business decisions."
-                        }
-                    ].map((feature, idx) => (
-                        <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                            <div className="w-14 h-14 bg-slate-50 rounded-xl flex items-center justify-center mb-6">
-                                {feature.icon}
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
-                            <p className="text-slate-600 leading-relaxed">{feature.desc}</p>
-                        </div>
-                    ))}
-                </motion.div>
             </div>
-        </div>
+        </section>
     );
 }
