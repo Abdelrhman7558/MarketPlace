@@ -1,6 +1,7 @@
 'use client';
 
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 import { usePathname } from "next/navigation";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
@@ -9,10 +10,11 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
     return (
         <>
-            {/* {!isDashboard && <Navbar />} */}
+            {!isDashboard && <Navbar />}
             <main className="flex-grow">
                 {children}
             </main>
+            {!isDashboard && <Footer />}
         </>
     );
 }

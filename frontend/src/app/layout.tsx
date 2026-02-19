@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from './providers';
 import ClientLayout from "@/components/layout/ClientLayout";
 
-const inter = Inter({ subsets: ["latin"] });
-
-export const metadata = {
-    title: "B2B Marketplace",
-    description: "A premium platform for B2B beverage transactions",
+export const metadata: Metadata = {
+    title: "BevMarket — Premium Beverage Distribution",
+    description: "Your trusted B2B marketplace for Pepsi, Coca-Cola, Red Bull, Lipton and more. Wholesale beverage distribution for businesses.",
+    keywords: "beverages, wholesale, B2B, Pepsi, Coca-Cola, Red Bull, Lipton, distribution",
 };
 
 export const dynamic = 'force-dynamic';
@@ -20,12 +18,12 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className="h-full">
-            <body className={`${inter.className} flex flex-col min-h-screen`}>
-                {/* <Providers> */}
-                {/* <ClientLayout> */}
-                {children}
-                {/* </ClientLayout> */}
-                {/* </Providers> */}
+            <body className="flex flex-col min-h-screen">
+                <Providers>
+                    <ClientLayout>
+                        {children}
+                    </ClientLayout>
+                </Providers>
             </body>
         </html>
     );

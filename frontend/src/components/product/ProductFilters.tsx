@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronUp, ChevronDown, Filter } from 'lucide-react';
+import { ChevronDown, X, SlidersHorizontal } from 'lucide-react';
 
-interface FiltersProps {
+interface FilterProps {
     brands: string[];
     categories: string[];
     selectedBrands: string[];
@@ -15,95 +15,156 @@ interface FiltersProps {
     onApplyPrice: () => void;
 }
 
+const BRAND_COLORS: Record<string, string> = {
+    'Coca-Cola': 'bg-red-500',
+    'Pepsi': 'bg-blue-500',
+    'Red Bull': 'bg-yellow-500',
+    'Monster': 'bg-green-500',
+    'Lipton': 'bg-yellow-400',
+    'Tropicana': 'bg-orange-400',
+    'Nestle': 'bg-sky-400',
+};
+
 function FilterSection({ title, children, defaultOpen = true }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
     const [isOpen, setIsOpen] = useState(defaultOpen);
+
     return (
-        <div className="border-b border-gray-200 pb-4 mb-4">
+        <div className="border-b border-gray-100 pb-4 mb-4 last:border-0 last:pb-0 last:mb-0">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center justify-between w-full text-left font-bold text-gray-900 text-sm mb-3"
+                className="flex items-center justify-between w-full text-left mb-3 group"
             >
-                {title}
-                {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                <h3 className="text-sm font-bold text-brand-navy group-hover:text-brand-orange transition-colors">{title}</h3>
+                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
             </button>
-            {isOpen && <div className="space-y-2">{children}</div>}
+            <div className={`transition-all duration-300 overflow-hidden ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                {children}
+            </div>
         </div>
     );
 }
 
-export default function ProductFilters({
-    brands,
-    categories,
-    selectedBrands,
-    selectedCategories,
-    priceRange,
-    onBrandChange,
-    onCategoryChange,
-    onPriceChange,
-    onApplyPrice,
-}: FiltersProps) {
+export default function ProductFilters(props: FilterProps) {
+    const totalFilters = props.selectedBrands.length + props.selectedCategories.length;
+
     return (
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <div className="flex items-center gap-2 mb-5">
-                <Filter className="w-5 h-5 text-gray-700" />
-                <h2 className="font-bold text-gray-900">Filters</h2>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5 animate-fade-in">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-5 pb-4 border-b border-gray-100">
+                <div className="flex items-center gap-2">
+                    <SlidersHorizontal className="w-5 h-5 text-brand-orange" />
+                    <h2 className="font-bold text-brand-navy">Filters</h2>
+                </div>
+                {totalFilters > 0 && (
+                    <button
+                        onClick={() => {
+                            props.selectedBrands.forEach(b => props.onBrandChange(b));
+                            props.selectedCategories.forEach(c => props.onCategoryChange(c));
+                        }}
+                        className="text-xs text-brand-orange hover:text-brand-orange-hover font-semibold transition-colors"
+                    >
+                        Clear All ({totalFilters})
+                    </button>
+                )}
             </div>
 
-            {/* Price Range */}
-            <FilterSection title="Price Range">
-                <div className="flex items-center gap-2 mb-2">
-                    <input
-                        type="number"
-                        placeholder="Min"
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#FF6B00] transition-colors"
-                        value={priceRange.min}
-                        onChange={(e) => onPriceChange({ ...priceRange, min: e.target.value })}
-                    />
-                    <span className="text-gray-400">-</span>
-                    <input
-                        type="number"
-                        placeholder="Max"
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#FF6B00] transition-colors"
-                        value={priceRange.max}
-                        onChange={(e) => onPriceChange({ ...priceRange, max: e.target.value })}
-                    />
+            {/* Categories */}
+            <FilterSection title="Categories">
+                <div className="space-y-1.5">
+                    {props.categories.map(cat => {
+                        const isActive = props.selectedCategories.includes(cat);
+                        return (
+                            <button
+                                key={cat}
+                                onClick={() => props.onCategoryChange(cat)}
+                                className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm transition-all duration-200 ${isActive
+                                    ? 'bg-brand-orange/10 text-brand-orange font-semibold'
+                                    : 'text-gray-600 hover:bg-gray-50 hover:text-brand-navy'
+                                    }`}
+                            >
+                                <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-200 ${isActive
+                                    ? 'bg-brand-orange border-brand-orange'
+                                    : 'border-gray-300'
+                                    }`}>
+                                    {isActive && (
+                                        <svg className="w-2.5 h-2.5 text-white animate-scale-in" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    )}
+                                </div>
+                                {cat}
+                            </button>
+                        );
+                    })}
                 </div>
-                <button
-                    onClick={onApplyPrice}
-                    className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg text-sm transition-colors"
-                >
-                    APPLY
-                </button>
             </FilterSection>
 
-            {/* Brand Filter */}
-            <FilterSection title="Brand">
-                {brands.map((brand) => (
-                    <label key={brand} className="flex items-center gap-2 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            checked={selectedBrands.includes(brand)}
-                            onChange={() => onBrandChange(brand)}
-                            className="w-4 h-4 rounded border-gray-300 text-[#FF6B00] focus:ring-[#FF6B00] accent-[#FF6B00]"
-                        />
-                        <span className="text-sm text-gray-700">{brand}</span>
-                    </label>
-                ))}
+            {/* Brands */}
+            <FilterSection title="Brands">
+                <div className="space-y-1.5">
+                    {props.brands.map(brand => {
+                        const isActive = props.selectedBrands.includes(brand);
+                        const dotColor = BRAND_COLORS[brand] || 'bg-gray-400';
+                        return (
+                            <button
+                                key={brand}
+                                onClick={() => props.onBrandChange(brand)}
+                                className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm transition-all duration-200 ${isActive
+                                    ? 'bg-brand-orange/10 text-brand-orange font-semibold'
+                                    : 'text-gray-600 hover:bg-gray-50 hover:text-brand-navy'
+                                    }`}
+                            >
+                                <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-200 ${isActive
+                                    ? 'bg-brand-orange border-brand-orange'
+                                    : 'border-gray-300'
+                                    }`}>
+                                    {isActive && (
+                                        <svg className="w-2.5 h-2.5 text-white animate-scale-in" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    )}
+                                </div>
+                                <div className={`w-2 h-2 rounded-full ${dotColor}`} />
+                                {brand}
+                            </button>
+                        );
+                    })}
+                </div>
             </FilterSection>
 
-            {/* Category Filter */}
-            <FilterSection title="Category">
-                {categories.map((category) => (
-                    <label key={category} className="flex items-center gap-2 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            checked={selectedCategories.includes(category)}
-                            onChange={() => onCategoryChange(category)}
-                            className="w-4 h-4 rounded border-gray-300 text-[#FF6B00] focus:ring-[#FF6B00] accent-[#FF6B00]"
-                        />
-                        <span className="text-sm text-gray-700">{category}</span>
-                    </label>
-                ))}
+            {/* Price Range */}
+            <FilterSection title="Price Range" defaultOpen={false}>
+                <div className="space-y-3">
+                    <div className="flex gap-2">
+                        <div className="relative flex-1">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span>
+                            <input
+                                type="number"
+                                placeholder="Min"
+                                value={props.priceRange.min}
+                                onChange={(e) => props.onPriceChange({ ...props.priceRange, min: e.target.value })}
+                                className="w-full border border-gray-200 rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/10 transition-all"
+                            />
+                        </div>
+                        <span className="text-gray-400 self-center">—</span>
+                        <div className="relative flex-1">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span>
+                            <input
+                                type="number"
+                                placeholder="Max"
+                                value={props.priceRange.max}
+                                onChange={(e) => props.onPriceChange({ ...props.priceRange, max: e.target.value })}
+                                className="w-full border border-gray-200 rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/10 transition-all"
+                            />
+                        </div>
+                    </div>
+                    <button
+                        onClick={props.onApplyPrice}
+                        className="w-full bg-brand-navy text-white text-sm font-semibold py-2 rounded-lg hover:bg-brand-navy-light transition-colors"
+                    >
+                        Apply Price
+                    </button>
+                </div>
             </FilterSection>
         </div>
     );
