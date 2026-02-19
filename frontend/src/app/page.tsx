@@ -338,7 +338,7 @@ export default function Home() {
                                 </h3>
                                 <p className="text-white/70 text-[13px] mt-1">Credit line up to $50,000</p>
                             </div>
-                            <a href="#" className="inline-flex items-center gap-1 bg-white/20 backdrop-blur-sm text-white text-[13px] font-bold mt-3 px-4 py-2 rounded-full hover:bg-white/30 hover:no-underline transition-all w-fit group/link relative z-10">
+                            <a href="#products" className="inline-flex items-center gap-1 bg-white/20 backdrop-blur-sm text-white text-[13px] font-bold mt-3 px-4 py-2 rounded-full hover:bg-white/30 hover:no-underline transition-all w-fit group/link relative z-10">
                                 Apply now
                                 <ChevronRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                             </a>

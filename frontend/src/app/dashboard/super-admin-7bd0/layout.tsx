@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
     LayoutDashboard, Package, ShoppingCart, Users, Settings, LogOut,
-    Menu, X, Bell, Search
+    Menu, X, Bell, Search, Check, Info, AlertTriangle, Gift
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -16,11 +16,67 @@ const NAV_ITEMS = [
     { name: 'Settings', icon: Settings, href: '/dashboard/super-admin-7bd0/settings' },
 ];
 
+const INITIAL_NOTIFICATIONS = [
+    { id: '1', icon: ShoppingCart, color: 'text-blue-500 bg-blue-100', title: 'New order received', desc: 'Order #2048 — 24x Coca-Cola cans', time: '2 min ago', read: false },
+    { id: '2', icon: AlertTriangle, color: 'text-amber-500 bg-amber-100', title: 'Low stock alert', desc: 'Sprite 330ml — only 5 cases left', time: '15 min ago', read: false },
+    { id: '3', icon: Users, color: 'text-green-500 bg-green-100', title: 'New user registered', desc: 'ahmed.store@email.com signed up', time: '1 hr ago', read: false },
+    { id: '4', icon: Gift, color: 'text-purple-500 bg-purple-100', title: 'Offer expiring soon', desc: 'Bulk discount 30% ends tomorrow', time: '3 hrs ago', read: true },
+    { id: '5', icon: Info, color: 'text-sky-500 bg-sky-100', title: 'System update', desc: 'Dashboard v2.1 deployed successfully', time: '5 hrs ago', read: true },
+];
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [avatar, setAvatar] = useState<string | null>(null);
     const [userName, setUserName] = useState('Admin');
+
+    // Notifications
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
+    const notifRef = useRef<HTMLDivElement>(null);
+    const unreadCount = notifications.filter(n => !n.read).length;
+
+    const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    const markRead = (id: string) => setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+
+    // Close notifications on outside click
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+                setShowNotifications(false);
+            }
+        };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, []);
+
+    // Swipe to open/close sidebar
+    const touchStartX = useRef(0);
+    const touchEndX = useRef(0);
+
+    useEffect(() => {
+        const handleTouchStart = (e: TouchEvent) => {
+            touchStartX.current = e.touches[0].clientX;
+        };
+        const handleTouchEnd = (e: TouchEvent) => {
+            touchEndX.current = e.changedTouches[0].clientX;
+            const diff = touchEndX.current - touchStartX.current;
+            // Swipe right: open sidebar (only if starting near the left edge)
+            if (diff > 80 && touchStartX.current < 50) {
+                setSidebarOpen(true);
+            }
+            // Swipe left: close sidebar
+            if (diff < -80 && sidebarOpen) {
+                setSidebarOpen(false);
+            }
+        };
+        document.addEventListener('touchstart', handleTouchStart, { passive: true });
+        document.addEventListener('touchend', handleTouchEnd, { passive: true });
+        return () => {
+            document.removeEventListener('touchstart', handleTouchStart);
+            document.removeEventListener('touchend', handleTouchEnd);
+        };
+    }, [sidebarOpen]);
 
     if (typeof window !== 'undefined' && !avatar) {
         const saved = localStorage.getItem('bev-admin-avatar');
@@ -126,10 +182,71 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         </div>
 
                         {/* Notifications */}
-                        <button className="relative text-white p-1">
-                            <Bell className="w-5 h-5" />
-                            <span className="absolute top-0 right-0 w-2 h-2 bg-[#FF0000] rounded-full" />
-                        </button>
+                        <div className="relative" ref={notifRef}>
+                            <button
+                                className="relative text-white p-1 hover:bg-white/10 rounded-md transition-colors"
+                                onClick={() => setShowNotifications(!showNotifications)}
+                            >
+                                <Bell className="w-5 h-5" />
+                                {unreadCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-[#FF0000] rounded-full text-[10px] font-bold text-white flex items-center justify-center px-1">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </button>
+
+                            {/* Notifications Dropdown */}
+                            {showNotifications && (
+                                <div className="absolute right-0 top-[calc(100%+8px)] w-[360px] max-h-[420px] bg-white rounded-lg shadow-2xl border border-[#d5d9d9] overflow-hidden z-50 animate-fade-in"
+                                    style={{ animation: 'fadeIn 0.2s ease-out' }}>
+                                    {/* Header */}
+                                    <div className="px-4 py-3 bg-[#f7f7f7] border-b border-[#e7e7e7] flex items-center justify-between">
+                                        <h3 className="text-[15px] font-bold text-amz-text">Notifications</h3>
+                                        {unreadCount > 0 && (
+                                            <button
+                                                onClick={markAllRead}
+                                                className="text-[12px] text-amz-link hover:text-amz-blue-hover hover:underline flex items-center gap-1"
+                                            >
+                                                <Check className="w-3 h-3" />
+                                                Mark all read
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Notification List */}
+                                    <div className="overflow-y-auto max-h-[340px]">
+                                        {notifications.map((n) => (
+                                            <div
+                                                key={n.id}
+                                                onClick={() => markRead(n.id)}
+                                                className={`flex items-start gap-3 px-4 py-3 border-b border-[#f0f0f0] cursor-pointer transition-colors hover:bg-[#f7f7f7] ${!n.read ? 'bg-[#fffbf0]' : ''}`}
+                                            >
+                                                <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${n.color}`}>
+                                                    <n.icon className="w-4 h-4" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-start justify-between gap-2">
+                                                        <p className={`text-[13px] ${!n.read ? 'font-bold text-amz-text' : 'font-medium text-amz-text2'} truncate`}>
+                                                            {n.title}
+                                                        </p>
+                                                        {!n.read && <span className="w-2 h-2 bg-amz-orange rounded-full flex-shrink-0 mt-1.5" />}
+                                                    </div>
+                                                    <p className="text-[12px] text-amz-text2 truncate">{n.desc}</p>
+                                                    <p className="text-[11px] text-gray-400 mt-0.5">{n.time}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Footer */}
+                                    <div className="px-4 py-2 text-center border-t border-[#e7e7e7] bg-[#f7f7f7]">
+                                        <button className="text-[12px] text-amz-link hover:text-amz-blue-hover hover:underline">
+                                            View all notifications
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
 
                         {/* Profile */}
                         <div className="w-7 h-7 rounded-full bg-amz-dark2 border border-gray-500 flex items-center justify-center text-white text-[12px] font-bold cursor-pointer overflow-hidden">

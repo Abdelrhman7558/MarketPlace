@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Plus, Search, Edit3, Trash2, X, Package, Check, AlertTriangle } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Plus, Search, Edit3, Trash2, X, Package, Check, AlertTriangle, Upload, Link as LinkIcon, Image as ImageIcon } from 'lucide-react';
 import { PRODUCTS as INITIAL_PRODUCTS } from '@/lib/products';
 import { Product } from '@/components/product/ProductCard';
 
@@ -16,7 +16,16 @@ export default function ProductsPage() {
         name: '', brand: '', price: '', unit: 'unit', minOrder: '', image: '', inStock: true, category: '', bulkSave: false
     });
 
-    const resetForm = () => setForm({ name: '', brand: '', price: '', unit: 'unit', minOrder: '', image: '', inStock: true, category: '', bulkSave: false });
+    // Image upload
+    const [imageMode, setImageMode] = useState<'upload' | 'url'>('upload');
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const resetForm = () => {
+        setForm({ name: '', brand: '', price: '', unit: 'unit', minOrder: '', image: '', inStock: true, category: '', bulkSave: false });
+        setImagePreview(null);
+        setImageMode('upload');
+    };
 
     const openAdd = () => { resetForm(); setEditProduct(null); setShowModal(true); };
 
@@ -26,7 +35,21 @@ export default function ProductsPage() {
             name: p.name, brand: p.brand, price: String(p.price), unit: p.unit,
             minOrder: String(p.minOrder), image: p.image, inStock: p.inStock, category: p.category, bulkSave: p.bulkSave || false
         });
+        setImagePreview(p.image);
+        setImageMode('url');
         setShowModal(true);
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const result = reader.result as string;
+            setImagePreview(result);
+            setForm(f => ({ ...f, image: result }));
+        };
+        reader.readAsDataURL(file);
     };
 
     const handleSave = () => {
@@ -63,12 +86,12 @@ export default function ProductsPage() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-extrabold text-brand-navy">Products</h2>
-                    <p className="text-text-muted text-sm">{products.length} total products</p>
+                    <h2 className="text-2xl font-extrabold text-amz-text">Products</h2>
+                    <p className="text-amz-text2 text-sm">{products.length} total products</p>
                 </div>
                 <button
                     onClick={openAdd}
-                    className="btn-primary flex items-center gap-2 text-sm"
+                    className="btn-amz flex items-center gap-2 text-sm !py-2.5 !px-5 !rounded-lg font-bold"
                 >
                     <Plus className="w-4 h-4" />
                     Add Product
@@ -76,7 +99,7 @@ export default function ProductsPage() {
             </div>
 
             {/* Search */}
-            <div className="flex items-center bg-white border border-gray-200 rounded-xl px-4 py-3 focus-within:border-brand-orange focus-within:ring-2 focus-within:ring-brand-orange/10 transition-all shadow-card">
+            <div className="flex items-center bg-white border border-[#d5d9d9] rounded-[4px] px-4 py-3 focus-within:border-amz-orange focus-within:ring-2 focus-within:ring-amz-orange/10 transition-all shadow-amz-card">
                 <Search className="w-5 h-5 text-gray-400 mr-3" />
                 <input
                     type="text"
@@ -88,33 +111,33 @@ export default function ProductsPage() {
             </div>
 
             {/* Products Table */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-card overflow-hidden">
+            <div className="bg-white rounded-[4px] border border-[#d5d9d9] shadow-amz-card overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
-                            <tr className="text-left text-xs text-text-muted uppercase tracking-wider border-b border-gray-100">
-                                <th className="px-6 py-4 font-semibold">Product</th>
-                                <th className="px-6 py-4 font-semibold">Brand</th>
-                                <th className="px-6 py-4 font-semibold">Category</th>
-                                <th className="px-6 py-4 font-semibold">Price</th>
-                                <th className="px-6 py-4 font-semibold">Stock</th>
-                                <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                            <tr className="text-left text-xs text-amz-text2 uppercase tracking-wider border-b border-[#e7e7e7] bg-[#f7f7f7]">
+                                <th className="px-6 py-3 font-semibold">Product</th>
+                                <th className="px-6 py-3 font-semibold">Brand</th>
+                                <th className="px-6 py-3 font-semibold">Category</th>
+                                <th className="px-6 py-3 font-semibold">Price</th>
+                                <th className="px-6 py-3 font-semibold">Stock</th>
+                                <th className="px-6 py-3 font-semibold text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filtered.map((p, i) => (
-                                <tr key={p.id} className="table-row-animate border-b border-gray-50 last:border-0 animate-fade-in" style={{ animationDelay: `${i * 50}ms` }}>
+                                <tr key={p.id} className="border-b border-[#f0f0f0] last:border-0 hover:bg-[#f7f7f7] transition-colors" style={{ animationDelay: `${i * 50}ms` }}>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                                            <div className="w-10 h-10 rounded-[4px] bg-gray-100 overflow-hidden flex-shrink-0">
                                                 <img src={p.image} alt="" className="w-full h-full object-cover" />
                                             </div>
-                                            <span className="text-sm font-semibold text-brand-navy truncate max-w-[200px]">{p.name}</span>
+                                            <span className="text-sm font-medium text-amz-text truncate max-w-[200px]">{p.name}</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">{p.brand}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">{p.category}</td>
-                                    <td className="px-6 py-4 text-sm font-bold text-brand-navy">${p.price.toFixed(2)}</td>
+                                    <td className="px-6 py-4 text-sm text-amz-text2">{p.brand}</td>
+                                    <td className="px-6 py-4 text-sm text-amz-text2">{p.category}</td>
+                                    <td className="px-6 py-4 text-sm font-bold text-amz-text">${p.price.toFixed(2)}</td>
                                     <td className="px-6 py-4">
                                         <span className={`text-[11px] font-bold px-3 py-1 rounded-full ${p.inStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                                             {p.inStock ? 'In Stock' : 'Out'}
@@ -122,10 +145,10 @@ export default function ProductsPage() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center justify-end gap-2">
-                                            <button onClick={() => openEdit(p)} className="w-8 h-8 rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 flex items-center justify-center transition-all">
+                                            <button onClick={() => openEdit(p)} className="w-8 h-8 rounded-[4px] hover:bg-blue-50 text-gray-400 hover:text-blue-500 flex items-center justify-center transition-all">
                                                 <Edit3 className="w-4 h-4" />
                                             </button>
-                                            <button onClick={() => setShowDeleteConfirm(p.id)} className="w-8 h-8 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 flex items-center justify-center transition-all">
+                                            <button onClick={() => setShowDeleteConfirm(p.id)} className="w-8 h-8 rounded-[4px] hover:bg-red-50 text-gray-400 hover:text-red-500 flex items-center justify-center transition-all">
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
                                         </div>
@@ -136,7 +159,7 @@ export default function ProductsPage() {
                     </table>
                 </div>
                 {filtered.length === 0 && (
-                    <div className="text-center py-12 text-text-muted">
+                    <div className="text-center py-12 text-amz-text2">
                         <Package className="w-10 h-10 mx-auto mb-3 text-gray-300" />
                         <p className="text-sm">No products found</p>
                     </div>
@@ -145,49 +168,123 @@ export default function ProductsPage() {
 
             {/* Add/Edit Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={() => setShowModal(false)}>
-                    <div className="bg-white rounded-2xl shadow-float max-w-lg w-full max-h-[90vh] overflow-y-auto animate-scale-in" onClick={e => e.stopPropagation()}>
-                        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                            <h3 className="font-extrabold text-brand-navy text-lg">{editProduct ? 'Edit Product' : 'Add New Product'}</h3>
-                            <button onClick={() => setShowModal(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
+                    <div className="bg-white rounded-lg shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                        <div className="p-5 border-b border-[#e7e7e7] flex items-center justify-between">
+                            <h3 className="font-bold text-amz-text text-lg">{editProduct ? 'Edit Product' : 'Add New Product'}</h3>
+                            <button onClick={() => setShowModal(false)} className="p-2 hover:bg-gray-100 rounded-[4px] transition-colors">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
-                        <div className="p-6 space-y-4">
+                        <div className="p-5 space-y-4">
                             {[
                                 { label: 'Product Name *', key: 'name', placeholder: 'e.g. Coca-Cola 330ml Case of 24' },
                                 { label: 'Brand *', key: 'brand', placeholder: 'e.g. Coca-Cola' },
                                 { label: 'Category *', key: 'category', placeholder: 'e.g. Soft Drinks' },
                                 { label: 'Price ($) *', key: 'price', placeholder: '18.50', type: 'number' },
                                 { label: 'Min Order', key: 'minOrder', placeholder: '10', type: 'number' },
-                                { label: 'Image URL', key: 'image', placeholder: 'https://...' },
                             ].map(field => (
                                 <div key={field.key}>
-                                    <label className="text-sm font-semibold text-brand-navy block mb-1.5">{field.label}</label>
+                                    <label className="text-sm font-semibold text-amz-text block mb-1.5">{field.label}</label>
                                     <input
                                         type={field.type || 'text'}
                                         value={(form as any)[field.key]}
                                         onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
                                         placeholder={field.placeholder}
-                                        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/10 transition-all"
+                                        className="w-full border border-[#d5d9d9] rounded-[4px] px-3 py-2.5 text-sm outline-none focus:border-amz-orange focus:ring-2 focus:ring-amz-orange/10 transition-all"
                                     />
                                 </div>
                             ))}
 
+                            {/* Image Upload / URL Section */}
+                            <div>
+                                <label className="text-sm font-semibold text-amz-text block mb-2">Product Image</label>
+
+                                {/* Mode Toggle */}
+                                <div className="flex mb-3 bg-[#f0f2f2] rounded-[4px] p-0.5">
+                                    <button
+                                        onClick={() => setImageMode('upload')}
+                                        className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-[13px] font-medium rounded-[3px] transition-all ${imageMode === 'upload'
+                                            ? 'bg-white text-amz-text shadow-sm'
+                                            : 'text-amz-text2 hover:text-amz-text'
+                                            }`}
+                                    >
+                                        <Upload className="w-3.5 h-3.5" />
+                                        Upload
+                                    </button>
+                                    <button
+                                        onClick={() => setImageMode('url')}
+                                        className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-[13px] font-medium rounded-[3px] transition-all ${imageMode === 'url'
+                                            ? 'bg-white text-amz-text shadow-sm'
+                                            : 'text-amz-text2 hover:text-amz-text'
+                                            }`}
+                                    >
+                                        <LinkIcon className="w-3.5 h-3.5" />
+                                        URL
+                                    </button>
+                                </div>
+
+                                {imageMode === 'upload' ? (
+                                    <div>
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                            className="hidden"
+                                        />
+                                        <div
+                                            onClick={() => fileInputRef.current?.click()}
+                                            className="border-2 border-dashed border-[#d5d9d9] rounded-lg p-6 text-center cursor-pointer hover:border-amz-orange hover:bg-amz-orange/5 transition-all group"
+                                        >
+                                            {imagePreview ? (
+                                                <div className="relative">
+                                                    <img src={imagePreview} alt="Preview" className="w-24 h-24 object-cover rounded-md mx-auto mb-2" />
+                                                    <p className="text-[12px] text-amz-text2">Click to change image</p>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <ImageIcon className="w-10 h-10 mx-auto mb-2 text-gray-300 group-hover:text-amz-orange transition-colors" />
+                                                    <p className="text-[13px] font-medium text-amz-text2">Click to upload image</p>
+                                                    <p className="text-[11px] text-gray-400 mt-1">PNG, JPG, WEBP up to 5MB</p>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <input
+                                            type="text"
+                                            value={form.image}
+                                            onChange={e => {
+                                                setForm(f => ({ ...f, image: e.target.value }));
+                                                setImagePreview(e.target.value);
+                                            }}
+                                            placeholder="https://example.com/image.jpg"
+                                            className="w-full border border-[#d5d9d9] rounded-[4px] px-3 py-2.5 text-sm outline-none focus:border-amz-orange focus:ring-2 focus:ring-amz-orange/10 transition-all"
+                                        />
+                                        {imagePreview && form.image && (
+                                            <img src={imagePreview} alt="Preview" className="w-20 h-20 object-cover rounded-md mt-2 border border-[#e7e7e7]"
+                                                onError={() => setImagePreview(null)} />
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
                             <div className="flex items-center gap-6">
                                 <label className="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" checked={form.inStock} onChange={e => setForm(f => ({ ...f, inStock: e.target.checked }))} className="w-4 h-4 accent-brand-orange" />
+                                    <input type="checkbox" checked={form.inStock} onChange={e => setForm(f => ({ ...f, inStock: e.target.checked }))} className="w-4 h-4 accent-amz-orange" />
                                     <span className="text-sm font-medium text-gray-700">In Stock</span>
                                 </label>
                                 <label className="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" checked={form.bulkSave} onChange={e => setForm(f => ({ ...f, bulkSave: e.target.checked }))} className="w-4 h-4 accent-brand-orange" />
+                                    <input type="checkbox" checked={form.bulkSave} onChange={e => setForm(f => ({ ...f, bulkSave: e.target.checked }))} className="w-4 h-4 accent-amz-orange" />
                                     <span className="text-sm font-medium text-gray-700">Bulk Save</span>
                                 </label>
                             </div>
                         </div>
-                        <div className="p-6 border-t border-gray-100 flex gap-3 justify-end">
-                            <button onClick={() => setShowModal(false)} className="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
-                            <button onClick={handleSave} className="btn-primary text-sm flex items-center gap-2">
+                        <div className="p-5 border-t border-[#e7e7e7] flex gap-3 justify-end">
+                            <button onClick={() => setShowModal(false)} className="px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-[4px] transition-colors border border-[#d5d9d9]">Cancel</button>
+                            <button onClick={handleSave} className="btn-amz text-sm flex items-center gap-2 !py-2.5 !px-5 !rounded-lg font-bold">
                                 <Check className="w-4 h-4" />
                                 {editProduct ? 'Save Changes' : 'Add Product'}
                             </button>
@@ -198,16 +295,16 @@ export default function ProductsPage() {
 
             {/* Delete Confirmation */}
             {showDeleteConfirm && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={() => setShowDeleteConfirm(null)}>
-                    <div className="bg-white rounded-2xl shadow-float max-w-sm w-full animate-scale-in p-6 text-center" onClick={e => e.stopPropagation()}>
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowDeleteConfirm(null)}>
+                    <div className="bg-white rounded-lg shadow-2xl max-w-sm w-full p-6 text-center" onClick={e => e.stopPropagation()}>
                         <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <AlertTriangle className="w-7 h-7 text-red-500" />
                         </div>
-                        <h3 className="font-bold text-brand-navy text-lg mb-2">Delete Product?</h3>
-                        <p className="text-text-muted text-sm mb-6">This action cannot be undone.</p>
+                        <h3 className="font-bold text-amz-text text-lg mb-2">Delete Product?</h3>
+                        <p className="text-amz-text2 text-sm mb-6">This action cannot be undone.</p>
                         <div className="flex gap-3">
-                            <button onClick={() => setShowDeleteConfirm(null)} className="flex-1 px-4 py-2.5 text-sm font-semibold border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">Cancel</button>
-                            <button onClick={() => handleDelete(showDeleteConfirm)} className="flex-1 btn-danger text-sm">Delete</button>
+                            <button onClick={() => setShowDeleteConfirm(null)} className="flex-1 px-4 py-2.5 text-sm font-medium border border-[#d5d9d9] rounded-[4px] hover:bg-gray-50 transition-colors">Cancel</button>
+                            <button onClick={() => handleDelete(showDeleteConfirm)} className="flex-1 bg-red-600 text-white text-sm font-bold py-2.5 rounded-[4px] hover:bg-red-700 transition-colors">Delete</button>
                         </div>
                     </div>
                 </div>
