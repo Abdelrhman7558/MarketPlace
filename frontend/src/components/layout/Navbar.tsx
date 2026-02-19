@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Menu, X, Search, ShoppingCart, MapPin, ChevronDown } from 'lucide-react';
 import { useCart } from '@/lib/cart';
+import { useAuth } from '../../lib/auth';
 
 const NAV_ITEMS = [
     { name: 'All', href: '/#products' },
@@ -19,6 +20,7 @@ export default function Navbar() {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchCategory, setSearchCategory] = useState('All');
     const { items } = useCart();
+    const { user, logout } = useAuth();
     const cartCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
     const handleSearch = () => {
@@ -79,16 +81,54 @@ export default function Navbar() {
                     </div>
 
                     {/* Account */}
-                    <Link href="/auth/login" className="hidden md:flex flex-col px-2 py-1 border border-transparent hover:border-white rounded-sm flex-shrink-0">
-                        <span className="text-gray-300 text-[11px] leading-tight">Hello, sign in</span>
-                        <span className="text-white text-[13px] font-bold leading-tight flex items-center">
-                            Account & Lists
-                            <ChevronDown className="w-3 h-3 ml-0.5" />
-                        </span>
-                    </Link>
+                    <div className="hidden md:flex flex-col px-2 py-1 border border-transparent hover:border-white rounded-sm flex-shrink-0 relative group">
+                        {user ? (
+                            <>
+                                <div className="cursor-pointer">
+                                    <span className="text-gray-300 text-[11px] leading-tight">Hello, {user.name}</span>
+                                    <span className="text-white text-[13px] font-bold leading-tight flex items-center">
+                                        Account & Lists
+                                        <ChevronDown className="w-3 h-3 ml-0.5" />
+                                    </span>
+                                </div>
+                                {/* Dropdown */}
+                                <div className="absolute top-full right-0 w-48 bg-white rounded-md shadow-lg py-2 hidden group-hover:block text-black z-50">
+                                    <div className="px-4 py-2 border-b border-gray-100">
+                                        <p className="text-xs text-gray-500">Signed in as</p>
+                                        <p className="text-sm font-bold truncate">{user.email}</p>
+                                    </div>
+                                    <Link href={user.role === 'admin' ? "/dashboard/super-admin-7bd0" : "/dashboard/buyer"} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Dashboard
+                                    </Link>
+                                    <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Your Profile
+                                    </Link>
+                                    <Link href="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Your Orders
+                                    </Link>
+                                    <div className="border-t border-gray-100 mt-1 pt-1">
+                                        <button
+                                            onClick={() => logout()}
+                                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                                        >
+                                            Sign Out
+                                        </button>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <Link href="/auth/login">
+                                <span className="text-gray-300 text-[11px] leading-tight">Hello, sign in</span>
+                                <span className="text-white text-[13px] font-bold leading-tight flex items-center">
+                                    Account & Lists
+                                    <ChevronDown className="w-3 h-3 ml-0.5" />
+                                </span>
+                            </Link>
+                        )}
+                    </div>
 
                     {/* Returns & Orders */}
-                    <Link href="/auth/login" className="hidden md:flex flex-col px-2 py-1 border border-transparent hover:border-white rounded-sm flex-shrink-0">
+                    <Link href={user ? "/orders" : "/auth/login"} className="hidden md:flex flex-col px-2 py-1 border border-transparent hover:border-white rounded-sm flex-shrink-0">
                         <span className="text-gray-300 text-[11px] leading-tight">Returns</span>
                         <span className="text-white text-[13px] font-bold leading-tight">& Orders</span>
                     </Link>
@@ -171,9 +211,27 @@ export default function Navbar() {
                             ))}
                         </nav>
                         <div className="border-t pt-3">
-                            <Link href="/auth/login" className="block w-full text-center btn-amz py-2 text-[14px] font-bold" onClick={() => setIsOpen(false)}>
-                                Sign in
-                            </Link>
+                            {user ? (
+                                <div className="space-y-2">
+                                    <div className="px-3 py-2 bg-gray-50 rounded">
+                                        <p className="text-xs text-gray-500">Signed in as</p>
+                                        <p className="text-sm font-bold text-amz-dark">{user.name}</p>
+                                    </div>
+                                    <Link href="/dashboard/buyer" className="block w-full text-left px-3 py-2 text-[14px] font-medium text-amz-text hover:bg-gray-100 rounded" onClick={() => setIsOpen(false)}>
+                                        Dashboard
+                                    </Link>
+                                    <button
+                                        onClick={() => { logout(); setIsOpen(false); }}
+                                        className="block w-full text-left px-3 py-2 text-[14px] font-medium text-red-600 hover:bg-gray-100 rounded"
+                                    >
+                                        Sign Out
+                                    </button>
+                                </div>
+                            ) : (
+                                <Link href="/auth/login" className="block w-full text-center btn-amz py-2 text-[14px] font-bold" onClick={() => setIsOpen(false)}>
+                                    Sign in
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </div>

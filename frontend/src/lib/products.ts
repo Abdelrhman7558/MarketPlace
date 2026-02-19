@@ -19,7 +19,7 @@ export const PRODUCTS: Product[] = [
         price: 32.00,
         unit: 'unit',
         minOrder: 5,
-        image: 'https://images.unsplash.com/photo-1613915617612-f660234e856c?w=400&h=400&fit=crop',
+        image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=400&fit=crop',
         inStock: true,
         category: 'Energy Drinks',
     },
