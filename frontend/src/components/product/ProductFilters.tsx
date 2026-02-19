@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, X, SlidersHorizontal } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 interface FilterProps {
     brands: string[];
@@ -15,156 +15,117 @@ interface FilterProps {
     onApplyPrice: () => void;
 }
 
-const BRAND_COLORS: Record<string, string> = {
-    'Coca-Cola': 'bg-red-500',
-    'Pepsi': 'bg-blue-500',
-    'Red Bull': 'bg-yellow-500',
-    'Monster': 'bg-green-500',
-    'Lipton': 'bg-yellow-400',
-    'Tropicana': 'bg-orange-400',
-    'Nestle': 'bg-sky-400',
-};
-
 function FilterSection({ title, children, defaultOpen = true }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
     const [isOpen, setIsOpen] = useState(defaultOpen);
 
     return (
-        <div className="border-b border-gray-100 pb-4 mb-4 last:border-0 last:pb-0 last:mb-0">
+        <div className="border-b border-[#e7e7e7] pb-3 mb-3 last:border-0 last:pb-0 last:mb-0">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center justify-between w-full text-left mb-3 group"
+                className="flex items-center justify-between w-full text-left mb-2 py-1"
             >
-                <h3 className="text-sm font-bold text-brand-navy group-hover:text-brand-orange transition-colors">{title}</h3>
-                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                <h3 className="text-[13px] font-bold text-amz-text">{title}</h3>
+                <ChevronDown className={`w-3 h-3 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
             </button>
-            <div className={`transition-all duration-300 overflow-hidden ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                {children}
-            </div>
+            {isOpen && <div>{children}</div>}
         </div>
     );
 }
 
 export default function ProductFilters(props: FilterProps) {
-    const totalFilters = props.selectedBrands.length + props.selectedCategories.length;
-
     return (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5 animate-fade-in">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-5 pb-4 border-b border-gray-100">
-                <div className="flex items-center gap-2">
-                    <SlidersHorizontal className="w-5 h-5 text-brand-orange" />
-                    <h2 className="font-bold text-brand-navy">Filters</h2>
-                </div>
-                {totalFilters > 0 && (
-                    <button
-                        onClick={() => {
-                            props.selectedBrands.forEach(b => props.onBrandChange(b));
-                            props.selectedCategories.forEach(c => props.onCategoryChange(c));
-                        }}
-                        className="text-xs text-brand-orange hover:text-brand-orange-hover font-semibold transition-colors"
-                    >
-                        Clear All ({totalFilters})
-                    </button>
-                )}
-            </div>
-
-            {/* Categories */}
-            <FilterSection title="Categories">
-                <div className="space-y-1.5">
+        <div className="text-amz-text">
+            {/* Department */}
+            <FilterSection title="Department">
+                <ul className="space-y-[2px]">
                     {props.categories.map(cat => {
                         const isActive = props.selectedCategories.includes(cat);
                         return (
-                            <button
-                                key={cat}
-                                onClick={() => props.onCategoryChange(cat)}
-                                className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm transition-all duration-200 ${isActive
-                                    ? 'bg-brand-orange/10 text-brand-orange font-semibold'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-brand-navy'
-                                    }`}
-                            >
-                                <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-200 ${isActive
-                                    ? 'bg-brand-orange border-brand-orange'
-                                    : 'border-gray-300'
-                                    }`}>
-                                    {isActive && (
-                                        <svg className="w-2.5 h-2.5 text-white animate-scale-in" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    )}
-                                </div>
-                                {cat}
-                            </button>
+                            <li key={cat}>
+                                <button
+                                    onClick={() => props.onCategoryChange(cat)}
+                                    className={`text-[13px] py-[2px] block w-full text-left ${isActive
+                                            ? 'font-bold text-amz-text'
+                                            : 'text-amz-text hover:text-amz-blue-hover hover:underline'
+                                        }`}
+                                >
+                                    {isActive && <span className="mr-1">›</span>}
+                                    {cat}
+                                </button>
+                            </li>
                         );
                     })}
-                </div>
+                </ul>
             </FilterSection>
 
-            {/* Brands */}
-            <FilterSection title="Brands">
-                <div className="space-y-1.5">
+            {/* Brand */}
+            <FilterSection title="Brand">
+                <div className="space-y-[4px]">
                     {props.brands.map(brand => {
                         const isActive = props.selectedBrands.includes(brand);
-                        const dotColor = BRAND_COLORS[brand] || 'bg-gray-400';
                         return (
-                            <button
-                                key={brand}
-                                onClick={() => props.onBrandChange(brand)}
-                                className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm transition-all duration-200 ${isActive
-                                    ? 'bg-brand-orange/10 text-brand-orange font-semibold'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-brand-navy'
-                                    }`}
-                            >
-                                <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-200 ${isActive
-                                    ? 'bg-brand-orange border-brand-orange'
-                                    : 'border-gray-300'
-                                    }`}>
-                                    {isActive && (
-                                        <svg className="w-2.5 h-2.5 text-white animate-scale-in" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    )}
-                                </div>
-                                <div className={`w-2 h-2 rounded-full ${dotColor}`} />
-                                {brand}
-                            </button>
+                            <label key={brand} className="flex items-center gap-2 cursor-pointer py-[1px]">
+                                <input
+                                    type="checkbox"
+                                    checked={isActive}
+                                    onChange={() => props.onBrandChange(brand)}
+                                    className="w-[13px] h-[13px] accent-amz-dark2 cursor-pointer"
+                                />
+                                <span className="text-[13px] text-amz-text">{brand}</span>
+                            </label>
                         );
                     })}
                 </div>
             </FilterSection>
 
-            {/* Price Range */}
-            <FilterSection title="Price Range" defaultOpen={false}>
-                <div className="space-y-3">
-                    <div className="flex gap-2">
-                        <div className="relative flex-1">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span>
+            {/* Price */}
+            <FilterSection title="Price" defaultOpen={false}>
+                <div className="space-y-2">
+                    <div className="flex items-center gap-1">
+                        <div className="flex items-center border border-[#888c8c] rounded-[4px] px-1 bg-white">
+                            <span className="text-[12px] text-gray-500">$</span>
                             <input
                                 type="number"
                                 placeholder="Min"
                                 value={props.priceRange.min}
                                 onChange={(e) => props.onPriceChange({ ...props.priceRange, min: e.target.value })}
-                                className="w-full border border-gray-200 rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/10 transition-all"
+                                className="w-full text-[13px] py-1 px-1 outline-none bg-transparent"
                             />
                         </div>
-                        <span className="text-gray-400 self-center">—</span>
-                        <div className="relative flex-1">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span>
+                        <span className="text-gray-400 text-[11px]">to</span>
+                        <div className="flex items-center border border-[#888c8c] rounded-[4px] px-1 bg-white">
+                            <span className="text-[12px] text-gray-500">$</span>
                             <input
                                 type="number"
                                 placeholder="Max"
                                 value={props.priceRange.max}
                                 onChange={(e) => props.onPriceChange({ ...props.priceRange, max: e.target.value })}
-                                className="w-full border border-gray-200 rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/10 transition-all"
+                                className="w-full text-[13px] py-1 px-1 outline-none bg-transparent"
                             />
                         </div>
+                        <button
+                            onClick={props.onApplyPrice}
+                            className="btn-amz !py-1 !px-2 text-[11px]"
+                        >
+                            Go
+                        </button>
                     </div>
-                    <button
-                        onClick={props.onApplyPrice}
-                        className="w-full bg-brand-navy text-white text-sm font-semibold py-2 rounded-lg hover:bg-brand-navy-light transition-colors"
-                    >
-                        Apply Price
-                    </button>
+                    <div className="space-y-[2px]">
+                        {['Under $10', '$10 to $20', '$20 to $30', '$30 & Above'].map(range => (
+                            <button key={range} className="text-[13px] text-amz-text block hover:text-amz-blue-hover hover:underline py-[1px]">
+                                {range}
+                            </button>
+                        ))}
+                    </div>
                 </div>
+            </FilterSection>
+
+            {/* Availability */}
+            <FilterSection title="Availability" defaultOpen={false}>
+                <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" className="w-[13px] h-[13px] accent-amz-dark2 cursor-pointer" />
+                    <span className="text-[13px] text-amz-text">Include Out of Stock</span>
+                </label>
             </FilterSection>
         </div>
     );

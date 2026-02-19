@@ -7,101 +7,86 @@
         scroll-behavior: smooth;
     }
 
-    /* Standard Selection */
     ::selection {
-        background: #f3a847;
-        color: #111;
+        background: #febd69;
+        color: #0F1111;
     }
 
     body {
-        @apply bg-brand-light text-text-primary antialiased font-sans overflow-x-hidden;
+        @apply bg-amz-bg text-amz-text antialiased font-sans;
+        font-size: 14px;
+        line-height: 1.42857;
+    }
+
+    a {
+        color: #007185;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #c7511f;
+        text-decoration: underline;
     }
 }
 
 @layer components {
-    .container-wide {
+    .container-amz {
         @apply max-w-[1500px] mx-auto px-4;
     }
 
-    /* Professional Buttons */
-    .btn-primary {
-        @apply bg-[#f0c14b] text-[#111] border border-[#a88734] rounded-md hover:bg-[#f3a847] active:bg-[#eebb30] transition-colors duration-200 px-4 py-2 text-sm shadow-sm;
+    /* Amazon primary button (yellow gradient) */
+    .btn-amz {
+        @apply text-[#0F1111] text-[13px] py-[7px] px-[10px] cursor-pointer text-center;
+        border: 1px solid #a88734;
+        border-radius: 3px;
         background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
     }
 
-    .btn-primary:hover {
+    .btn-amz:hover {
         background: linear-gradient(to bottom, #f5d78e, #eeb933);
-        border-color: #a88734;
+        text-decoration: none;
+        color: #0F1111;
     }
 
-    .btn-secondary {
-        @apply bg-[#e3e6e6] text-[#111] border border-[#D5D9D9] rounded-md hover:bg-[#d6d9d9] active:bg-[#c9cccc] transition-colors duration-200 px-4 py-2 text-sm shadow-sm;
-        background: linear-gradient(to bottom, #f7fafa, #e3e6e6);
+    /* Amazon secondary button (gray) */
+    .btn-amz-secondary {
+        @apply text-[#0F1111] text-[13px] py-[7px] px-[10px] cursor-pointer text-center;
+        border: 1px solid #ADB1B8;
+        border-radius: 3px;
+        background: linear-gradient(to bottom, #f7f8fa, #e7e9ec);
     }
 
-    .btn-secondary:hover {
-        background: linear-gradient(to bottom, #fff, #d6d9d9);
-        border-color: #d5d9d9;
+    .btn-amz-secondary:hover {
+        background: linear-gradient(to bottom, #e7eaf0, #d9dce1);
+        text-decoration: none;
+        color: #0F1111;
     }
 
-    /* Input Fields */
-    .input-field {
-        @apply w-full bg-white border border-[#888c8c] rounded-[3px] px-3 py-2 text-sm text-[#111] shadow-[0_1px_0_rgba(255, 255, 255, 0.5)_inset] focus:border-[#e77600] focus:shadow-input outline-none transition-shadow duration-200;
+    /* Amazon card */
+    .amz-card {
+        @apply bg-white p-5;
     }
 
-    /* Card Styles - Clean & flat mostly, subtle lift on hover */
-    .card {
-        @apply bg-white border border-brand-border rounded-lg overflow-hidden transition-all duration-200;
-    }
-
-    .product-card {
-        @apply bg-white border border-brand-border rounded-lg overflow-hidden flex flex-col h-full hover:shadow-card-hover transition-shadow duration-200;
-    }
-
-    /* Text Utilities */
-    .text-link {
-        @apply text-brand-blue hover:text-[#c7511f] hover:underline cursor-pointer transition-colors;
-    }
-
-    .price-text {
-        @apply font-medium text-[#B12704];
-    }
-
-    /* Badge Styles */
-    .badge-amazons-choice {
-        @apply bg-[#232f3e] text-white text-xs font-bold px-2 py-1 skew-x-[-10deg] inline-block shadow-sm;
-    }
-
-    .badge-amazons-choice span {
-        @apply block skew-x-[10deg];
-    }
-
-    .badge-bestseller {
-        @apply bg-[#c7511f] text-white text-xs font-bold px-2 py-1 inline-block rounded-[2px] shadow-sm;
+    .amz-card h2 {
+        @apply text-[21px] font-bold text-amz-text leading-tight mb-2;
+        font-family: 'Arial', sans-serif;
     }
 }
 
-@layer utilities {
-    .text-shadow {
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    }
-}
-
-/* Custom Scrollbar for modern look (less intrusive) */
+/* Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
-    height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent;
+    background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #cdcdcd;
+    background: #c1c1c1;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #a6a6a6;
+    background: #a1a1a1;
 }

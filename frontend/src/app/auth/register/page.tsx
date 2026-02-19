@@ -3,37 +3,22 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { User, Mail, Lock, Phone, Zap, ArrowRight, Check } from 'lucide-react';
+import { Check, ChevronRight } from 'lucide-react';
 
 export default function RegisterPage() {
-    const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', role: 'customer' });
+    const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '', role: 'customer' });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const router = useRouter();
 
     const update = (field: string, value: string) => setForm(f => ({ ...f, [field]: value }));
 
-    const passwordStrength = () => {
-        const p = form.password;
-        if (!p) return 0;
-        let s = 0;
-        if (p.length >= 6) s++;
-        if (p.length >= 8) s++;
-        if (/[A-Z]/.test(p)) s++;
-        if (/[0-9]/.test(p)) s++;
-        if (/[^A-Za-z0-9]/.test(p)) s++;
-        return s;
-    };
-
-    const strengthLevel = passwordStrength();
-    const strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-400', 'bg-green-500'];
-    const strengthLabels = ['Very Weak', 'Weak', 'Fair', 'Strong', 'Very Strong'];
-
     const handleRegister = (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         if (!form.name || !form.email || !form.password) { setError('Please fill in all required fields'); return; }
-        if (form.password.length < 6) { setError('Password must be at least 6 characters'); return; }
+        if (form.password.length < 6) { setError('Passwords must be at least 6 characters.'); return; }
+        if (form.password !== form.confirmPassword) { setError('Passwords must match.'); return; }
         setLoading(true);
         setTimeout(() => {
             router.push('/auth/login');
@@ -42,127 +27,160 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-hero flex items-center justify-center px-4 py-12 relative overflow-hidden">
-            {/* Animated Background */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-10 right-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-float" />
-                <div className="absolute bottom-10 left-10 w-72 h-72 bg-brand-orange/10 rounded-full blur-3xl animate-float animation-delay-500" />
-                <div className="absolute top-[20%] left-[5%] text-4xl animate-float opacity-10">🥤</div>
-                <div className="absolute bottom-[10%] right-[10%] text-5xl animate-float animation-delay-300 opacity-10">📦</div>
+        <div className="min-h-screen bg-[#f0f0f0] flex flex-col">
+            {/* Top bar */}
+            <div className="bg-white py-4 flex justify-center border-b border-[#e7e7e7]">
+                <Link href="/" className="text-[28px] font-bold text-amz-dark hover:no-underline">
+                    Bev<span className="text-amz-orange">Market</span>
+                    <span className="text-[12px] text-amz-dark">.eg</span>
+                </Link>
             </div>
 
-            <div className="w-full max-w-md relative z-10">
-                {/* Logo */}
-                <div className="text-center mb-8 animate-fade-in-down">
-                    <div className="w-16 h-16 bg-gradient-to-br from-brand-orange to-brand-red rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-glow-orange hover:scale-110 transition-transform duration-300">
-                        <Zap className="w-8 h-8 text-white" />
-                    </div>
-                    <h1 className="text-white text-3xl font-extrabold">Create Account</h1>
-                    <p className="text-text-muted text-sm mt-2">Join the #1 beverage marketplace</p>
-                </div>
+            {/* Register Form */}
+            <div className="flex-1 flex items-center justify-center px-4 py-6">
+                <div className="w-full max-w-[350px]">
+                    <div className="bg-white border border-[#ddd] rounded-[4px] p-[26px]">
+                        <h1 className="text-[28px] font-normal text-amz-text mb-1">Create account</h1>
 
-                {/* Card */}
-                <div className="glass-card p-8 animate-fade-in-up animation-delay-200">
-                    <form onSubmit={handleRegister}>
                         {error && (
-                            <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-xl px-4 py-3 mb-5 animate-fade-in">
-                                {error}
+                            <div className="bg-white border border-[#cc0c39] rounded-[4px] p-3 mb-4 mt-3">
+                                <div className="flex items-start gap-2">
+                                    <span className="text-[#c40000] text-[20px] mt-[-2px]">!</span>
+                                    <div>
+                                        <p className="text-[13px] font-bold text-[#c40000]">There was a problem</p>
+                                        <p className="text-[13px] text-amz-text">{error}</p>
+                                    </div>
+                                </div>
                             </div>
                         )}
 
-                        <div className="mb-4">
-                            <label className="text-gray-400 text-sm font-medium block mb-2">Full Name *</label>
-                            <div className="relative group">
-                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-brand-orange transition-colors" />
-                                <input type="text" value={form.name} onChange={e => update('name', e.target.value)} placeholder="Your full name" className="auth-input pl-11" />
+                        <form onSubmit={handleRegister} className="mt-4">
+                            <div className="mb-3">
+                                <label className="text-[13px] font-bold text-amz-text block mb-1">Your name</label>
+                                <input
+                                    type="text"
+                                    value={form.name}
+                                    onChange={e => update('name', e.target.value)}
+                                    placeholder="First and last name"
+                                    className="w-full border border-[#888c8c] rounded-[3px] px-[7px] py-[3px] text-[13px] h-[31px] outline-none focus:border-[#e77600] focus:shadow-[0_0_0_3px_#c8f3fa]"
+                                />
                             </div>
-                        </div>
 
-                        <div className="mb-4">
-                            <label className="text-gray-400 text-sm font-medium block mb-2">Email Address *</label>
-                            <div className="relative group">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-brand-orange transition-colors" />
-                                <input type="email" value={form.email} onChange={e => update('email', e.target.value)} placeholder="email@example.com" className="auth-input pl-11" />
+                            <div className="mb-3">
+                                <label className="text-[13px] font-bold text-amz-text block mb-1">Email</label>
+                                <input
+                                    type="email"
+                                    value={form.email}
+                                    onChange={e => update('email', e.target.value)}
+                                    className="w-full border border-[#888c8c] rounded-[3px] px-[7px] py-[3px] text-[13px] h-[31px] outline-none focus:border-[#e77600] focus:shadow-[0_0_0_3px_#c8f3fa]"
+                                />
                             </div>
-                        </div>
 
-                        <div className="mb-4">
-                            <label className="text-gray-400 text-sm font-medium block mb-2">Phone Number</label>
-                            <div className="relative group">
-                                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-brand-orange transition-colors" />
-                                <input type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} placeholder="+20 xxxxxxxxx" className="auth-input pl-11" />
+                            <div className="mb-3">
+                                <label className="text-[13px] font-bold text-amz-text block mb-1">Mobile number (optional)</label>
+                                <input
+                                    type="tel"
+                                    value={form.phone}
+                                    onChange={e => update('phone', e.target.value)}
+                                    placeholder="+20 xxx xxx xxxx"
+                                    className="w-full border border-[#888c8c] rounded-[3px] px-[7px] py-[3px] text-[13px] h-[31px] outline-none focus:border-[#e77600] focus:shadow-[0_0_0_3px_#c8f3fa]"
+                                />
                             </div>
-                        </div>
 
-                        <div className="mb-4">
-                            <label className="text-gray-400 text-sm font-medium block mb-2">Password *</label>
-                            <div className="relative group">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-brand-orange transition-colors" />
-                                <input type="password" value={form.password} onChange={e => update('password', e.target.value)} placeholder="Min 6 characters" className="auth-input pl-11" />
+                            <div className="mb-3">
+                                <label className="text-[13px] font-bold text-amz-text block mb-1">Password</label>
+                                <input
+                                    type="password"
+                                    value={form.password}
+                                    onChange={e => update('password', e.target.value)}
+                                    placeholder="At least 6 characters"
+                                    className="w-full border border-[#888c8c] rounded-[3px] px-[7px] py-[3px] text-[13px] h-[31px] outline-none focus:border-[#e77600] focus:shadow-[0_0_0_3px_#c8f3fa]"
+                                />
+                                <p className="text-[12px] text-amz-text2 mt-1 flex items-center gap-1">
+                                    <span className="text-[11px]">ⓘ</span> Passwords must be at least 6 characters.
+                                </p>
                             </div>
-                            {/* Strength Bar */}
-                            {form.password && (
-                                <div className="mt-2 animate-fade-in">
-                                    <div className="flex gap-1 mb-1">
-                                        {[0, 1, 2, 3, 4].map(i => (
-                                            <div key={i} className={`h-1 flex-1 rounded-full transition-all duration-500 ${i < strengthLevel ? strengthColors[strengthLevel - 1] : 'bg-dark-border'}`} />
-                                        ))}
-                                    </div>
-                                    <span className={`text-[10px] font-medium ${strengthLevel <= 2 ? 'text-red-400' : 'text-green-400'}`}>
-                                        {strengthLabels[strengthLevel - 1] || ''}
-                                    </span>
+
+                            <div className="mb-4">
+                                <label className="text-[13px] font-bold text-amz-text block mb-1">Re-enter password</label>
+                                <input
+                                    type="password"
+                                    value={form.confirmPassword}
+                                    onChange={e => update('confirmPassword', e.target.value)}
+                                    className="w-full border border-[#888c8c] rounded-[3px] px-[7px] py-[3px] text-[13px] h-[31px] outline-none focus:border-[#e77600] focus:shadow-[0_0_0_3px_#c8f3fa]"
+                                />
+                            </div>
+
+                            {/* Account Type */}
+                            <div className="mb-5">
+                                <label className="text-[13px] font-bold text-amz-text block mb-2">Account type</label>
+                                <div className="space-y-2">
+                                    {[
+                                        { value: 'customer', label: 'Customer', desc: 'Buy products at wholesale prices' },
+                                        { value: 'supplier', label: 'Supplier', desc: 'Sell your products on BevMarket' },
+                                    ].map(opt => (
+                                        <label
+                                            key={opt.value}
+                                            className={`flex items-start gap-2 p-3 border rounded-[4px] cursor-pointer transition-colors ${form.role === opt.value
+                                                    ? 'border-[#e77600] bg-[#fef8f2]'
+                                                    : 'border-[#d5d9d9] hover:border-[#a6a6a6]'
+                                                }`}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="role"
+                                                value={opt.value}
+                                                checked={form.role === opt.value}
+                                                onChange={() => update('role', opt.value)}
+                                                className="mt-0.5 accent-[#e77600]"
+                                            />
+                                            <div>
+                                                <span className="text-[13px] font-bold text-amz-text">{opt.label}</span>
+                                                <p className="text-[12px] text-amz-text2">{opt.desc}</p>
+                                            </div>
+                                        </label>
+                                    ))}
                                 </div>
-                            )}
-                        </div>
-
-                        {/* Role Selector */}
-                        <div className="mb-6">
-                            <label className="text-gray-400 text-sm font-medium block mb-2">Account Type</label>
-                            <div className="grid grid-cols-2 gap-3">
-                                {[
-                                    { value: 'customer', label: 'Customer', emoji: '🛒' },
-                                    { value: 'supplier', label: 'Supplier', emoji: '📦' },
-                                ].map(opt => (
-                                    <button
-                                        key={opt.value}
-                                        type="button"
-                                        onClick={() => update('role', opt.value)}
-                                        className={`py-3.5 rounded-xl text-sm font-semibold transition-all duration-300 border flex items-center justify-center gap-2 ${form.role === opt.value
-                                            ? 'bg-brand-orange/15 border-brand-orange text-brand-orange shadow-glow-orange/20'
-                                            : 'bg-dark-bg border-dark-border text-gray-400 hover:border-dark-border-light'
-                                            }`}
-                                    >
-                                        <span className="text-lg">{opt.emoji}</span>
-                                        {opt.label}
-                                        {form.role === opt.value && <Check className="w-4 h-4" />}
-                                    </button>
-                                ))}
                             </div>
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full py-[6px] text-[13px] rounded-[3px] border border-[#a88734] cursor-pointer disabled:opacity-60"
+                                style={{ background: 'linear-gradient(to bottom, #f7dfa5, #f0c14b)' }}
+                            >
+                                {loading ? 'Creating account...' : 'Create your BevMarket account'}
+                            </button>
+                        </form>
+
+                        <p className="text-[12px] text-amz-text mt-4 leading-[18px]">
+                            By creating an account, you agree to BevMarket&apos;s{' '}
+                            <a href="#" className="text-amz-link hover:text-amz-blue-hover hover:underline">Conditions of Use</a>{' '}
+                            and{' '}
+                            <a href="#" className="text-amz-link hover:text-amz-blue-hover hover:underline">Privacy Notice</a>.
+                        </p>
+
+                        <div className="mt-6 pt-4 border-t border-[#e7e7e7]">
+                            <p className="text-[13px] text-amz-text">
+                                Already have an account?{' '}
+                                <Link href="/auth/login" className="text-amz-link hover:text-amz-blue-hover hover:underline">
+                                    Sign in
+                                    <ChevronRight className="w-3 h-3 inline ml-0.5" />
+                                </Link>
+                            </p>
                         </div>
-
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="btn-primary w-full py-3.5 text-base flex items-center justify-center gap-2 disabled:opacity-70"
-                        >
-                            {loading ? (
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            ) : (
-                                <>
-                                    Create Account
-                                    <ArrowRight className="w-4 h-4" />
-                                </>
-                            )}
-                        </button>
-                    </form>
-
-                    <p className="text-center text-gray-400 text-sm mt-6">
-                        Already have an account?{' '}
-                        <Link href="/auth/login" className="text-brand-orange hover:text-brand-orange-hover font-bold transition-colors">
-                            Sign In
-                        </Link>
-                    </p>
+                    </div>
                 </div>
+            </div>
+
+            {/* Footer */}
+            <div className="bg-gradient-to-b from-transparent to-[#f0f0f0] pt-8 pb-4 text-center">
+                <div className="flex items-center justify-center gap-4 text-[11px] text-amz-link mb-2">
+                    <a href="#" className="hover:text-amz-blue-hover hover:underline">Conditions of Use</a>
+                    <a href="#" className="hover:text-amz-blue-hover hover:underline">Privacy Notice</a>
+                    <a href="#" className="hover:text-amz-blue-hover hover:underline">Help</a>
+                </div>
+                <p className="text-[11px] text-[#555]">© 2026, BevMarket.com, Inc. or its affiliates</p>
             </div>
         </div>
     );

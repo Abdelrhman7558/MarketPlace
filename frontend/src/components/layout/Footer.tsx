@@ -1,167 +1,103 @@
 'use client';
 
 import Link from 'next/link';
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, ArrowUp } from 'lucide-react';
-import { useState, useEffect } from 'react';
 
-const BRANDS = ['Pepsi', 'Coca-Cola', 'Red Bull', 'Lipton', 'Tropicana', 'Monster', 'Nestle', 'Sprite'];
-
-const QUICK_LINKS = [
-    { name: 'Home', href: '/' },
-    { name: 'Catalog', href: '/' },
-    { name: 'Bulk Deals', href: '/?bulk=true' },
-    { name: 'About Us', href: '#' },
-];
-
-const SUPPORT_LINKS = [
-    { name: 'Contact Us', href: '#' },
-    { name: 'FAQ', href: '#' },
-    { name: 'Shipping Policy', href: '#' },
-    { name: 'Return Policy', href: '#' },
+const FOOTER_COLUMNS = [
+    {
+        title: 'Get to Know Us',
+        links: [
+            { name: 'About BevMarket', href: '#' },
+            { name: 'Careers', href: '#' },
+            { name: 'Press Releases', href: '#' },
+            { name: 'BevMarket Science', href: '#' },
+        ],
+    },
+    {
+        title: 'Make Money with Us',
+        links: [
+            { name: 'Sell on BevMarket', href: '/auth/register' },
+            { name: 'Become a Supplier', href: '/auth/register' },
+            { name: 'Advertise Your Products', href: '#' },
+            { name: 'Become an Affiliate', href: '#' },
+        ],
+    },
+    {
+        title: 'BevMarket Payment',
+        links: [
+            { name: 'Business Credit Line', href: '#' },
+            { name: 'Shop with Points', href: '#' },
+            { name: 'Reload Your Balance', href: '#' },
+            { name: 'Currency Converter', href: '#' },
+        ],
+    },
+    {
+        title: 'Let Us Help You',
+        links: [
+            { name: 'Your Account', href: '/auth/login' },
+            { name: 'Your Orders', href: '#' },
+            { name: 'Shipping Rates & Policies', href: '#' },
+            { name: 'Returns & Replacements', href: '#' },
+            { name: 'Help', href: '#' },
+        ],
+    },
 ];
 
 export default function Footer() {
-    const [showScrollTop, setShowScrollTop] = useState(false);
-
-    useEffect(() => {
-        const h = () => setShowScrollTop(window.scrollY > 500);
-        window.addEventListener('scroll', h);
-        return () => window.removeEventListener('scroll', h);
-    }, []);
-
     return (
-        <footer className="relative">
-            {/* Brands Marquee */}
-            <div className="bg-gray-50 border-y border-gray-200 py-6 overflow-hidden">
-                <div className="flex items-center gap-12 animate-marquee whitespace-nowrap">
-                    {[...BRANDS, ...BRANDS].map((brand, i) => (
-                        <span key={i} className="text-gray-400 font-bold text-lg tracking-wide hover:text-brand-navy transition-colors cursor-pointer">
-                            {brand}
-                        </span>
-                    ))}
-                </div>
-            </div>
-
-            {/* Main Footer */}
-            <div className="bg-brand-navy text-white">
-                <div className="container-wide py-16">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-                        {/* About */}
-                        <div className="space-y-5">
-                            <div className="flex items-center gap-2">
-                                <div className="w-10 h-10 bg-gradient-to-br from-brand-orange to-brand-red rounded-xl flex items-center justify-center">
-                                    <span className="text-white font-black text-lg">B</span>
-                                </div>
-                                <span className="font-extrabold text-xl">Bev<span className="text-brand-orange">Market</span></span>
-                            </div>
-                            <p className="text-gray-400 text-sm leading-relaxed">
-                                Your trusted wholesale beverage distribution platform. Premium brands at competitive prices for businesses.
-                            </p>
-                            <div className="flex gap-3">
-                                {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
-                                    <a key={i} href="#" className="w-10 h-10 bg-white/10 hover:bg-brand-orange rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-glow-orange">
-                                        <Icon className="w-4 h-4" />
-                                    </a>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Quick Links */}
-                        <div>
-                            <h3 className="font-bold text-lg mb-5 relative">
-                                Quick Links
-                                <span className="absolute -bottom-2 left-0 w-8 h-0.5 bg-brand-orange rounded-full" />
-                            </h3>
-                            <ul className="space-y-3">
-                                {QUICK_LINKS.map(link => (
-                                    <li key={link.name}>
-                                        <Link href={link.href} className="text-gray-400 hover:text-brand-orange transition-colors duration-200 text-sm flex items-center gap-2 group">
-                                            <span className="w-0 group-hover:w-2 h-0.5 bg-brand-orange transition-all duration-200 rounded" />
-                                            {link.name}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Support */}
-                        <div>
-                            <h3 className="font-bold text-lg mb-5 relative">
-                                Support
-                                <span className="absolute -bottom-2 left-0 w-8 h-0.5 bg-brand-orange rounded-full" />
-                            </h3>
-                            <ul className="space-y-3">
-                                {SUPPORT_LINKS.map(link => (
-                                    <li key={link.name}>
-                                        <Link href={link.href} className="text-gray-400 hover:text-brand-orange transition-colors duration-200 text-sm flex items-center gap-2 group">
-                                            <span className="w-0 group-hover:w-2 h-0.5 bg-brand-orange transition-all duration-200 rounded" />
-                                            {link.name}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Newsletter */}
-                        <div>
-                            <h3 className="font-bold text-lg mb-5 relative">
-                                Stay Updated
-                                <span className="absolute -bottom-2 left-0 w-8 h-0.5 bg-brand-orange rounded-full" />
-                            </h3>
-                            <p className="text-gray-400 text-sm mb-4">Get the latest deals and product updates.</p>
-                            <div className="flex rounded-xl overflow-hidden border border-white/10 focus-within:border-brand-orange transition-colors">
-                                <input
-                                    type="email"
-                                    placeholder="Your email"
-                                    className="flex-1 bg-white/5 text-white placeholder:text-gray-500 px-4 py-3 outline-none text-sm"
-                                />
-                                <button className="bg-brand-orange hover:bg-brand-orange-hover px-5 transition-colors font-semibold text-sm whitespace-nowrap">
-                                    Subscribe
-                                </button>
-                            </div>
-                            <div className="mt-6 space-y-3">
-                                <div className="flex items-center gap-3 text-gray-400 text-sm">
-                                    <Phone className="w-4 h-4 text-brand-orange" />
-                                    <span>+20 123 456 7890</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-gray-400 text-sm">
-                                    <Mail className="w-4 h-4 text-brand-orange" />
-                                    <span>support@bevmarket.com</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Bottom Bar */}
-                <div className="border-t border-white/10 py-5">
-                    <div className="container-wide flex flex-col sm:flex-row items-center justify-between gap-3 text-gray-500 text-xs">
-                        <p>© 2026 BevMarket. All rights reserved.</p>
-                        <div className="flex gap-6">
-                            <a href="#" className="hover:text-brand-orange transition-colors">Privacy Policy</a>
-                            <a href="#" className="hover:text-brand-orange transition-colors">Terms of Service</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Scroll to Top */}
+        <footer>
+            {/* Back to top */}
             <button
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className={`fixed bottom-6 right-6 w-12 h-12 bg-brand-orange text-white rounded-full shadow-glow-orange flex items-center justify-center transition-all duration-300 hover:scale-110 z-40 ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+                className="w-full bg-amz-dark3 hover:bg-[#485769] text-white text-[13px] py-[15px] text-center cursor-pointer transition-colors"
             >
-                <ArrowUp className="w-5 h-5" />
+                Back to top
             </button>
 
-            <style jsx>{`
-                @keyframes marquee {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
-                }
-                .animate-marquee {
-                    animation: marquee 20s linear infinite;
-                }
-            `}</style>
+            {/* Main Footer Links */}
+            <div className="bg-amz-dark2 text-white">
+                <div className="container-amz py-10">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-[900px] mx-auto">
+                        {FOOTER_COLUMNS.map((col) => (
+                            <div key={col.title}>
+                                <h3 className="text-[16px] font-bold mb-3">{col.title}</h3>
+                                <ul className="space-y-[6px]">
+                                    {col.links.map((link) => (
+                                        <li key={link.name}>
+                                            <Link
+                                                href={link.href}
+                                                className="text-[#DDD] text-[13px] hover:underline hover:text-white"
+                                            >
+                                                {link.name}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Divider */}
+                <div className="border-t border-[#3a4553]">
+                    <div className="container-amz py-6 flex flex-col items-center gap-3">
+                        <Link href="/" className="text-white font-bold text-[18px] hover:no-underline">
+                            Bev<span className="text-amz-orange">Market</span>
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+            {/* Bottom Bar */}
+            <div className="bg-amz-dark text-[#999] text-[11px]">
+                <div className="container-amz py-3 text-center space-y-1">
+                    <div className="flex items-center justify-center gap-4 flex-wrap">
+                        <a href="#" className="hover:underline hover:text-white">Conditions of Use</a>
+                        <a href="#" className="hover:underline hover:text-white">Privacy Notice</a>
+                        <a href="#" className="hover:underline hover:text-white">Interest-Based Ads</a>
+                    </div>
+                    <p>© 2026, BevMarket.com, Inc. or its affiliates</p>
+                </div>
+            </div>
         </footer>
     );
 }
