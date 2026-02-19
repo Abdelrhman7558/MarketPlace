@@ -209,7 +209,7 @@ export default function Home() {
                 </div>
 
                 {/* Overlapping Category Cards */}
-                <div className="container-amz relative -mt-[130px] sm:-mt-[160px] z-10 grid grid-cols-2 md:grid-cols-4 gap-4 pb-5 stagger-children visible">
+                <div className="container-amz relative -mt-[100px] z-10 grid grid-cols-2 md:grid-cols-4 gap-4 pb-5 stagger-children visible">
                     {CATEGORY_CARDS.map((cat, i) => (
                         <div key={cat.title} className="amz-card shadow-amz-card img-zoom cursor-pointer group" style={{ animationDelay: `${i * 100}ms` }}>
                             <div className="flex items-center gap-2 mb-3">
