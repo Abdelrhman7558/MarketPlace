@@ -9,7 +9,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
     return (
         <>
-            {!isDashboard && <Navbar />}
+            {/* {!isDashboard && <Navbar />} */}
             <main className="flex-grow">
                 {children}
             </main>
