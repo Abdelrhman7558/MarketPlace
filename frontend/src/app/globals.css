@@ -2,20 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 222.2 84% 4.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 222.2 84% 4.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 84% 4.9%;
+        --primary: 24 100% 50%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 210 40% 96.1%;
+        --secondary-foreground: 222.2 47.4% 11.2%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 24 100% 50%;
+        --radius: 0.75rem;
+    }
+}
 
+/* ==================== AMAZON COLOR SYSTEM ==================== */
 :root {
-    --primary: #FF6B00;
-    --primary-hover: #E55F00;
-    --dark-bg: #1A1A2E;
-    --dark-surface: #16213E;
-    --dark-card: #0F3460;
-    --accent: #E94560;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B0B0C8;
-    --border-color: #2A2A4A;
-    --success: #27AE60;
-    --warning: #F39C12;
+    --amz-navy: #131921;
+    --amz-navy-light: #232f3e;
+    --amz-navy-lighter: #37475a;
+    --amz-orange: #ff9900;
+    --amz-orange-hover: #e68a00;
+    --amz-orange-light: #febd69;
+    --amz-blue: #007185;
+    --amz-blue-hover: #c7511f;
+    --amz-link: #007185;
+    --amz-link-hover: #c7511f;
+    --amz-red: #b12704;
+    --amz-green: #007600;
+    --amz-star: #de7921;
+    --amz-bg: #eaeded;
+    --amz-white: #ffffff;
+    --amz-border: #ddd;
+    --amz-text: #0f1111;
+    --amz-text-secondary: #565959;
 }
 
 * {
@@ -24,35 +55,446 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: #0D0D1A;
-    color: var(--text-primary);
+html {
+    scroll-behavior: smooth;
 }
 
-/* Scrollbar Styling */
+body {
+    font-family: 'Amazon Ember', Arial, sans-serif;
+    background: var(--amz-bg);
+    color: var(--amz-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==================== SCROLLBAR ==================== */
 ::-webkit-scrollbar {
     width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--dark-bg);
+    background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--border-color);
+    background: #888;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
+    background: #555;
 }
 
-/* Animations */
-@keyframes fadeInUp {
+/* ==================== AMAZON BUTTON STYLES ==================== */
+.amz-btn-primary {
+    background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+    border: 1px solid #a88734;
+    border-radius: 3px;
+    color: #111;
+    font-size: 13px;
+    padding: 7px 18px;
+    cursor: pointer;
+    font-weight: 400;
+    text-align: center;
+    display: inline-block;
+    transition: all 0.1s;
+}
+
+.amz-btn-primary:hover {
+    background: linear-gradient(to bottom, #f5d78e, #eeb933);
+}
+
+.amz-btn-add-to-cart {
+    background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+    border: 1px solid #a88734;
+    border-radius: 20px;
+    color: #111;
+    font-size: 14px;
+    padding: 10px 24px;
+    cursor: pointer;
+    font-weight: 500;
+    width: 100%;
+    transition: all 0.1s;
+}
+
+.amz-btn-add-to-cart:hover {
+    background: linear-gradient(to bottom, #f5d78e, #eeb933);
+}
+
+.amz-btn-buy-now {
+    background: linear-gradient(to bottom, #ffb13e, #ff9900);
+    border: 1px solid #c77600;
+    border-radius: 20px;
+    color: #111;
+    font-size: 14px;
+    padding: 10px 24px;
+    cursor: pointer;
+    font-weight: 500;
+    width: 100%;
+    transition: all 0.1s;
+}
+
+.amz-btn-buy-now:hover {
+    background: linear-gradient(to bottom, #f5a623, #e68a00);
+}
+
+/* ==================== AMAZON PRODUCT CARD ==================== */
+.amz-product-card {
+    background: white;
+    padding: 16px;
+    position: relative;
+    transition: box-shadow 0.2s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.amz-product-card:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+}
+
+.amz-product-card .product-image-wrap {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.amz-product-card .product-image-wrap img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s;
+}
+
+.amz-product-card:hover .product-image-wrap img {
+    transform: scale(1.05);
+}
+
+/* ==================== STAR RATING ==================== */
+.amz-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    color: var(--amz-star);
+}
+
+.amz-price {
+    color: var(--amz-text);
+    font-size: 21px;
+    font-weight: 400;
+}
+
+.amz-price .price-symbol {
+    font-size: 13px;
+    top: -0.5em;
+    position: relative;
+}
+
+.amz-price .price-whole {
+    font-size: 28px;
+    font-weight: 400;
+}
+
+.amz-price .price-fraction {
+    font-size: 13px;
+    top: -0.5em;
+    position: relative;
+}
+
+.amz-prime-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--amz-blue);
+    letter-spacing: -0.3px;
+}
+
+.amz-deal-badge {
+    display: inline-block;
+    background: #cc0c39;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+}
+
+.amz-limited-deal {
+    display: inline-block;
+    background: #c7511f;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 2px;
+}
+
+/* ==================== AMAZON NAVBAR STYLES ==================== */
+.amz-nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    transition: all 0.1s;
+    cursor: pointer;
+}
+
+.amz-nav-link:hover {
+    border-color: white;
+}
+
+/* ==================== AMAZON SEARCH BAR ==================== */
+.amz-search-bar {
+    display: flex;
+    flex: 1;
+    height: 40px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.amz-search-bar select {
+    background: #e6e6e6;
+    border: none;
+    padding: 0 8px;
+    font-size: 12px;
+    color: #555;
+    cursor: pointer;
+    border-right: 1px solid #cdcdcd;
+    outline: none;
+    min-width: 60px;
+}
+
+.amz-search-bar input {
+    flex: 1;
+    border: none;
+    padding: 0 12px;
+    font-size: 15px;
+    outline: none;
+    color: #111;
+}
+
+.amz-search-bar button {
+    background: var(--amz-orange-light);
+    border: none;
+    padding: 0 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s;
+}
+
+.amz-search-bar button:hover {
+    background: var(--amz-orange);
+}
+
+/* ==================== HERO CAROUSEL ==================== */
+.amz-hero-carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.amz-hero-carousel .slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 350px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.amz-hero-carousel .slide-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, var(--amz-bg) 100%);
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 0;
+    height: 55%;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+    color: #111;
+    font-size: 40px;
+    background: transparent;
+    border: none;
+    transition: all 0.1s;
+}
+
+.carousel-arrow:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.carousel-arrow.left {
+    left: 0;
+}
+
+.carousel-arrow.right {
+    right: 0;
+}
+
+/* ==================== AMAZON CATEGORY CARDS ==================== */
+.amz-category-card {
+    background: white;
+    padding: 20px;
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+}
+
+.amz-category-card h2 {
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--amz-text);
+    margin-bottom: 12px;
+}
+
+.amz-category-card .cat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    flex: 1;
+}
+
+.amz-category-card .cat-item {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--amz-text);
+    font-size: 12px;
+}
+
+.amz-category-card .cat-item img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+
+.amz-category-card .see-more {
+    color: var(--amz-link);
+    font-size: 13px;
+    text-decoration: none;
+    margin-top: auto;
+    padding-top: 10px;
+}
+
+.amz-category-card .see-more:hover {
+    color: var(--amz-link-hover);
+    text-decoration: underline;
+}
+
+/* ==================== DEALS ROW ==================== */
+.amz-deal-card {
+    background: white;
+    padding: 12px;
+    text-align: center;
+    border-radius: 4px;
+    transition: box-shadow 0.2s;
+}
+
+.amz-deal-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.amz-deal-card img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+/* ==================== AMAZON FOOTER ==================== */
+.amz-footer-back-to-top {
+    background: var(--amz-navy-lighter);
+    color: white;
+    text-align: center;
+    padding: 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.amz-footer-back-to-top:hover {
+    background: #485769;
+}
+
+.amz-footer {
+    background: var(--amz-navy-light);
+    color: white;
+    padding: 40px 0 30px;
+}
+
+.amz-footer a {
+    color: #ddd;
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 2;
+    display: block;
+}
+
+.amz-footer a:hover {
+    text-decoration: underline;
+}
+
+.amz-footer h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.amz-footer-bottom {
+    background: var(--amz-navy);
+    color: #999;
+    padding: 30px 0;
+    text-align: center;
+    font-size: 11px;
+}
+
+.amz-footer-bottom a {
+    color: #ddd;
+    text-decoration: none;
+    display: inline;
+    margin: 0 8px;
+    font-size: 11px;
+}
+
+.amz-footer-bottom a:hover {
+    text-decoration: underline;
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
     }
 
     to {
@@ -64,7 +506,7 @@ body {
 @keyframes slideIn {
     from {
         opacity: 0;
-        transform: translateX(-20px);
+        transform: translateX(-10px);
     }
 
     to {
@@ -73,71 +515,96 @@ body {
     }
 }
 
-.animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out forwards;
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-down {
+    animation: slideDown 0.2s ease-out;
 }
 
 .animate-slide-in {
-    animation: slideIn 0.4s ease-out forwards;
+    animation: slideIn 0.3s ease-out;
 }
 
-/* Custom Classes */
-.glass-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-}
-
-.product-card {
-    background: #FFFFFF;
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    border: 1px solid #E5E7EB;
-}
-
-.product-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 12px 28px;
+/* ==================== AUTH PAGES ==================== */
+.amz-auth-card {
+    background: white;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    padding: 26px;
+    max-width: 350px;
+    width: 100%;
 }
 
-.btn-primary:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
+.amz-auth-card h1 {
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 20px;
 }
 
-.btn-secondary {
-    background: transparent;
-    color: white;
-    border: 2px solid #FFFFFF;
-    padding: 12px 28px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.badge-bulk {
-    background: var(--primary);
-    color: white;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 12px;
+.amz-auth-card label {
+    font-size: 13px;
     font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.amz-auth-card input[type="text"],
+.amz-auth-card input[type="email"],
+.amz-auth-card input[type="password"],
+.amz-auth-card input[type="tel"] {
+    width: 100%;
+    border: 1px solid #a6a6a6;
+    border-radius: 3px;
+    padding: 7px 10px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.1s, box-shadow 0.1s;
+}
+
+.amz-auth-card input:focus {
+    border-color: #e77600;
+    box-shadow: 0 0 3px 2px rgba(228, 121, 17, 0.5);
+}
+
+/* ==================== BREADCRUMBS ==================== */
+.amz-breadcrumbs {
+    font-size: 12px;
+    color: var(--amz-text-secondary);
+    padding: 10px 0;
+}
+
+.amz-breadcrumbs a {
+    color: var(--amz-link);
+    text-decoration: none;
+}
+
+.amz-breadcrumbs a:hover {
+    color: var(--amz-link-hover);
+    text-decoration: underline;
+}
+
+/* ==================== PRODUCT DETAIL ==================== */
+.amz-product-detail {
+    background: white;
+    padding: 20px 24px;
+}
+
+/* ==================== MISC ==================== */
+.amz-link {
+    color: var(--amz-link);
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.amz-link:hover {
+    color: var(--amz-link-hover);
+    text-decoration: underline;
+}
+
+.amz-divider {
+    height: 1px;
+    background: linear-gradient(to right, #fff, #ddd, #fff);
+    margin: 20px 0;
 }
