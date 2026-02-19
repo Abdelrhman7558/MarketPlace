@@ -1,260 +1,208 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { ArrowRight, Truck, ShieldCheck, CreditCard, Star, Clock, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 import ProductCard from '@/components/product/ProductCard';
 import { PRODUCTS } from '@/lib/products';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
 
 const HERO_SLIDES = [
     {
-        title: 'Wholesale Beverages',
-        subtitle: 'Up to 40% off on bulk orders',
-        bg: 'linear-gradient(135deg, #232f3e 0%, #131921 100%)',
-        color: '#ff9900',
+        title: "Wholesale Beverages for Your Business",
+        subtitle: "Direct from top suppliers. Bulk discounts up to 40%.",
+        cta: "Shop Bulk Deals",
+        image: "https://images.unsplash.com/photo-1597484662317-c9253e602519?q=80&w=1974&auto=format&fit=crop", // Soft drinks
+        color: "bg-brand-navy"
     },
     {
-        title: 'New Arrivals',
-        subtitle: 'Fresh inventory from top brands',
-        bg: 'linear-gradient(135deg, #0f4c75 0%, #1b262c 100%)',
-        color: '#febd69',
-    },
-    {
-        title: 'Free Shipping',
-        subtitle: 'On orders over EGP 500',
-        bg: 'linear-gradient(135deg, #2d132c 0%, #1a0c2e 100%)',
-        color: '#ff9900',
-    },
+        title: "Premium Energy Drinks Stock",
+        subtitle: "Power up your inventory with Red Bull, Monster & more.",
+        cta: "Explore Energy",
+        image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop", // Energy drinks
+        color: "bg-orange-600"
+    }
 ];
 
-const CATEGORY_CARDS = [
-    {
-        title: 'Popular in Soft Drinks',
-        items: [
-            { label: 'Coca-Cola', img: 'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=200&h=200&fit=crop' },
-            { label: 'Pepsi', img: 'https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=200&h=200&fit=crop' },
-            { label: 'Sprite', img: 'https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=200&h=200&fit=crop' },
-            { label: 'Dr Pepper', img: 'https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=200&h=200&fit=crop' },
-        ],
-        link: '/catalog?category=Soft Drinks',
-    },
-    {
-        title: 'Top in Energy Drinks',
-        items: [
-            { label: 'Red Bull', img: 'https://images.unsplash.com/photo-1613915617612-f660234e856c?w=200&h=200&fit=crop' },
-            { label: 'Monster', img: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=200&h=200&fit=crop' },
-            { label: 'Celsius', img: 'https://images.unsplash.com/photo-1527960471264-932f39eb5846?w=200&h=200&fit=crop' },
-            { label: 'Rockstar', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=200&h=200&fit=crop' },
-        ],
-        link: '/catalog?category=Energy Drinks',
-    },
-    {
-        title: 'Water & Hydration',
-        items: [
-            { label: 'Nestle', img: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=200&h=200&fit=crop' },
-            { label: 'Evian', img: 'https://images.unsplash.com/photo-1564419320461-6e1e76266e66?w=200&h=200&fit=crop' },
-            { label: 'Fiji', img: 'https://images.unsplash.com/photo-1559839914-17aae19cec71?w=200&h=200&fit=crop' },
-            { label: 'Sparkle', img: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=200&h=200&fit=crop' },
-        ],
-        link: '/catalog?category=Water',
-    },
-    {
-        title: 'Tea & Coffee',
-        items: [
-            { label: 'Lipton', img: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=200&h=200&fit=crop' },
-            { label: 'Nescafe', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200&h=200&fit=crop' },
-            { label: 'Twinings', img: 'https://images.unsplash.com/photo-1597318181409-cf64d0b5d8a2?w=200&h=200&fit=crop' },
-            { label: 'Green Tea', img: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=200&h=200&fit=crop' },
-        ],
-        link: '/catalog?category=Tea & Coffee',
-    },
+const CATEGORIES = [
+    { name: 'Soft Drinks', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500', href: '/catalog?category=soft-drinks' },
+    { name: 'Energy Drinks', image: 'https://images.unsplash.com/photo-1581006152336-d760775d79cc?w=500', href: '/catalog?category=energy' },
+    { name: 'Water & Sparkling', image: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=500', href: '/catalog?category=water' },
+    { name: 'Juices & Nectars', image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500', href: '/catalog?category=juices' },
+    { name: 'Tea & Coffee', image: 'https://images.unsplash.com/photo-1534040385115-33dcb3acba5b?w=500', href: '/catalog?category=tea-coffee' },
+    { name: 'Snacks & Sweets', image: 'https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=500', href: '/catalog?category=snacks' },
 ];
 
 export default function Home() {
-    const [slide, setSlide] = useState(0);
+    const [currentSlide, setCurrentSlide] = useState(0);
 
+    // Auto-rotate hero slider
     useEffect(() => {
-        const timer = setInterval(() => setSlide((s) => (s + 1) % HERO_SLIDES.length), 5000);
+        const timer = setInterval(() => {
+            setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+        }, 5000);
         return () => clearInterval(timer);
     }, []);
 
     return (
-        <div className="min-h-screen bg-[#eaeded]">
-            {/* Hero Carousel */}
-            <div className="amz-hero-carousel relative">
-                <div
-                    className="slide transition-all duration-700"
-                    style={{ background: HERO_SLIDES[slide].bg, minHeight: 420 }}
-                >
-                    <div className="slide-overlay" />
-                    <div className="relative z-10 text-center px-4 py-16">
-                        <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
-                            {HERO_SLIDES[slide].title}
-                        </h1>
-                        <p className="text-xl md:text-2xl mb-8" style={{ color: HERO_SLIDES[slide].color }}>
-                            {HERO_SLIDES[slide].subtitle}
-                        </p>
-                        <Link href="/catalog" className="amz-btn-primary text-base px-8 py-3">
-                            Shop now
+        <main className="min-h-screen bg-gray-50 pb-20">
+            {/* Hero Section */}
+            <section className="relative h-[400px] md:h-[500px] overflow-hidden bg-brand-navy">
+                {HERO_SLIDES.map((slide, index) => (
+                    <div
+                        key={index}
+                        className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent z-10" />
+                        <img
+                            src={slide.image}
+                            alt={slide.title}
+                            className="w-full h-full object-cover opacity-60"
+                        />
+                        <div className="absolute inset-0 z-20 container-wide flex flex-col justify-center text-white p-6 md:p-12">
+                            <span className="inline-block bg-brand-orange text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4 w-fit animate-fade-in">
+                                B2B Exclusive
+                            </span>
+                            <h1 className="text-4xl md:text-6xl font-bold max-w-2xl leading-tight mb-4 animate-slide-in-right">
+                                {slide.title}
+                            </h1>
+                            <p className="text-lg md:text-xl text-gray-200 max-w-xl mb-8 animate-fade-in delay-100">
+                                {slide.subtitle}
+                            </p>
+                            <Link
+                                href="/catalog"
+                                className="bg-brand-orange hover:bg-brand-orange-hover text-white font-bold px-8 py-3.5 rounded-lg w-fit transition-all flex items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-1 animate-bounce-scale delay-200"
+                            >
+                                {slide.cta} <ArrowRight className="w-5 h-5" />
+                            </Link>
+                        </div>
+                    </div>
+                ))}
+            </section>
+
+            {/* Featured Categories Grid (Offset Overlap) */}
+            <section className="container-wide -mt-16 relative z-30 mb-16">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    {CATEGORIES.map((cat) => (
+                        <Link
+                            key={cat.name}
+                            href={cat.href}
+                            className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all p-4 flex flex-col items-center text-center group hover:-translate-y-1 border border-transparent hover:border-brand-orange/30"
+                        >
+                            <div className="w-16 h-16 rounded-full bg-gray-50 mb-3 overflow-hidden group-hover:scale-105 transition-transform">
+                                <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+                            </div>
+                            <h3 className="font-bold text-brand-navy text-sm group-hover:text-brand-orange transition-colors">
+                                {cat.name}
+                            </h3>
+                        </Link>
+                    ))}
+                </div>
+            </section>
+
+            {/* Trust Indicators */}
+            <section className="container-wide mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    {[
+                        { icon: Truck, title: "Fast Delivery", desc: "Next-day shipping across Egypt" },
+                        { icon: ShieldCheck, title: "Verified Suppliers", desc: "100% authentic products" },
+                        { icon: CreditCard, title: "Secure Payments", desc: "Cash on delivery or online" },
+                        { icon: Clock, title: "24/7 Support", desc: "Dedicated account managers" },
+                    ].map((item, i) => (
+                        <div key={i} className="flex items-start gap-4 p-6 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                            <div className="p-3 bg-brand-orange/10 rounded-lg text-brand-orange">
+                                <item.icon className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-brand-navy mb-1">{item.title}</h3>
+                                <p className="text-sm text-gray-500">{item.desc}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* Featured Products */}
+            <section className="container-wide mb-20">
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 className="text-2xl font-bold text-brand-navy">Best Sellers</h2>
+                        <p className="text-gray-500 mt-1">Top rated products by other businesses</p>
+                    </div>
+                    <Link href="/catalog" className="text-brand-orange font-bold hover:underline flex items-center gap-1">
+                        View All <ChevronRight className="w-4 h-4" />
+                    </Link>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+                    {PRODUCTS.slice(0, 5).map((product) => (
+                        <div key={product.id} className="h-full">
+                            <ProductCard product={product} />
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* New Arrivals Banner */}
+            <section className="container-wide mb-20">
+                <div className="bg-brand-navy rounded-2xl overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-orange/20 to-transparent" />
+                    <div className="grid md:grid-cols-2 gap-8 items-center p-8 md:p-12 relative z-10">
+                        <div className="text-white">
+                            <span className="text-brand-orange font-bold tracking-wider text-sm uppercase mb-2 block">New Arrivals</span>
+                            <h2 className="text-3xl md:text-4xl font-bold mb-4">Stock Up on Summer Refreshments</h2>
+                            <p className="text-gray-300 mb-8 max-w-md">Get ready for the season with our latest collection of juices, iced teas, and sparkling water. Bulk discounts available.</p>
+                            <Link href="/catalog?category=summer" className="bg-white text-brand-navy hover:bg-gray-100 font-bold px-8 py-3 rounded-lg shadow-lg transition-colors inline-block">
+                                Shop Collection
+                            </Link>
+                        </div>
+                        <div className="hidden md:block">
+                            {/* Abstract visual/image would go here */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-white/10 p-4 rounded-xl backdrop-blur-sm animate-float">
+                                    <div className="h-40 bg-gray-200/20 rounded-lg w-full"></div>
+                                </div>
+                                <div className="bg-white/10 p-4 rounded-xl backdrop-blur-sm animate-float delay-500 mt-8">
+                                    <div className="h-40 bg-gray-200/20 rounded-lg w-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Recommended For You */}
+            <section className="container-wide mb-20">
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 className="text-2xl font-bold text-brand-navy">Recommended For You</h2>
+                        <p className="text-gray-500 mt-1">Based on your recent views</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+                    {PRODUCTS.slice(5, 10).map((product) => (
+                        <div key={product.id} className="h-full">
+                            <ProductCard product={product} />
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* Footer Call to Action */}
+            <section className="bg-brand-orange py-16 text-center text-white">
+                <div className="container-wide max-w-4xl mx-auto px-4">
+                    <h2 className="text-3xl font-bold mb-4">Ready to Grow Your Business?</h2>
+                    <p className="text-lg opacity-90 mb-8">Join thousands of retailers and restaurants sourcing their beverages through MarketPlace.</p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Link href="/auth/register" className="bg-brand-navy hover:bg-brand-navy/90 text-white font-bold px-8 py-3 rounded-lg shadow-lg transition-all">
+                            Create Free Account
+                        </Link>
+                        <Link href="/contact" className="bg-white hover:bg-gray-50 text-brand-orange font-bold px-8 py-3 rounded-lg shadow-lg transition-all">
+                            Contact Sales
                         </Link>
                     </div>
                 </div>
-                <button
-                    className="carousel-arrow left"
-                    onClick={() => setSlide((s) => (s - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
-                >
-                    <ChevronLeft className="w-10 h-10" />
-                </button>
-                <button
-                    className="carousel-arrow right"
-                    onClick={() => setSlide((s) => (s + 1) % HERO_SLIDES.length)}
-                >
-                    <ChevronRight className="w-10 h-10" />
-                </button>
-                {/* Dots */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                    {HERO_SLIDES.map((_, i) => (
-                        <button
-                            key={i}
-                            onClick={() => setSlide(i)}
-                            className={`w-2.5 h-2.5 rounded-full transition-all ${i === slide ? 'bg-white scale-125' : 'bg-white/40'}`}
-                        />
-                    ))}
-                </div>
-            </div>
-
-            {/* Category Cards Grid — overlapping hero */}
-            <div className="max-w-[1500px] mx-auto px-3 sm:px-4 -mt-24 relative z-10">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    {CATEGORY_CARDS.map((card) => (
-                        <div key={card.title} className="amz-category-card">
-                            <h2>{card.title}</h2>
-                            <div className="cat-grid">
-                                {card.items.map((item) => (
-                                    <Link key={item.label} href={card.link} className="cat-item">
-                                        <img src={item.img} alt={item.label} />
-                                        <span>{item.label}</span>
-                                    </Link>
-                                ))}
-                            </div>
-                            <Link href={card.link} className="see-more">See more</Link>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Today's Deals */}
-            <div className="max-w-[1500px] mx-auto px-3 sm:px-4 mb-6">
-                <div className="bg-white p-5">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-[21px] font-bold text-[#0f1111]">Today&apos;s Deals</h2>
-                        <Link href="/deals" className="amz-link">See all deals</Link>
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        {PRODUCTS.slice(0, 6).map((product) => (
-                            <Link key={product.id} href={`/products/${product.id}`} className="amz-deal-card block">
-                                <img src={product.image} alt={product.name} />
-                                <span className="amz-deal-badge mt-1">Up to 23% off</span>
-                                <p className="text-xs text-[#565959] mt-1 line-clamp-2">{product.name}</p>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* Popular Products */}
-            <div className="max-w-[1500px] mx-auto px-3 sm:px-4 mb-6">
-                <div className="bg-white p-5">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-[21px] font-bold text-[#0f1111]">Popular Products for B2B</h2>
-                        <Link href="/catalog" className="amz-link">See more</Link>
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-px bg-[#e3e6e6]">
-                        {PRODUCTS.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* Best Sellers */}
-            <div className="max-w-[1500px] mx-auto px-3 sm:px-4 mb-6">
-                <div className="bg-white p-5">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-[21px] font-bold text-[#0f1111]">Best Sellers in Beverages</h2>
-                        <Link href="/catalog" className="amz-link">See more</Link>
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-px bg-[#e3e6e6]">
-                        {PRODUCTS.slice(0, 6).map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* Sign In Banner */}
-            <div className="max-w-[1500px] mx-auto px-3 sm:px-4 mb-6">
-                <div className="bg-white p-6 text-center">
-                    <p className="text-[15px] text-[#0f1111] mb-3">Sign in for the best experience</p>
-                    <Link href="/auth/login" className="amz-btn-primary text-sm px-12 py-2.5">
-                        Sign in securely
-                    </Link>
-                    <div className="amz-divider" />
-                    <p className="text-xs text-[#565959]">New customer? <Link href="/auth/register" className="amz-link">Start here.</Link></p>
-                </div>
-            </div>
-
-            {/* Footer */}
-            <div className="amz-footer-back-to-top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                Back to top
-            </div>
-            <footer className="amz-footer">
-                <div className="max-w-[1500px] mx-auto px-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        <div>
-                            <h3>Get to Know Us</h3>
-                            <a href="#">About MarketPlace</a>
-                            <a href="#">Careers</a>
-                            <a href="#">Press Releases</a>
-                            <a href="#">MarketPlace Science</a>
-                        </div>
-                        <div>
-                            <h3>Make Money with Us</h3>
-                            <a href="#">Sell on MarketPlace</a>
-                            <a href="#">Become a Supplier</a>
-                            <a href="#">Advertise Your Products</a>
-                            <a href="#">Fulfillment by MP</a>
-                        </div>
-                        <div>
-                            <h3>Payment Products</h3>
-                            <a href="#">Business Line of Credit</a>
-                            <a href="#">Shop with Points</a>
-                            <a href="#">Reload Your Balance</a>
-                            <a href="#">Currency Converter</a>
-                        </div>
-                        <div>
-                            <h3>Let Us Help You</h3>
-                            <a href="#">Your Account</a>
-                            <a href="#">Your Orders</a>
-                            <a href="#">Shipping Rates</a>
-                            <a href="#">Returns & Replacements</a>
-                            <a href="#">Help</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-            <div className="amz-footer-bottom">
-                <div className="mb-4">
-                    <span className="text-white font-bold text-lg">market</span>
-                    <span className="text-[#ff9900] font-bold text-lg">.eg</span>
-                </div>
-                <div className="flex flex-wrap justify-center gap-2 mb-4">
-                    <a href="#">Conditions of Use</a>
-                    <a href="#">Privacy Notice</a>
-                    <a href="#">Interest-Based Ads</a>
-                </div>
-                <p>© 2024–{new Date().getFullYear()} MarketPlace.eg, Inc. or its affiliates</p>
-            </div>
-        </div>
+            </section>
+        </main>
     );
 }

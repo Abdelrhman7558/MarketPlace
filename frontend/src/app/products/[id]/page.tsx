@@ -1,205 +1,177 @@
 'use client';
 
-import { Star, Heart, Share2, ShieldCheck, Truck, RotateCcw, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
 import { useState } from 'react';
+import Link from 'next/link';
+import { Star, ShoppingCart, Truck, ShieldCheck, RotateCcw, Package, ChevronRight, Minus, Plus, CreditCard, Box } from 'lucide-react';
 import { PRODUCTS } from '@/lib/products';
 import ProductCard from '@/components/product/ProductCard';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
     const product = PRODUCTS.find((p) => p.id === params.id) || PRODUCTS[0];
     const [qty, setQty] = useState(product.minOrder);
-    const [selectedImage, setSelectedImage] = useState(0);
+    const [activeImage, setActiveImage] = useState(0);
 
+    // Mock multiple images for gallery
     const images = [product.image, product.image, product.image, product.image];
-    const whole = Math.floor(product.price);
-    const fraction = Math.round((product.price - whole) * 100).toString().padStart(2, '0');
-    const relatedProducts = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 6);
-    const rating = 4.3;
-    const reviewCount = 2847;
+
+    const related = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-gray-50 pb-20">
             {/* Breadcrumbs */}
-            <div className="max-w-[1500px] mx-auto px-4">
-                <div className="amz-breadcrumbs">
-                    <Link href="/">Home</Link> <span className="mx-1">›</span>
-                    <Link href="/catalog">{product.category}</Link> <span className="mx-1">›</span>
-                    <span>{product.brand}</span>
+            <div className="bg-white border-b border-gray-200">
+                <div className="container-wide py-3">
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <Link href="/" className="hover:text-brand-orange">Home</Link>
+                        <ChevronRight className="w-3 h-3" />
+                        <Link href="/catalog" className="hover:text-brand-orange">Catalog</Link>
+                        <ChevronRight className="w-3 h-3" />
+                        <Link href={`/catalog?category=${product.category}`} className="hover:text-brand-orange">{product.category}</Link>
+                        <ChevronRight className="w-3 h-3" />
+                        <span className="text-brand-navy font-medium truncate max-w-[200px]">{product.name}</span>
+                    </div>
                 </div>
             </div>
 
-            {/* Product Main */}
-            <div className="max-w-[1500px] mx-auto px-4 pb-8">
-                <div className="flex flex-col lg:flex-row gap-6">
-                    {/* LEFT — Image Gallery */}
-                    <div className="lg:w-[40%] flex gap-3">
-                        {/* Thumbnails */}
-                        <div className="flex flex-col gap-2 w-[50px] flex-shrink-0">
-                            {images.map((img, i) => (
-                                <div
-                                    key={i}
-                                    onMouseEnter={() => setSelectedImage(i)}
-                                    className={`w-[50px] h-[50px] border-2 rounded cursor-pointer overflow-hidden
-                                        ${selectedImage === i ? 'border-[#007185]' : 'border-[#e3e6e6]'}`}
-                                >
-                                    <img src={img} alt="" className="w-full h-full object-cover" />
+            <div className="container-wide py-8">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="grid md:grid-cols-2 gap-0">
+
+                        {/* Left Column: Images */}
+                        <div className="p-6 md:p-8 border-r border-gray-100">
+                            <div className="sticky top-24">
+                                <div className="aspect-square bg-gray-50 rounded-xl mb-4 relative overflow-hidden group">
+                                    <img
+                                        src={images[activeImage]}
+                                        alt={product.name}
+                                        className="w-full h-full object-contain p-8 transition-transform duration-500 group-hover:scale-110 cursor-zoom-in"
+                                    />
+                                    {product.bulkSave && (
+                                        <div className="absolute top-4 left-4 bg-brand-orange text-white text-xs font-bold px-3 py-1 rounded shadow-sm">
+                                            BULK SAVE AVAILABLE
+                                        </div>
+                                    )}
                                 </div>
-                            ))}
-                        </div>
-                        {/* Main Image */}
-                        <div className="flex-1 flex items-center justify-center bg-white p-4 relative group">
-                            <img
-                                src={images[selectedImage]}
-                                alt={product.name}
-                                className="max-w-full max-h-[500px] object-contain cursor-crosshair transition-transform group-hover:scale-105"
-                            />
-                            <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow hover:bg-gray-50">
-                                <Heart className="w-5 h-5 text-gray-500" />
-                            </button>
-                            <button className="absolute top-3 right-14 p-2 bg-white rounded-full shadow hover:bg-gray-50">
-                                <Share2 className="w-5 h-5 text-gray-500" />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* CENTER — Product Details */}
-                    <div className="lg:w-[35%]">
-                        <h1 className="text-[24px] text-[#0f1111] leading-8 mb-2">
-                            {product.name}
-                        </h1>
-
-                        <p className="text-sm text-[#007185] hover:text-[#c7511f] hover:underline cursor-pointer mb-2">
-                            Visit the {product.brand} Store
-                        </p>
-
-                        {/* Rating */}
-                        <div className="flex items-center gap-2 mb-3 pb-3 border-b border-[#e3e6e6]">
-                            <span className="text-sm text-[#007185]">{rating}</span>
-                            <div className="amz-stars">
-                                {[1, 2, 3, 4, 5].map((s) => (
-                                    <Star key={s} className="w-4 h-4" fill={s <= Math.floor(rating) ? '#de7921' : 'none'} stroke="#de7921" strokeWidth={1} />
-                                ))}
-                            </div>
-                            <Link href="#reviews" className="text-sm text-[#007185] hover:text-[#c7511f] hover:underline">
-                                {reviewCount.toLocaleString()} ratings
-                            </Link>
-                        </div>
-
-                        {/* Price */}
-                        <div className="mb-3">
-                            {product.bulkSave && (
-                                <div className="flex items-center gap-2 mb-1">
-                                    <span className="amz-deal-badge">23% off</span>
-                                    <span className="amz-limited-deal">Limited time deal</span>
-                                </div>
-                            )}
-                            <div className="flex items-baseline gap-1 mb-1">
-                                <span className="text-xs text-[#565959]">EGP</span>
-                                <span className="text-[28px] text-[#0f1111]">{whole}</span>
-                                <span className="text-xs text-[#0f1111] align-super">{fraction}</span>
-                            </div>
-                            {product.bulkSave && (
-                                <p className="text-sm text-[#565959]">
-                                    List Price: <span className="line-through">EGP{(product.price * 1.3).toFixed(2)}</span>
-                                </p>
-                            )}
-                        </div>
-
-                        {/* Bulk Pricing Table */}
-                        <div className="mb-4 bg-[#f7fafa] border border-[#d5d9d9] rounded-lg p-3">
-                            <p className="text-sm font-bold text-[#0f1111] mb-2">Bulk Pricing</p>
-                            <table className="w-full text-sm">
-                                <thead>
-                                    <tr className="text-[#565959] text-xs">
-                                        <th className="text-left py-1">Qty</th>
-                                        <th className="text-left py-1">Price/Unit</th>
-                                        <th className="text-left py-1">You Save</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="text-[#0f1111]">
-                                    <tr><td className="py-1">1-9</td><td>EGP{product.price.toFixed(2)}</td><td>—</td></tr>
-                                    <tr className="bg-white"><td className="py-1">10-49</td><td>EGP{(product.price * 0.95).toFixed(2)}</td><td className="text-[#007600]">5%</td></tr>
-                                    <tr><td className="py-1">50-99</td><td>EGP{(product.price * 0.9).toFixed(2)}</td><td className="text-[#007600]">10%</td></tr>
-                                    <tr className="bg-white"><td className="py-1">100+</td><td>EGP{(product.price * 0.85).toFixed(2)}</td><td className="text-[#007600]">15%</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Features */}
-                        <div className="space-y-2 mb-4 pb-4 border-b border-[#e3e6e6]">
-                            <div className="flex gap-3">
-                                <Truck className="w-5 h-5 text-[#565959] flex-shrink-0 mt-0.5" />
-                                <div>
-                                    <p className="text-sm text-[#007185]">FREE Delivery on orders over EGP 500</p>
-                                    <p className="text-xs text-[#565959]">Or fastest delivery tomorrow</p>
-                                </div>
-                            </div>
-                            <div className="flex gap-3">
-                                <RotateCcw className="w-5 h-5 text-[#565959] flex-shrink-0 mt-0.5" />
-                                <p className="text-sm text-[#007185]">Returnable within 15 days</p>
-                            </div>
-                            <div className="flex gap-3">
-                                <ShieldCheck className="w-5 h-5 text-[#565959] flex-shrink-0 mt-0.5" />
-                                <p className="text-sm text-[#007185]">Buyer protection guarantee</p>
-                            </div>
-                        </div>
-
-                        {/* About This Item */}
-                        <div className="mb-4">
-                            <h2 className="text-base font-bold text-[#0f1111] mb-2">About this item</h2>
-                            <ul className="list-disc list-inside text-sm text-[#0f1111] space-y-1 pl-1">
-                                <li>Premium quality {product.category.toLowerCase()} from {product.brand}</li>
-                                <li>Perfect for retail, restaurants, and hospitality</li>
-                                <li>Bulk packaging for wholesale buyers</li>
-                                <li>Fresh stock with extended shelf life</li>
-                                <li>Minimum order: {product.minOrder} units</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    {/* RIGHT — Buy Box */}
-                    <div className="lg:w-[25%]">
-                        <div className="border border-[#d5d9d9] rounded-lg p-5 sticky top-28">
-                            <div className="flex items-baseline gap-1 mb-2">
-                                <span className="text-xs text-[#565959]">EGP</span>
-                                <span className="text-[28px] text-[#0f1111]">{whole}</span>
-                                <span className="text-xs text-[#0f1111] align-super">{fraction}</span>
-                            </div>
-
-                            <p className="text-sm text-[#007185] mb-1">FREE Delivery <span className="font-bold text-[#0f1111]">Monday, Feb 24</span></p>
-                            <p className="text-xs text-[#565959] mb-3">Or fastest delivery <span className="font-bold text-[#0f1111]">tomorrow</span></p>
-
-                            <p className={`text-lg font-bold mb-3 ${product.inStock ? 'text-[#007600]' : 'text-[#b12704]'}`}>
-                                {product.inStock ? 'In Stock' : 'Currently Unavailable'}
-                            </p>
-
-                            {product.inStock && (
-                                <>
-                                    {/* Qty Selector */}
-                                    <div className="flex items-center gap-2 mb-4">
-                                        <span className="text-sm text-[#0f1111]">Qty:</span>
-                                        <select
-                                            value={qty}
-                                            onChange={(e) => setQty(parseInt(e.target.value))}
-                                            className="border border-[#d5d9d9] rounded-lg px-2 py-1 text-sm bg-[#f0f2f2] shadow-sm cursor-pointer"
+                                <div className="grid grid-cols-4 gap-4">
+                                    {images.map((img, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setActiveImage(idx)}
+                                            className={`aspect-square rounded-lg border-2 p-2 ${activeImage === idx ? 'border-brand-orange bg-brand-orange/5' : 'border-transparent bg-gray-50 hover:border-gray-200'}`}
                                         >
-                                            {Array.from({ length: 20 }, (_, i) => i + product.minOrder).map((n) => (
-                                                <option key={n} value={n}>{n}</option>
-                                            ))}
-                                        </select>
+                                            <img src={img} alt="Thumbnail" className="w-full h-full object-contain" />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Column: Details */}
+                        <div className="p-6 md:p-8">
+                            <div className="mb-6">
+                                <Link href={`/catalog?brand=${product.brand}`} className="text-brand-orange text-sm font-bold tracking-wide uppercase hover:underline mb-2 inline-block">
+                                    {product.brand}
+                                </Link>
+                                <h1 className="text-3xl font-bold text-brand-navy mb-2 leading-tight">{product.name}</h1>
+
+                                <div className="flex items-center gap-4 text-sm">
+                                    <div className="flex text-yellow-400">
+                                        <Star className="w-4 h-4 fill-current" />
+                                        <Star className="w-4 h-4 fill-current" />
+                                        <Star className="w-4 h-4 fill-current" />
+                                        <Star className="w-4 h-4 fill-current" />
+                                        <Star className="w-4 h-4 text-gray-200" />
                                     </div>
+                                    <span className="text-brand-navy font-medium">4.2 (128 Reviews)</span>
+                                    <span className="text-gray-300">|</span>
+                                    <span className="text-green-600 font-medium flex items-center gap-1">
+                                        <Check className="w-4 h-4" /> In Stock
+                                    </span>
+                                    <span className="text-gray-500">Min Order: {product.minOrder} {product.unit}</span>
+                                </div>
+                            </div>
 
-                                    <button className="amz-btn-add-to-cart mb-2">Add to Cart</button>
-                                    <button className="amz-btn-buy-now mb-4">Buy Now</button>
-                                </>
-                            )}
+                            <hr className="border-gray-100 my-6" />
 
-                            <div className="text-xs text-[#565959] space-y-1 border-t border-[#e3e6e6] pt-3">
-                                <div className="flex justify-between"><span>Ships from</span><span className="text-[#0f1111]">MarketPlace.eg</span></div>
-                                <div className="flex justify-between"><span>Sold by</span><span className="text-[#007185]">{product.brand} Official</span></div>
-                                <div className="flex justify-between"><span>Returns</span><span className="text-[#007185]">15-day returnable</span></div>
-                                <div className="flex justify-between"><span>Payment</span><span className="text-[#0f1111]">Secure transaction</span></div>
+                            <div className="mb-8">
+                                <div className="flex items-end gap-2 mb-2">
+                                    <span className="text-4xl font-bold text-brand-navy">${product.price.toFixed(2)}</span>
+                                    <span className="text-gray-500 mb-1">/ {product.unit}</span>
+                                </div>
+                                <div className="bg-brand-orange/5 border border-brand-orange/20 rounded-lg p-4 mb-6">
+                                    <h3 className="text-brand-navy font-bold text-sm mb-3 flex items-center gap-2">
+                                        <Box className="w-4 h-4 text-brand-orange" /> Bulk Pricing Tiers
+                                    </h3>
+                                    <div className="space-y-2 text-sm">
+                                        <div className="flex justify-between items-center pb-2 border-b border-brand-orange/10">
+                                            <span className="text-gray-600">1 - 9 units</span>
+                                            <span className="font-bold text-brand-navy">${product.price.toFixed(2)}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center pb-2 border-b border-brand-orange/10">
+                                            <span className="text-gray-600">10 - 49 units</span>
+                                            <span className="font-bold text-green-600">${(product.price * 0.95).toFixed(2)} (-5%)</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-600">50+ units</span>
+                                            <span className="font-bold text-green-600">${(product.price * 0.85).toFixed(2)} (-15%)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="flex items-center border border-gray-300 rounded-lg h-12">
+                                        <button
+                                            onClick={() => setQty(Math.max(product.minOrder, qty - 1))}
+                                            className="px-4 h-full hover:bg-gray-50 text-gray-500 transition-colors"
+                                        >
+                                            <Minus className="w-4 h-4" />
+                                        </button>
+                                        <div className="w-16 text-center font-bold text-brand-navy">{qty}</div>
+                                        <button
+                                            onClick={() => setQty(qty + 1)}
+                                            className="px-4 h-full hover:bg-gray-50 text-gray-500 transition-colors"
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                    <button className="flex-1 bg-brand-orange hover:bg-brand-orange-hover text-white font-bold h-12 rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                                        <ShoppingCart className="w-5 h-5" /> Add to Cart
+                                    </button>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4 text-xs text-gray-500">
+                                    <div className="flex items-center gap-2">
+                                        <Truck className="w-4 h-4 text-brand-navy" />
+                                        <span>Items ship from <strong>Cairo Warehouse</strong></span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <ShieldCheck className="w-4 h-4 text-brand-navy" />
+                                        <span>Sold by <strong>{product.brand} Official</strong></span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <CreditCard className="w-4 h-4 text-brand-navy" />
+                                        <span>Secure transaction</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <RotateCcw className="w-4 h-4 text-brand-navy" />
+                                        <span>30-Day Return Policy</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr className="border-gray-100 my-6" />
+
+                            <div>
+                                <h3 className="font-bold text-brand-navy mb-4">Product Description</h3>
+                                <div className="prose prose-sm text-gray-600 max-w-none">
+                                    <p>Premium quality {product.name.toLowerCase()} sourced directly from the manufacturer. Perfect for retail stocking, restaurants, cafes, and bulk vending requirements. </p>
+                                    <ul className="list-disc pl-4 mt-2 space-y-1">
+                                        <li>High-demand consumer favorite</li>
+                                        <li>Extended shelf life packaging</li>
+                                        <li>Optimized for efficient pallet stacking</li>
+                                        <li>Certified original product</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -207,20 +179,22 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             </div>
 
             {/* Related Products */}
-            {relatedProducts.length > 0 && (
-                <div className="bg-[#eaeded] py-6">
-                    <div className="max-w-[1500px] mx-auto px-4">
-                        <div className="bg-white p-5">
-                            <h2 className="text-[21px] font-bold text-[#0f1111] mb-4">Products related to this item</h2>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-px bg-[#e3e6e6]">
-                                {relatedProducts.map((p) => (
-                                    <ProductCard key={p.id} product={p} />
-                                ))}
-                            </div>
+            <div className="container-wide mb-12">
+                <h2 className="text-2xl font-bold text-brand-navy mb-6">Related Products</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {related.map((p) => (
+                        <div key={p.id} className="h-full">
+                            <ProductCard product={p} />
                         </div>
-                    </div>
+                    ))}
                 </div>
-            )}
+            </div>
         </div>
     );
+}
+
+function Check({ className }: { className?: string }) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12" /></svg>
+    )
 }

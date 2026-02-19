@@ -2,79 +2,84 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { Mail, Lock, Eye, EyeOff, Package } from 'lucide-react';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPass, setShowPass] = useState(false);
 
     return (
-        <div className="min-h-screen bg-white flex flex-col items-center pt-4">
-            {/* Logo */}
-            <Link href="/" className="mb-5">
-                <span className="text-[#0f1111] font-bold text-3xl">market</span>
-                <span className="text-[#ff9900] font-bold text-3xl">.eg</span>
-            </Link>
+        <div className="min-h-screen bg-dark-bg flex items-center justify-center px-4 py-12 relative">
+            {/* Background blobs */}
+            <div className="absolute top-10 left-10 w-72 h-72 bg-brand-orange/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-10 right-10 w-72 h-72 bg-brand-blue/10 rounded-full blur-3xl" />
 
-            {/* Login Card */}
-            <div className="amz-auth-card">
-                <h1>Sign in</h1>
+            <div className="w-full max-w-md relative z-10 animate-fade-in-up">
+                {/* Logo */}
+                <div className="text-center mb-8">
+                    <div className="w-14 h-14 bg-gradient-to-br from-brand-orange to-brand-red rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <Package className="w-7 h-7 text-white" />
+                    </div>
+                    <h1 className="text-white text-2xl font-bold">مرحبا بك</h1>
+                    <p className="text-text-muted text-sm mt-1">سجل دخولك للمتابعة</p>
+                </div>
 
-                <form onSubmit={(e) => e.preventDefault()}>
-                    <div className="mb-4">
-                        <label>Email or mobile phone number</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
+                {/* Card */}
+                <div className="glass-card p-8">
+                    <form onSubmit={(e) => e.preventDefault()}>
+                        <div className="mb-4">
+                            <label className="text-text-secondary text-sm font-medium block mb-2">البريد الإلكتروني</label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="email@example.com"
+                                    className="auth-input pl-10"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mb-6">
+                            <label className="text-text-secondary text-sm font-medium block mb-2">كلمة المرور</label>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                                <input
+                                    type={showPass ? 'text' : 'password'}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    className="auth-input pl-10 pr-10"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPass(!showPass)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white"
+                                >
+                                    {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" className="btn-primary w-full py-3 text-base">
+                            تسجيل الدخول
+                        </button>
+                    </form>
+
+                    <div className="relative my-6">
+                        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-dark-border" /></div>
+                        <div className="relative text-center"><span className="bg-dark-surface px-3 text-text-muted text-xs">أو</span></div>
                     </div>
 
-                    <button type="submit" className="amz-btn-primary w-full py-2 text-sm mb-4">
-                        Continue
-                    </button>
-
-                    <p className="text-xs text-[#111] leading-5 mb-4">
-                        By continuing, you agree to MarketPlace&apos;s{' '}
-                        <a href="#" className="amz-link">Conditions of Use</a> and{' '}
-                        <a href="#" className="amz-link">Privacy Notice</a>.
+                    <p className="text-center text-text-secondary text-sm">
+                        ما عندك حساب؟{' '}
+                        <Link href="/auth/register" className="text-brand-orange hover:text-brand-orange-hover font-medium">
+                            سجل الآن
+                        </Link>
                     </p>
-
-                    <details className="mb-4">
-                        <summary className="text-xs text-[#111] cursor-pointer flex items-center gap-1">
-                            <span className="text-[#2b2b2b]">▶</span> Need help?
-                        </summary>
-                        <div className="mt-2 pl-4">
-                            <a href="#" className="amz-link block mb-1">Forgot your password?</a>
-                            <a href="#" className="amz-link block">Other issues with Sign-In</a>
-                        </div>
-                    </details>
-                </form>
-            </div>
-
-            {/* Divider */}
-            <div className="max-w-[350px] w-full mt-6 mb-4 relative">
-                <div className="amz-divider" />
-                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-xs text-[#767676]">
-                    New to MarketPlace?
-                </span>
-            </div>
-
-            {/* Create Account */}
-            <Link
-                href="/auth/register"
-                className="max-w-[350px] w-full block text-center border border-[#a2a6ac] rounded-[3px] py-2 text-[13px] text-[#0f1111] bg-gradient-to-b from-[#f7f8fa] to-[#e7e9ec] hover:from-[#e7e9ec] hover:to-[#d9dce1] transition-all"
-            >
-                Create your MarketPlace account
-            </Link>
-
-            {/* Footer */}
-            <div className="mt-8 pt-4 border-t border-[#e7e7e7] w-full text-center">
-                <div className="flex justify-center gap-6 mb-2">
-                    <a href="#" className="amz-link">Conditions of Use</a>
-                    <a href="#" className="amz-link">Privacy Notice</a>
-                    <a href="#" className="amz-link">Help</a>
                 </div>
-                <p className="text-[11px] text-[#555]">© 1996-{new Date().getFullYear()}, MarketPlace.eg, Inc. or its affiliates</p>
             </div>
         </div>
     );

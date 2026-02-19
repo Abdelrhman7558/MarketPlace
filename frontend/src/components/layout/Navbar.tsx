@@ -1,171 +1,160 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useRef, useEffect } from 'react';
-import { Menu, X, Search, ShoppingCart, MapPin, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
+import { Menu, X, Search, ShoppingCart, User, Package, ChevronDown, MapPin } from 'lucide-react';
 
 const CATEGORIES = [
-    { name: 'All Categories', href: '/catalog' },
-    { name: 'Soft Drinks', href: '/catalog?category=Soft Drinks' },
-    { name: 'Water', href: '/catalog?category=Water' },
-    { name: 'Energy Drinks', href: '/catalog?category=Energy Drinks' },
-    { name: 'Juice', href: '/catalog?category=Juice' },
-    { name: 'Tea & Coffee', href: '/catalog?category=Tea & Coffee' },
-];
-
-const SUB_NAV = [
-    { label: "Today's Deals", href: '/deals' },
-    { label: 'Best Sellers', href: '/catalog' },
-    { label: 'New Releases', href: '/catalog' },
-    { label: 'Bulk Orders', href: '/catalog' },
-    { label: 'Customer Service', href: '#' },
-    { label: 'Gift Cards', href: '#' },
+    { name: 'Soft Drinks', href: '/catalog?category=soft-drinks' },
+    { name: 'Energy Drinks', href: '/catalog?category=energy-drinks' },
+    { name: 'Water', href: '/catalog?category=water' },
+    { name: 'Juices', href: '/catalog?category=juices' },
+    { name: 'Tea & Coffee', href: '/catalog?category=tea-coffee' },
+    { name: 'Bulk Offers', href: '/catalog?category=bulk' },
 ];
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCat, setSelectedCat] = useState('All');
+    const [category, setCategory] = useState('All');
 
     return (
-        <>
-            {/* Main Nav Bar — Amazon Dark */}
-            <nav className="bg-[#131921] sticky top-0 z-50">
-                <div className="max-w-[1500px] mx-auto px-2 sm:px-4">
-                    <div className="flex items-center h-[60px] gap-2 sm:gap-3">
-                        {/* Logo */}
-                        <Link href="/" className="amz-nav-link flex-shrink-0 flex items-center pt-1">
-                            <span className="text-white font-bold text-xl tracking-tight">market</span>
-                            <span className="text-[#ff9900] font-bold text-xl">.eg</span>
-                        </Link>
+        <header className="flex flex-col sticky top-0 z-50 shadow-soft">
+            {/* Top Bar - Main Navigation */}
+            <div className="bg-brand-navy text-white py-3">
+                <div className="container-wide flex items-center justify-between gap-4 md:gap-8">
 
-                        {/* Deliver to */}
-                        <div className="amz-nav-link hidden md:flex items-center gap-1 text-xs flex-shrink-0">
+                    {/* Logo */}
+                    <Link href="/" className="flex items-center gap-2 flex-shrink-0 hover:opacity-90 transition-opacity">
+                        <div className="w-10 h-10 bg-brand-orange rounded-lg flex items-center justify-center">
+                            <Package className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex flex-col leading-none">
+                            <span className="font-bold text-xl tracking-tight">Market<span className="text-brand-orange">Place</span></span>
+                            <span className="text-[10px] text-gray-400 uppercase tracking-wider">Wholesale B2B</span>
+                        </div>
+                    </Link>
+
+                    {/* Deliver To Location (Desktop) */}
+                    <div className="hidden lg:flex flex-col leading-tight hover:outline hover:outline-1 hover:outline-white p-2 rounded cursor-pointer">
+                        <span className="text-xs text-gray-300 ml-5 block">Deliver to</span>
+                        <div className="flex items-center gap-1 font-bold text-sm">
                             <MapPin className="w-4 h-4 text-white" />
-                            <div>
-                                <span className="text-gray-300 block text-[11px]">Deliver to</span>
-                                <span className="text-white font-bold text-sm">Egypt</span>
-                            </div>
-                        </div>
-
-                        {/* Search */}
-                        <div className="flex-1 hidden sm:block">
-                            <div className="amz-search-bar">
-                                <select
-                                    value={selectedCat}
-                                    onChange={(e) => setSelectedCat(e.target.value)}
-                                    className="hidden md:block"
-                                >
-                                    {CATEGORIES.map((c) => (
-                                        <option key={c.name} value={c.name}>{c.name}</option>
-                                    ))}
-                                </select>
-                                <input
-                                    type="text"
-                                    placeholder="Search MarketPlace"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                <button aria-label="Search">
-                                    <Search className="w-5 h-5 text-[#131921]" />
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Right side items */}
-                        <div className="flex items-center gap-0.5 sm:gap-1">
-                            {/* Account */}
-                            <Link href="/auth/login" className="amz-nav-link hidden sm:block">
-                                <span className="text-[11px] text-gray-300 block">Hello, sign in</span>
-                                <span className="text-sm font-bold text-white flex items-center gap-0.5">
-                                    Account & Lists <ChevronDown className="w-3 h-3" />
-                                </span>
-                            </Link>
-
-                            {/* Returns & Orders */}
-                            <Link href="/catalog" className="amz-nav-link hidden md:block">
-                                <span className="text-[11px] text-gray-300 block">Returns</span>
-                                <span className="text-sm font-bold text-white">& Orders</span>
-                            </Link>
-
-                            {/* Cart */}
-                            <Link href="/catalog" className="amz-nav-link flex items-center gap-1">
-                                <div className="relative">
-                                    <ShoppingCart className="w-7 h-7 text-white" />
-                                    <span className="absolute -top-1 right-0 text-[#ff9900] font-bold text-sm">0</span>
-                                </div>
-                                <span className="text-white font-bold text-sm hidden sm:block">Cart</span>
-                            </Link>
-
-                            {/* Mobile toggle */}
-                            <button
-                                className="sm:hidden text-white p-2"
-                                onClick={() => setIsOpen(!isOpen)}
-                            >
-                                {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                            </button>
+                            <span>Cairo, Egypt</span>
                         </div>
                     </div>
-                </div>
 
-                {/* Sub Nav — Amazon categories bar */}
-                <div className="bg-[#232f3e] border-t border-[#3a4553]">
-                    <div className="max-w-[1500px] mx-auto px-2 sm:px-4">
-                        <div className="flex items-center gap-0 overflow-x-auto scrollbar-hide h-[39px]">
-                            <Link href="/catalog" className="amz-nav-link flex items-center gap-1 text-sm font-bold whitespace-nowrap">
-                                <Menu className="w-4 h-4" /> All
-                            </Link>
-                            {SUB_NAV.map((item) => (
-                                <Link
-                                    key={item.label}
-                                    href={item.href}
-                                    className="amz-nav-link text-sm whitespace-nowrap"
-                                >
-                                    {item.label}
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Mobile search */}
-                <div className="sm:hidden bg-[#131921] px-3 pb-2">
-                    <div className="amz-search-bar">
+                    {/* Search Bar */}
+                    <div className="flex-1 max-w-3xl hidden md:flex h-10 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-brand-orange transition-all shadow-sm">
+                        <button className="bg-gray-100 text-text-primary px-3 text-xs border-r border-gray-300 hover:bg-gray-200 transition-colors flex items-center gap-1">
+                            {category} <ChevronDown className="w-3 h-3" />
+                        </button>
                         <input
                             type="text"
-                            placeholder="Search MarketPlace"
+                            placeholder="Search for bulk drinks, cartons, brands..."
+                            className="flex-1 px-4 text-text-primary outline-none placeholder:text-text-muted"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                        <button aria-label="Search">
-                            <Search className="w-5 h-5 text-[#131921]" />
+                        <button className="bg-brand-orange px-5 hover:bg-brand-orange-hover transition-colors">
+                            <Search className="w-5 h-5 text-white" />
+                        </button>
+                    </div>
+
+                    {/* User Actions */}
+                    <div className="flex items-center gap-4 md:gap-6 flex-shrink-0">
+                        {/* Account */}
+                        <Link href="/auth/login" className="hidden md:flex flex-col leading-tight hover:outline hover:outline-1 hover:outline-white p-2 rounded cursor-pointer">
+                            <span className="text-xs text-gray-300">Hello, Sign in</span>
+                            <div className="flex items-center gap-0.5 font-bold text-sm">
+                                <span>Account & Lists</span>
+                                <ChevronDown className="w-3 h-3" />
+                            </div>
+                        </Link>
+
+                        {/* Orders */}
+                        <Link href="/orders" className="hidden md:flex flex-col leading-tight hover:outline hover:outline-1 hover:outline-white p-2 rounded cursor-pointer">
+                            <span className="text-xs text-gray-300">Returns</span>
+                            <span className="font-bold text-sm">& Orders</span>
+                        </Link>
+
+                        {/* Cart */}
+                        <Link href="/cart" className="flex items-end gap-1 hover:outline hover:outline-1 hover:outline-white p-2 rounded group">
+                            <div className="relative">
+                                <ShoppingCart className="w-8 h-8 group-hover:animate-bounce-scale" />
+                                <span className="absolute -top-1 -right-1 w-5 h-5 bg-brand-orange text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-brand-navy">
+                                    0
+                                </span>
+                            </div>
+                            <span className="font-bold text-sm mb-1 hidden sm:block">Cart</span>
+                        </Link>
+
+                        {/* Mobile Menu Button */}
+                        <button
+                            className="md:hidden p-2 text-white"
+                            onClick={() => setIsOpen(!isOpen)}
+                        >
+                            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                         </button>
                     </div>
                 </div>
+            </div>
 
-                {/* Mobile menu */}
-                {isOpen && (
-                    <div className="sm:hidden bg-white absolute top-full left-0 right-0 z-50 shadow-xl animate-slide-down">
-                        <div className="p-4 space-y-1">
-                            <Link href="/auth/login" className="block py-2 px-3 text-sm font-bold text-[#111] rounded hover:bg-gray-100" onClick={() => setIsOpen(false)}>
-                                Sign In
-                            </Link>
-                            <div className="border-t my-2" />
-                            <p className="px-3 text-xs font-bold text-gray-500 uppercase">Shop By Category</p>
-                            {CATEGORIES.slice(1).map((cat) => (
+            {/* Bottom Bar - Categories Navigation */}
+            <div className="bg-brand-blue text-white py-2 hidden md:block border-t border-white/10">
+                <div className="container-wide flex items-center gap-6 text-sm font-medium overflow-x-auto no-scrollbar">
+                    <button className="flex items-center gap-1 hover:text-brand-orange transition-colors whitespace-nowrap">
+                        <Menu className="w-4 h-4" /> All
+                    </button>
+                    {CATEGORIES.map((cat) => (
+                        <Link
+                            key={cat.name}
+                            href={cat.href}
+                            className="hover:text-brand-orange transition-colors whitespace-nowrap"
+                        >
+                            {cat.name}
+                        </Link>
+                    ))}
+                    <Link href="/deals" className="hover:text-brand-orange transition-colors whitespace-nowrap ml-auto font-bold text-brand-orange">
+                        Today's Deals
+                    </Link>
+                    <Link href="/dashboard/supplier" className="hover:text-brand-orange transition-colors whitespace-nowrap">
+                        Supplier Dashboard
+                    </Link>
+                </div>
+            </div>
+
+            {/* Mobile Menu & Search */}
+            {isOpen && (
+                <div className="bg-white border-t border-gray-200 md:hidden animate-fade-in absolute w-full top-full shadow-lg">
+                    <div className="p-4 space-y-4">
+                        <div className="flex h-10 rounded-lg overflow-hidden border border-gray-300 focus-within:border-brand-orange">
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                className="flex-1 px-4 text-text-primary outline-none"
+                            />
+                            <button className="bg-brand-orange px-4">
+                                <Search className="w-5 h-5 text-white" />
+                            </button>
+                        </div>
+                        <nav className="flex flex-col space-y-2">
+                            {CATEGORIES.map((cat) => (
                                 <Link
                                     key={cat.name}
                                     href={cat.href}
-                                    className="block py-2 px-3 text-sm text-[#111] rounded hover:bg-gray-100"
+                                    className="py-2 px-3 hover:bg-gray-50 rounded-lg text-text-primary font-medium"
                                     onClick={() => setIsOpen(false)}
                                 >
                                     {cat.name}
                                 </Link>
                             ))}
-                        </div>
+                            <hr className="my-2" />
+                            <Link href="/auth/login" className="py-2 px-3 text-brand-orange font-bold">Sign In</Link>
+                        </nav>
                     </div>
-                )}
-            </nav>
-        </>
+                </div>
+            )}
+        </header>
     );
 }
