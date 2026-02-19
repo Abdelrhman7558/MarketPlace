@@ -15,7 +15,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en" className="h-full">
+        <html lang="en" className="h-full overflow-x-hidden">
             <body className="flex flex-col min-h-screen font-sans">
                 <Providers>
                     <ClientLayout>

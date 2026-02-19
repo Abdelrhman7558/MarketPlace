@@ -6,10 +6,10 @@ const FOOTER_COLUMNS = [
     {
         title: 'Get to Know Us',
         links: [
-            { name: 'About BevMarket', href: '#' },
-            { name: 'Careers', href: '#' },
-            { name: 'Press Releases', href: '#' },
-            { name: 'BevMarket Science', href: '#' },
+            { name: 'About BevMarket', href: '/' },
+            { name: 'Careers', href: '/' },
+            { name: 'Press Releases', href: '/' },
+            { name: 'BevMarket Science', href: '/' },
         ],
     },
     {
@@ -17,27 +17,27 @@ const FOOTER_COLUMNS = [
         links: [
             { name: 'Sell on BevMarket', href: '/auth/register' },
             { name: 'Become a Supplier', href: '/auth/register' },
-            { name: 'Advertise Your Products', href: '#' },
-            { name: 'Become an Affiliate', href: '#' },
+            { name: 'Advertise Your Products', href: '/auth/register' },
+            { name: 'Become an Affiliate', href: '/auth/register' },
         ],
     },
     {
         title: 'BevMarket Payment',
         links: [
-            { name: 'Business Credit Line', href: '#' },
-            { name: 'Shop with Points', href: '#' },
-            { name: 'Reload Your Balance', href: '#' },
-            { name: 'Currency Converter', href: '#' },
+            { name: 'Business Credit Line', href: '/#products' },
+            { name: 'Shop with Points', href: '/#products' },
+            { name: 'Reload Your Balance', href: '/auth/login' },
+            { name: 'Currency Converter', href: '/#products' },
         ],
     },
     {
         title: 'Let Us Help You',
         links: [
             { name: 'Your Account', href: '/auth/login' },
-            { name: 'Your Orders', href: '#' },
-            { name: 'Shipping Rates & Policies', href: '#' },
-            { name: 'Returns & Replacements', href: '#' },
-            { name: 'Help', href: '#' },
+            { name: 'Your Orders', href: '/auth/login' },
+            { name: 'Shipping Rates & Policies', href: '/#products' },
+            { name: 'Returns & Replacements', href: '/auth/login' },
+            { name: 'Help', href: '/' },
         ],
     },
 ];
@@ -91,9 +91,9 @@ export default function Footer() {
             <div className="bg-amz-dark text-[#999] text-[11px]">
                 <div className="container-amz py-3 text-center space-y-1">
                     <div className="flex items-center justify-center gap-4 flex-wrap">
-                        <a href="#" className="hover:underline hover:text-white">Conditions of Use</a>
-                        <a href="#" className="hover:underline hover:text-white">Privacy Notice</a>
-                        <a href="#" className="hover:underline hover:text-white">Interest-Based Ads</a>
+                        <Link href="/" className="hover:underline hover:text-white">Conditions of Use</Link>
+                        <Link href="/" className="hover:underline hover:text-white">Privacy Notice</Link>
+                        <Link href="/" className="hover:underline hover:text-white">Help</Link>
                     </div>
                     <p>© 2026, BevMarket.com, Inc. or its affiliates</p>
                 </div>

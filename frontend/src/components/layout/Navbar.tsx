@@ -1,17 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Menu, X, Search, ShoppingCart, MapPin, ChevronDown } from 'lucide-react';
 import { useCart } from '@/lib/cart';
 
 const NAV_ITEMS = [
-    { name: 'All', href: '/' },
-    { name: 'Today\'s Deals', href: '/' },
-    { name: 'Bulk Orders', href: '/?bulk=true' },
-    { name: 'Customer Service', href: '/' },
-    { name: 'New Arrivals', href: '/' },
-    { name: 'Best Sellers', href: '/' },
+    { name: 'All', href: '/#products' },
+    { name: "Today's Deals", href: '/deals/' },
+    { name: 'Bulk Orders', href: '/#products' },
+    { name: 'Customer Service', href: '/#products' },
+    { name: 'New Arrivals', href: '/#products' },
+    { name: 'Best Sellers', href: '/#products' },
 ];
 
 export default function Navbar() {
@@ -20,6 +20,14 @@ export default function Navbar() {
     const [searchCategory, setSearchCategory] = useState('All');
     const { items } = useCart();
     const cartCount = items.reduce((sum, i) => sum + i.quantity, 0);
+
+    const handleSearch = () => {
+        if (searchQuery.trim()) {
+            // Scroll to products and the Navbar search filters will apply
+            const el = document.getElementById('products');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     return (
         <header className="sticky top-0 z-50">
@@ -63,8 +71,9 @@ export default function Navbar() {
                             className="flex-1 px-3 text-[15px] text-amz-text outline-none bg-white"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                         />
-                        <button className="bg-amz-orange hover:bg-amz-orange2 px-4 flex items-center justify-center rounded-r-md">
+                        <button onClick={handleSearch} className="bg-amz-orange hover:bg-amz-orange2 px-4 flex items-center justify-center rounded-r-md">
                             <Search className="w-5 h-5 text-amz-dark" />
                         </button>
                     </div>
@@ -79,7 +88,7 @@ export default function Navbar() {
                     </Link>
 
                     {/* Returns & Orders */}
-                    <Link href="/" className="hidden md:flex flex-col px-2 py-1 border border-transparent hover:border-white rounded-sm flex-shrink-0">
+                    <Link href="/auth/login" className="hidden md:flex flex-col px-2 py-1 border border-transparent hover:border-white rounded-sm flex-shrink-0">
                         <span className="text-gray-300 text-[11px] leading-tight">Returns</span>
                         <span className="text-white text-[13px] font-bold leading-tight">& Orders</span>
                     </Link>
@@ -109,10 +118,13 @@ export default function Navbar() {
             <div className="bg-amz-dark2">
                 <div className="container-amz">
                     <div className="flex items-center overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
-                        <button className="flex items-center gap-1 text-white text-[13px] font-bold px-2 py-[6px] border border-transparent hover:border-white rounded-sm whitespace-nowrap">
+                        <Link
+                            href="/#products"
+                            className="flex items-center gap-1 text-white text-[13px] font-bold px-2 py-[6px] border border-transparent hover:border-white rounded-sm whitespace-nowrap hover:no-underline"
+                        >
                             <Menu className="w-5 h-5" />
                             All
-                        </button>
+                        </Link>
                         {NAV_ITEMS.slice(1).map((item) => (
                             <Link
                                 key={item.name}
@@ -123,7 +135,7 @@ export default function Navbar() {
                             </Link>
                         ))}
                         <Link
-                            href="/"
+                            href="/auth/register"
                             className="text-white text-[13px] font-bold px-2 py-[6px] border border-transparent hover:border-white rounded-sm whitespace-nowrap ml-auto hover:no-underline"
                         >
                             Become a Supplier
