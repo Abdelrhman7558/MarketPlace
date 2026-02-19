@@ -13,59 +13,56 @@ const config: Config = {
             },
             colors: {
                 brand: {
-                    navy: '#0a0e27',
-                    'navy-light': '#141937',
-                    blue: '#1e3a8a',
-                    'blue-light': '#3b82f6',
-                    orange: '#F97316',
-                    'orange-hover': '#EA580C',
-                    red: '#dc2626',
-                    'red-hover': '#b91c1c',
-                    green: '#10B981',
-                    gold: '#F59E0B',
-                    light: '#F8FAFC',
+                    navy: '#131921',        // Amazon header dark
+                    'navy-light': '#232f3e', // Amazon secondary dark
+                    blue: '#007185',        // Professional link/action blue
+                    'blue-light': '#008296',
+                    orange: '#febd69',      // Amazon accent orange (softer)
+                    'orange-hover': '#f3a847',
+                    red: '#B12704',         // Professional alert red
+                    'red-hover': '#9c2304',
+                    green: '#067D62',       // Trust green
+                    gold: '#F4BF76',        // Subtle gold for premium feel
+                    light: '#E3E6E6',       // Light gray background
                     white: '#FFFFFF',
-                    gray: '#F1F5F9',
+                    gray: '#F0F2F2',        // Amazon-style light gray
+                    border: '#D5D9D9',      // Standard border color
                 },
                 dark: {
-                    bg: '#0a0e27',
-                    surface: '#141937',
-                    card: '#1a2142',
-                    border: '#2a3563',
-                    'border-light': '#3a4573',
+                    bg: '#131921',
+                    surface: '#232f3e',
+                    card: '#fff',           // Cards should generally be white in this design
+                    border: '#D5D9D9',
+                    'border-light': '#E7E7E7',
                 },
                 status: {
-                    success: '#10B981',
-                    warning: '#F59E0B',
-                    error: '#EF4444',
-                    info: '#3B82F6',
+                    success: '#067D62',
+                    warning: '#FFA41C',
+                    error: '#B12704',
+                    info: '#007185',
                 },
                 text: {
-                    primary: '#0F172A',
-                    secondary: '#64748B',
-                    muted: '#94A3B8',
+                    primary: '#0F1111',     // Almost black for high contrast
+                    secondary: '#565959',   // Dark gray for secondary text
+                    muted: '#8e9096',
                 },
                 border: {
-                    light: '#E2E8F0',
-                    DEFAULT: '#CBD5E1',
+                    light: '#E7E7E7',
+                    DEFAULT: '#D5D9D9',
                 },
             },
             boxShadow: {
-                'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-                'card': '0 0 0 1px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.04)',
-                'card-hover': '0 0 0 1px rgba(0,0,0,0.03), 0 8px 24px rgba(0,0,0,0.1)',
-                'float': '0 20px 40px -10px rgba(0, 0, 0, 0.15)',
-                'glow-orange': '0 0 20px rgba(249, 115, 22, 0.3)',
-                'glow-blue': '0 0 20px rgba(59, 130, 246, 0.3)',
-                'glow-red': '0 0 20px rgba(220, 38, 38, 0.3)',
-                'neon': '0 0 5px rgba(249, 115, 22, 0.5), 0 0 20px rgba(249, 115, 22, 0.2)',
+                'soft': '0 2px 5px rgba(213,217,217,.5)',
+                'card': '0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06)',
+                'card-hover': '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)',
+                'float': '0 10px 15px -3px rgba(0,0,0,0.1)',
+                'input': '0 0 0 3px #c8f3fa, 0 1px 2px rgba(15,17,17,.15) inset',
             },
             backgroundImage: {
-                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-                'gradient-hero': 'linear-gradient(135deg, #0a0e27 0%, #141937 30%, #1a2142 60%, #0a0e27 100%)',
-                'gradient-card': 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
-                'gradient-orange': 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
-                'gradient-blue': 'linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%)',
+                'gradient-hero': 'linear-gradient(to bottom, #232f3e, #131921)', // Clean dark gradient
+                'gradient-card': 'linear-gradient(to bottom, #ffffff, #f8f8f8)',
+                'gradient-orange': 'linear-gradient(to bottom, #f7dfa5, #f0c14b)', // Button gradient
+                'gradient-blue': 'linear-gradient(to bottom, #f7fafa, #e3e6e6)', // Standard button gradient
             },
             animation: {
                 'fade-in': 'fadeIn 0.6s ease-out forwards',

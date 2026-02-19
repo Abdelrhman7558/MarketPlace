@@ -1,46 +1,21 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { SlidersHorizontal, TrendingUp, Truck, Shield, Clock, ChevronRight, Star, Package, Users, ShoppingCart, Award } from 'lucide-react';
+import { ChevronRight, Star, Truck, Shield, Clock, Package, Users, ShoppingCart, Award, Zap } from 'lucide-react';
 import ProductCard from '@/components/product/ProductCard';
 import ProductFilters from '@/components/product/ProductFilters';
 import { PRODUCTS } from '@/lib/products';
+import CreditCard from '@/components/ui/CreditCard';
 
-const CATEGORY_CARDS = [
-    { name: 'Soft Drinks', emoji: '🥤', color: 'from-red-500/10 to-red-600/10', border: 'border-red-200', hoverBg: 'hover:shadow-glow-red', count: 3 },
-    { name: 'Energy Drinks', emoji: '⚡', color: 'from-yellow-500/10 to-green-500/10', border: 'border-yellow-200', hoverBg: 'hover:shadow-glow-orange', count: 2 },
-    { name: 'Water', emoji: '💧', color: 'from-sky-500/10 to-blue-500/10', border: 'border-sky-200', hoverBg: 'hover:shadow-glow-blue', count: 1 },
-    { name: 'Juice', emoji: '🍊', color: 'from-orange-500/10 to-yellow-500/10', border: 'border-orange-200', hoverBg: 'hover:shadow-glow-orange', count: 1 },
-    { name: 'Tea & Coffee', emoji: '☕', color: 'from-amber-500/10 to-brown-500/10', border: 'border-amber-200', hoverBg: 'hover:shadow-glow-orange', count: 1 },
-    { name: 'Bulk Deals', emoji: '📦', color: 'from-purple-500/10 to-pink-500/10', border: 'border-purple-200', hoverBg: 'hover:shadow-glow-blue', count: 2 },
+const CATEGORIES = [
+    { name: 'Soft Drinks', image: 'https://images.unsplash.com/photo-1581098361633-15fb886efc90?auto=format&fit=crop&q=80', count: 120 },
+    { name: 'Energy Drinks', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80', count: 85 },
+    { name: 'Water', image: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&q=80', count: 45 },
+    { name: 'Juices', image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&q=80', count: 92 },
+    { name: 'Tea & Coffee', image: 'https://images.unsplash.com/photo-1594631252845-29fc4cc8cde9?auto=format&fit=crop&q=80', count: 64 },
+    { name: 'Bulk Deals', image: 'https://images.unsplash.com/photo-1595246140625-573b715d11dc?auto=format&fit=crop&q=80', count: 15 },
 ];
-
-function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: string }) {
-    const [count, setCount] = useState(0);
-    const ref = useRef<HTMLDivElement>(null);
-    const [visible, setVisible] = useState(false);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.5 });
-        if (ref.current) observer.observe(ref.current);
-        return () => observer.disconnect();
-    }, []);
-
-    useEffect(() => {
-        if (!visible) return;
-        let start = 0;
-        const step = Math.ceil(target / 60);
-        const timer = setInterval(() => {
-            start += step;
-            if (start >= target) { setCount(target); clearInterval(timer); }
-            else setCount(start);
-        }, 20);
-        return () => clearInterval(timer);
-    }, [visible, target]);
-
-    return <div ref={ref} className="text-3xl md:text-4xl font-extrabold text-white">{count.toLocaleString()}{suffix}</div>;
-}
 
 export default function Home() {
     const [priceRange, setPriceRange] = useState<{ min: string; max: string }>({ min: '', max: '' });
@@ -74,120 +49,164 @@ export default function Home() {
     else if (sortBy === 'price-high') filtered.sort((a, b) => b.price - a.price);
 
     return (
-        <main className="min-h-screen bg-brand-light">
-            {/* ===== HERO SECTION ===== */}
-            <section className="relative overflow-hidden bg-gradient-hero text-white">
-                {/* Animated Background Elements */}
-                <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-20 right-[10%] w-72 h-72 bg-brand-orange/10 rounded-full blur-3xl animate-float" />
-                    <div className="absolute bottom-10 left-[5%] w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-float animation-delay-300" />
-                    <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-red-500/5 rounded-full blur-2xl animate-pulse-slow" />
-                    {/* Floating beverage emojis */}
-                    <div className="absolute top-[15%] right-[15%] text-4xl animate-float opacity-20">🥤</div>
-                    <div className="absolute bottom-[20%] right-[25%] text-5xl animate-float animation-delay-500 opacity-15">⚡</div>
-                    <div className="absolute top-[40%] left-[8%] text-3xl animate-float animation-delay-700 opacity-20">💧</div>
-                </div>
+        <main className="min-h-screen bg-brand-light pb-20">
+            {/* ===== PROFESSIONAL HERO SECTION ===== */}
+            <section className="bg-brand-navy text-white relative overflow-hidden">
+                {/* Subtle Clean Background Pattern (No more floating blobs) */}
+                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#4b5563_1px,transparent_1px)] [background-size:20px_20px]"></div>
 
-                <div className="container-wide relative z-10 py-20 md:py-28">
-                    <div className="max-w-3xl">
-                        <span className="inline-flex items-center gap-2 bg-brand-orange/20 text-brand-orange border border-brand-orange/30 text-xs font-bold px-4 py-1.5 rounded-full mb-6 uppercase tracking-wider animate-fade-in-down">
-                            <TrendingUp className="w-3 h-3" />
-                            #1 B2B Beverage Marketplace
-                        </span>
+                <div className="container-wide relative z-10 py-12 md:py-20 flex flex-col md:flex-row items-center gap-12">
+                    <div className="flex-1 space-y-6">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-blue/20 border border-brand-blue/30 text-brand-blue-light text-xs font-semibold tracking-wide uppercase">
+                            <Shield className="w-3 h-3" />
+                            Trusted by 5,000+ Businesses
+                        </div>
 
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] mb-6 animate-fade-in-up">
-                            Premium Beverage
-                            <br />
-                            <span className="gradient-text">Distribution</span>
-                            <br />
-                            <span className="text-gray-400 text-3xl md:text-5xl">Made Simple</span>
+                        <h1 className="text-4xl md:text-6xl font-bold leading-tight text-white tracking-tight">
+                            Wholesale Beverage <br />
+                            <span className="text-brand-orange">Distribution Network</span>
                         </h1>
 
-                        <p className="text-lg text-gray-400 mb-8 max-w-xl leading-relaxed animate-fade-in-up animation-delay-200">
-                            Connect with top beverage brands — Pepsi, Coca-Cola, Red Bull, Lipton and more.
-                            Wholesale pricing, fast delivery, trusted quality.
+                        <p className="text-lg text-gray-300 max-w-xl leading-relaxed">
+                            Streamline your supply chain with the #1 B2B Marketplace.
+                            Direct access to premium brands, bulk pricing, and 24h delivery.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up animation-delay-300">
-                            <a href="#products" className="btn-primary text-center text-lg px-10 py-4 flex items-center justify-center gap-2 group">
-                                Browse Catalog
-                                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        <div className="flex flex-wrap gap-4 pt-2">
+                            <a href="#products" className="btn-primary flex items-center gap-2 text-base px-8 py-3 rounded-md font-bold shadow-lg hover:translate-y-[-2px] transition-transform">
+                                Start Ordering
+                                <ChevronRight className="w-5 h-5" />
                             </a>
-                            <Link href="/auth/register" className="btn-secondary text-center text-lg px-10 py-4">
-                                Register Now
+                            <Link href="/auth/register" className="btn-secondary flex items-center gap-2 text-base px-8 py-3 rounded-md font-bold text-brand-navy hover:bg-white transition-colors">
+                                Create Business Account
                             </Link>
                         </div>
 
-                        {/* Trust Badges */}
-                        <div className="flex flex-wrap items-center gap-6 mt-10 animate-fade-in-up animation-delay-500">
-                            {[
-                                { icon: Truck, text: 'Free Shipping $500+' },
-                                { icon: Shield, text: 'Secure Payments' },
-                                { icon: Clock, text: '24h Fast Delivery' },
-                            ].map((badge, i) => (
-                                <div key={i} className="flex items-center gap-2 text-gray-400">
-                                    <badge.icon className="w-4 h-4 text-brand-orange" />
-                                    <span className="text-xs font-medium">{badge.text}</span>
-                                </div>
-                            ))}
+                        {/* Trust Values */}
+                        <div className="flex items-center gap-6 pt-6 text-sm text-gray-400 font-medium">
+                            <div className="flex items-center gap-2">
+                                <Truck className="w-4 h-4 text-brand-orange" />
+                                <span>Free Shipping Over $500</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Clock className="w-4 h-4 text-brand-orange" />
+                                <span>Next-Day Delivery</span>
+                            </div>
                         </div>
+                    </div>
+
+                    {/* Hero Visual - Professional Card Display */}
+                    <div className="flex-1 w-full max-w-md md:max-w-xl relative">
+                        <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-2xl relative">
+                            <div className="flex items-center justify-between mb-6">
+                                <div>
+                                    <h3 className="text-white font-bold text-lg">Business Credit Line</h3>
+                                    <p className="text-gray-400 text-sm">Apply for net-30 terms instantly.</p>
+                                </div>
+                                <Zap className="w-6 h-6 text-brand-orange" />
+                            </div>
+
+                            {/* NEW CREDIT CARD COMPONENT */}
+                            <div className="transform hover:scale-105 transition-transform duration-500">
+                                <CreditCard
+                                    cardNumber="4923 1849 2203 9984"
+                                    cardHolder="BUSINESS PREMIER"
+                                    expiryDate="12/28"
+                                    csv="844"
+                                    variant="gold"
+                                    isFlipped={false}
+                                />
+                            </div>
+
+                            <div className="mt-6 flex items-center justify-between text-xs text-gray-400">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                    <span>Active Status</span>
+                                </div>
+                                <span>High Limit Available</span>
+                            </div>
+                        </div>
+
+                        {/* Decorative Element underneath */}
+                        <div className="absolute -z-10 top-10 -right-10 w-full h-full bg-brand-orange/5 rounded-full blur-3xl"></div>
                     </div>
                 </div>
             </section>
 
-            {/* ===== CATEGORIES ===== */}
-            <section className="container-wide py-14">
-                <div className="text-center mb-10">
-                    <h2 className="text-2xl md:text-3xl font-extrabold text-brand-navy mb-2">Shop by Category</h2>
-                    <p className="text-text-muted text-sm">Explore our wide range of premium beverages</p>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                    {CATEGORY_CARDS.map((cat, i) => (
+            {/* ===== CATEGORY STRIP ===== */}
+            <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40 overflow-x-auto">
+                <div className="container-wide flex items-center gap-1 py-2 min-w-max">
+                    <span className="text-xs font-bold text-brand-navy uppercase tracking-wider mr-4">Departments:</span>
+                    {CATEGORIES.map((cat, i) => (
                         <button
-                            key={cat.name}
+                            key={i}
                             onClick={() => {
                                 if (cat.name === 'Bulk Deals') return;
                                 setSelectedCategories([cat.name]);
                                 document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
                             }}
-                            className={`bg-gradient-to-br ${cat.color} border ${cat.border} rounded-2xl p-5 text-center hover:-translate-y-2 ${cat.hoverBg} transition-all duration-500 group cursor-pointer opacity-0 animate-fade-in-up`}
-                            style={{ animationDelay: `${i * 100}ms`, animationFillMode: 'forwards' }}
+                            className="px-4 py-2 hover:bg-gray-100 rounded text-sm text-text-primary font-medium transition-colors whitespace-nowrap"
                         >
-                            <span className="text-3xl block mb-2 group-hover:scale-125 group-hover:animate-wiggle transition-transform duration-300">{cat.emoji}</span>
-                            <h3 className="font-bold text-sm text-brand-navy">{cat.name}</h3>
-                            <p className="text-[11px] text-text-muted mt-0.5">{cat.count} products</p>
+                            {cat.name}
                         </button>
                     ))}
+                    <div className="h-4 w-px bg-gray-300 mx-2"></div>
+                    <button className="px-4 py-2 hover:bg-gray-100 rounded text-sm text-brand-red font-bold transition-colors">
+                        🔥 Clearance
+                    </button>
                 </div>
-            </section>
+            </div>
 
-            {/* ===== DEALS BANNER ===== */}
-            <section className="container-wide mb-14">
-                <div className="relative bg-gradient-to-r from-brand-navy via-brand-navy-light to-brand-navy rounded-3xl overflow-hidden p-8 md:p-12">
-                    <div className="absolute inset-0 pointer-events-none">
-                        <div className="absolute -top-10 -right-10 w-48 h-48 bg-brand-orange/20 rounded-full blur-3xl" />
-                        <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl" />
-                    </div>
-                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div>
-                            <span className="text-brand-orange text-sm font-bold uppercase tracking-wider">🔥 Limited Time</span>
-                            <h3 className="text-white text-2xl md:text-3xl font-extrabold mt-2">Bulk Order Discounts</h3>
-                            <p className="text-gray-400 mt-2">Order 50+ cases and get up to <span className="text-brand-orange font-bold">25% OFF</span></p>
+            <div className="container-wide py-8">
+                {/* Advertising Banners - Professional Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    {/* Main Big Banner */}
+                    <div className="lg:col-span-2 relative h-64 rounded-lg overflow-hidden group">
+                        <img
+                            src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?q=80&w=2787&auto=format&fit=crop"
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            alt="Summer Deals"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent flex flex-col justify-center p-8 text-white">
+                            <span className="text-brand-orange font-bold text-sm mb-1 uppercase tracking-wider">Summer Stock Up</span>
+                            <h2 className="text-3xl font-bold mb-2">Save up to 30%</h2>
+                            <p className="text-gray-300 mb-4 max-w-xs text-sm">On top energy drink brands including Red Bull and Monster.</p>
+                            <button className="btn-primary w-fit text-xs px-4 py-2">See Deals</button>
                         </div>
-                        <a href="#products" className="btn-primary text-lg px-8 py-4 whitespace-nowrap flex items-center gap-2 group">
-                            Shop Now
-                            <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        </a>
+                    </div>
+
+                    {/* Side Banner 1 */}
+                    <div className="relative h-64 rounded-lg overflow-hidden bg-white border border-gray-200 group">
+                        <div className="p-6 h-full flex flex-col">
+                            <h3 className="text-xl font-bold text-brand-navy mb-2">New Arrivals</h3>
+                            <div className="flex-1 flex items-center justify-center">
+                                <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80" className="h-32 object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-300" alt="New Product" />
+                            </div>
+                            <Link href="#products" className="text-brand-blue text-sm font-medium hover:underline flex items-center gap-1">
+                                Shop Now <ChevronRight className="w-3 h-3" />
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Side Banner 2 (Account Promo) */}
+                    <div className="relative h-64 rounded-lg overflow-hidden bg-[#f0f2f2] border border-gray-200">
+                        <div className="p-6 h-full flex flex-col items-center text-center justify-center">
+                            <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-4">
+                                <Users className="w-6 h-6 text-brand-navy" />
+                            </div>
+                            <h3 className="text-lg font-bold text-brand-navy mb-1">Sign in for best price</h3>
+                            <p className="text-xs text-gray-500 mb-4">Registered businesses verify for wholesale pricing.</p>
+                            <button className="btn-primary w-full text-sm">Sign In securely</button>
+                        </div>
                     </div>
                 </div>
-            </section>
 
-            {/* ===== PRODUCTS SECTION ===== */}
-            <section id="products" className="container-wide pb-16">
-                <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Desktop Sidebar */}
-                    <aside className="hidden lg:block w-72 flex-shrink-0">
-                        <div className="sticky top-36">
+                {/* Main Product Layout */}
+                <div className="flex flex-col lg:flex-row gap-6">
+                    {/* Sidebar Filters */}
+                    <aside className="hidden lg:block w-64 flex-shrink-0">
+                        <div className="sticky top-20">
+                            <h3 className="font-bold text-brand-navy mb-3">Filters</h3>
                             <ProductFilters
                                 brands={allBrands}
                                 categories={allCategories}
@@ -202,66 +221,36 @@ export default function Home() {
                         </div>
                     </aside>
 
-                    {/* Mobile Filter Toggle */}
-                    <div className="lg:hidden">
-                        <button
-                            onClick={() => setShowMobileFilters(!showMobileFilters)}
-                            className="flex items-center gap-2 bg-white border border-gray-200 px-5 py-3 rounded-xl font-semibold shadow-sm w-full justify-center hover:border-brand-orange transition-colors"
-                        >
-                            <SlidersHorizontal className="w-4 h-4 text-brand-orange" />
-                            Filters
-                            {(selectedBrands.length + selectedCategories.length) > 0 && (
-                                <span className="bg-brand-orange text-white text-xs px-2 py-0.5 rounded-full ml-1">
-                                    {selectedBrands.length + selectedCategories.length}
-                                </span>
-                            )}
-                        </button>
-                        {showMobileFilters && (
-                            <div className="mt-4 animate-slide-down">
-                                <ProductFilters
-                                    brands={allBrands}
-                                    categories={allCategories}
-                                    selectedBrands={selectedBrands}
-                                    selectedCategories={selectedCategories}
-                                    priceRange={priceRange}
-                                    onBrandChange={toggleBrand}
-                                    onCategoryChange={toggleCategory}
-                                    onPriceChange={setPriceRange}
-                                    onApplyPrice={() => { }}
-                                />
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Product Grid */}
+                    {/* Products Section */}
                     <div className="flex-1">
-                        <div className="flex items-center justify-between mb-6">
-                            <div>
-                                <h2 className="text-2xl font-extrabold text-brand-navy">All Products</h2>
-                                <p className="text-sm text-text-muted mt-0.5">{filtered.length} products found</p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs text-text-muted hidden sm:inline">Sort by:</span>
+                        <div className="flex items-center justify-between mb-4 bg-white p-3 border border-gray-200 rounded-lg shadow-sm">
+                            <h2 className="font-bold text-brand-navy text-lg pl-2">
+                                {selectedCategories.length > 0 ? selectedCategories.join(', ') : 'All Products'}
+                                <span className="text-gray-400 font-normal text-sm ml-2">({filtered.length} items)</span>
+                            </h2>
+
+                            <div className="flex items-center gap-3">
+                                <label className="text-sm text-gray-500">Sort by:</label>
                                 <select
+                                    className="bg-gray-50 border border-gray-300 text-sm rounded px-2 py-1 focus:ring-1 focus:ring-brand-orange focus:border-brand-orange outline-none"
                                     value={sortBy}
-                                    onChange={e => setSortBy(e.target.value)}
-                                    className="bg-white border border-gray-200 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-brand-orange font-medium cursor-pointer transition-colors"
+                                    onChange={(e) => setSortBy(e.target.value)}
                                 >
-                                    <option value="popular">Most Popular</option>
-                                    <option value="price-low">Price: Low → High</option>
-                                    <option value="price-high">Price: High → Low</option>
+                                    <option value="popular">Featured</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
                                 </select>
                             </div>
                         </div>
 
                         {filtered.length === 0 ? (
-                            <div className="text-center py-20 animate-fade-in">
-                                <div className="text-5xl mb-4">🔍</div>
-                                <h3 className="text-xl font-bold text-brand-navy mb-2">No products found</h3>
-                                <p className="text-text-muted">Try adjusting your filters</p>
+                            <div className="bg-white p-12 text-center rounded-lg border border-gray-200">
+                                <Package className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                                <h3 className="text-lg font-medium text-gray-900">No products found</h3>
+                                <p className="text-gray-500">Try changing your filters or search criteria.</p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                                 {filtered.map((product, i) => (
                                     <ProductCard key={product.id} product={product} index={i} />
                                 ))}
@@ -269,29 +258,7 @@ export default function Home() {
                         )}
                     </div>
                 </div>
-            </section>
-
-            {/* ===== STATS SECTION ===== */}
-            <section className="bg-gradient-hero text-white py-16">
-                <div className="container-wide">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        {[
-                            { icon: Package, value: 500, suffix: '+', label: 'Products' },
-                            { icon: Users, value: 1200, suffix: '+', label: 'Active Clients' },
-                            { icon: ShoppingCart, value: 8500, suffix: '+', label: 'Orders Delivered' },
-                            { icon: Award, value: 7, suffix: '', label: 'Premium Brands' },
-                        ].map((stat, i) => (
-                            <div key={i} className="text-center group">
-                                <div className="w-14 h-14 mx-auto bg-white/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-brand-orange/20 group-hover:scale-110 transition-all duration-300">
-                                    <stat.icon className="w-7 h-7 text-brand-orange" />
-                                </div>
-                                <AnimatedCounter target={stat.value} suffix={stat.suffix} />
-                                <p className="text-gray-400 text-sm mt-1 font-medium">{stat.label}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
+            </div>
         </main>
     );
 }
