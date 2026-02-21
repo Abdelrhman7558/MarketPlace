@@ -48,44 +48,48 @@ export default function Home() {
                     {/* Catalog Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
                         <AmazonCardTile
-                            title="Global Beverage Leaders"
+                            title="Energy Drinks"
                             items={[
-                                { label: 'Pepsi Co.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Pepsi_logo_2014.svg/2000px-Pepsi_logo_2014.svg.png', link: '/categories?brand=Pepsi' },
+                                { label: 'Bloom Energy', image: '/images/ads/bloom-hero.jpg', link: '/categories?brand=Bloom' },
+                                { label: 'Red Bull', image: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Red_Bull_new_logo.svg/1200px-Red_Bull_new_logo.svg.png', link: '/categories?brand=Red Bull' },
+                                { label: 'Celsius Fit', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400', link: '/categories?category=Energy Drinks' },
+                                { label: 'Monster Bulk', image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400', link: '/categories?category=Energy Drinks' },
+                            ]}
+                            footerLink="/categories?category=Energy Drinks"
+                            footerText="Explore energy products"
+                        />
+                        <AmazonCardTile
+                            title="Soft Drinks"
+                            items={[
                                 { label: 'Coca-Cola', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/2560px-Coca-Cola_logo.svg.png', link: '/categories?brand=Coca-Cola' },
-                                { label: 'Red Bull Energy', image: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Red_Bull_new_logo.svg/1200px-Red_Bull_new_logo.svg.png', link: '/categories?brand=Red Bull' },
-                                { label: 'Nestlé Snacking', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Nestl%C3%A9_Logo.svg/1200px-Nestl%C3%A9_Logo.svg.png', link: '/categories?q=Nestle' },
+                                { label: 'Pepsi Co.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Pepsi_logo_2014.svg/2000px-Pepsi_logo_2014.svg.png', link: '/categories?brand=Pepsi' },
+                                { label: 'Fanta Orange', image: 'https://images.unsplash.com/photo-1624517452488-04869289c4ca?w=400', link: '/categories?brand=Fanta' },
+                                { label: 'Sprite Lemon', image: 'https://images.unsplash.com/photo-1625772290748-39126ddd92bf?w=400', link: '/categories?brand=Sprite' },
                             ]}
-                            footerLink="/categories"
-                            footerText="Explore wholesale catalog"
+                            footerLink="/categories?category=Soft Drinks"
+                            footerText="Browse all sodas"
                         />
                         <AmazonCardTile
-                            title="Flash Case Deals"
-                            singleItem={{
-                                image: "https://images.unsplash.com/photo-1543256283-42c206511a76?w=800",
-                                link: "/categories?category=Snacks & Sweets"
-                            }}
-                            footerLink="/deals"
-                            footerText="Save up to 40% today"
-                        />
-                        <AmazonCardTile
-                            title="New Supply Arrivals"
+                            title="Coffee & Tea"
                             items={[
-                                { label: 'Davidoff Coffee', image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400', link: '/categories?brand=Davidoff' },
+                                { label: 'Nescafe Classic', image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400', link: '/categories?brand=Nescafe' },
                                 { label: 'Lavazza Oro', image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400', link: '/categories?brand=Lavazza' },
-                                { label: 'Snickers Cases', image: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=400', link: '/categories?brand=Snickers' },
-                                { label: 'Doritos Bulk', image: 'https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=400', link: '/categories?brand=Doritos' },
+                                { label: 'Starbucks Box', image: 'https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=400', link: '/categories?brand=Starbucks' },
+                                { label: 'Davidoff Rich', image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400', link: '/categories?brand=Davidoff' },
                             ]}
-                            footerLink="/categories"
-                            footerText="Browse newest stock"
+                            footerLink="/categories?category=Coffee & Tea"
+                            footerText="View wholesale coffee"
                         />
                         <AmazonCardTile
-                            title="Supplier Headquarters"
-                            singleItem={{
-                                image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800",
-                                link: "/auth/login"
-                            }}
-                            footerLink="/auth/register"
-                            footerText="Access business portal"
+                            title="Snacks & Gums"
+                            items={[
+                                { label: 'Oreo Original', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400', link: '/categories?brand=Oreo' },
+                                { label: 'KitKat Bars', image: 'https://images.unsplash.com/photo-1511381939415-e44015466834?w=400', link: '/categories?brand=KitKat' },
+                                { label: 'Orbit Gum', image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400', link: '/categories?brand=Orbit' },
+                                { label: 'Trident Pack', image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400', link: '/categories?brand=Trident' },
+                            ]}
+                            footerLink="/categories?category=Snacks & Sweets"
+                            footerText="Treats & Bulk Gums"
                         />
                     </div>
 

@@ -207,24 +207,47 @@ export const PRODUCTS: Product[] = [
         category: 'Soft Drinks',
     },
     {
-        id: '5',
-        name: 'Sprite Lemon Lime, 330ml Can (Case of 24)',
-        brand: 'Sprite',
-        price: 17.50,
+        id: '210',
+        name: 'Orbit Spearmint Sugar-Free Gum (Case of 24)',
+        brand: 'Orbit',
+        price: 15.60,
         unit: 'box',
         minOrder: 10,
-        image: 'https://images.unsplash.com/photo-1625772290748-39126ddd92bf?w=400&h=400&fit=crop',
+        image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400&h=400&fit=crop',
         inStock: true,
-        category: 'Soft Drinks',
+        category: 'Snacks & Sweets',
+    },
+    {
+        id: '211',
+        name: 'Trident White Peppermint Gum (Box of 12)',
+        brand: 'Trident',
+        price: 12.00,
+        unit: 'box',
+        minOrder: 5,
+        image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400&h=400&fit=crop',
+        inStock: true,
+        category: 'Snacks & Sweets',
+    },
+    {
+        id: '105',
+        name: 'Davidoff Rich Aroma Instant Coffee, 100g',
+        brand: 'Davidoff',
+        price: 9.80,
+        unit: 'unit',
+        minOrder: 10,
+        image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400&h=400&fit=crop',
+        inStock: true,
+        category: 'Coffee & Tea',
     },
 ];
 
 export const BRANDS = [
     'Coca-Cola', 'Pepsi', 'Red Bull', 'Bloom', 'Starbucks', 'Nescafe',
     'Fanta', 'Sprite', 'Dr Pepper', 'Lavazza', 'Davidoff', 'Jacobs',
-    'Oreo', 'KitKat', 'Nutella', 'Mars', 'Twix', 'Snickers', 'm&m\'s',
-    'Doritos', 'Pringles', 'Lay\'s', 'Takis', 'Lindt', 'Ferrero Rocher',
-    'Dove', 'Rexona', 'Lifebuoy', 'Lux', 'Persil', 'Comfort', 'Cif'
+    'Orbit', 'Trident', 'Mentos', 'Oreo', 'KitKat', 'Nutella', 'Mars',
+    'Twix', 'Snickers', 'm&m\'s', 'Doritos', 'Pringles', 'Lay\'s', 'Takis',
+    'Lindt', 'Ferrero Rocher', 'Dove', 'Rexona', 'Lifebuoy', 'Lux',
+    'Persil', 'Comfort', 'Cif'
 ];
 
 export const CATEGORIES_LIST = [

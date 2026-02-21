@@ -6,6 +6,11 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const SLIDES = [
     {
+        image: "/images/ads/bloom-hero.jpg",
+        title: "Bloom Sparkling Energy",
+        subtitle: "Zero Sugar. 100% Obsessed. 10 Calories."
+    },
+    {
         image: "https://images.unsplash.com/photo-1550345332-09e3ac987658?auto=format&fit=crop&q=80&w=2000",
         title: "Wholesale Beverages",
         subtitle: "Direct from top global suppliers"
