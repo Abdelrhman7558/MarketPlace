@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import {
     ShieldCheck, ArrowRight, Truck, CreditCard,
-    ChevronLeft, Info, CheckCircle2
+    ChevronLeft, Info, CheckCircle2, Package, Globe
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CheckoutPage() {
     const [step, setStep] = useState(1);
@@ -26,175 +27,227 @@ export default function CheckoutPage() {
     };
 
     return (
-        <main className="min-h-screen bg-muted/30 pt-10 pb-20">
-            <div className="container-wide px-4">
+        <main className="min-h-screen bg-muted/20 pt-12 pb-24">
+            <div className="container mx-auto px-6">
                 {/* Header */}
-                <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="flex items-center gap-4">
-                        <Link href="/cart">
-                            <Button variant="ghost" size="sm" className="rounded-full w-10 h-10 p-0">
-                                <ChevronLeft className="w-5 h-5" />
-                            </Button>
+                <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
+                    <div className="space-y-4">
+                        <Link href="/cart" className="inline-flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">
+                            <ChevronLeft size={16} />
+                            Back to Basket
                         </Link>
-                        <h1 className="text-3xl font-poppins font-black tracking-tight">Checkout</h1>
+                        <h1 className="text-4xl">Logistics <span className="text-secondary">Procurement</span></h1>
                     </div>
 
                     {/* Progress Steps */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3 bg-card border border-border/50 p-2 rounded-2xl premium-shadow">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="flex items-center gap-2">
+                            <div key={i} className="flex items-center">
                                 <div className={cn(
-                                    "w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all",
-                                    step >= i ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "bg-surface border border-border text-foreground/40"
+                                    "w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black transition-all duration-500",
+                                    step >= i
+                                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-110"
+                                        : "bg-muted text-muted-foreground"
                                 )}>
                                     {i}
                                 </div>
-                                {i < 3 && <div className={cn("w-8 h-[2px]", step > i ? "bg-primary" : "bg-border")} />}
+                                {i < 3 && (
+                                    <div className="w-12 h-1 mx-2 rounded-full bg-muted overflow-hidden">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: step > i ? '100%' : '0%' }}
+                                            className="h-full bg-primary"
+                                        />
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
                 </div>
 
                 {step === 4 ? (
-                    <div className="max-w-2xl mx-auto bg-surface border border-border/50 p-12 rounded-[3rem] text-center space-y-6 shadow-2xl animate-fade-in-up">
-                        <div className="w-24 h-24 bg-success/10 rounded-full flex items-center justify-center mx-auto text-success mb-4 animate-bounce-in">
-                            <CheckCircle2 className="w-12 h-12" />
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="max-w-3xl mx-auto bg-card border border-border/50 p-16 rounded-[48px] text-center space-y-8 premium-shadow relative overflow-hidden"
+                    >
+                        <div className="absolute top-0 left-0 w-full h-2 bg-accent" />
+                        <div className="w-24 h-24 bg-accent/10 rounded-[32px] flex items-center justify-center mx-auto text-accent mb-6 animate-pulse">
+                            <CheckCircle2 size={48} />
                         </div>
-                        <h2 className="text-4xl font-poppins font-black tracking-tight">Order Confirmed!</h2>
-                        <p className="text-lg text-foreground/60 leading-relaxed">
-                            Your order <span className="text-foreground font-bold">#ORD-9901</span> has been placed successfully.
-                            We've sent a detailed confirmation to your email.
-                        </p>
-                        <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <div className="space-y-4">
+                            <h2 className="text-5xl font-heading font-black tracking-tight">Order Procurement Initiated</h2>
+                            <p className="text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto font-medium">
+                                Tracking <span className="text-foreground font-black">#SKU-990-2026</span> is now active.
+                                Our logistics partners are preparing your distribution batch.
+                            </p>
+                        </div>
+                        <div className="pt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link href="/dashboard/buyer">
-                                <Button variant="outline" size="lg" className="rounded-full px-10 h-14 font-black">View My Orders</Button>
+                                <Button variant="outline" size="xl" className="rounded-3xl px-12 font-black">Distribution Center</Button>
                             </Link>
                             <Link href="/">
-                                <Button size="lg" className="rounded-full px-10 h-14 font-black">Continue Shopping</Button>
+                                <Button size="xl" className="rounded-3xl px-12 font-black">Source More items</Button>
                             </Link>
                         </div>
-                    </div>
+                        <div className="absolute bottom-[-10%] right-[-5%] w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+                    </motion.div>
                 ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                         {/* Main Form Area */}
-                        <div className="lg:col-span-2 space-y-8">
-                            {/* Step 1: Shipping */}
-                            {step === 1 && (
-                                <div className="bg-surface border border-border/50 p-10 rounded-[2.5rem] space-y-8 animate-fade-in">
-                                    <div className="flex items-center gap-3">
-                                        <Truck className="w-6 h-6 text-primary" />
-                                        <h2 className="text-2xl font-bold">Shipping Information</h2>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <Input label="First Name" placeholder="John" />
-                                        <Input label="Last Name" placeholder="Doe" />
-                                        <Input label="Business Address" placeholder="123 Logistics St" className="md:col-span-2" />
-                                        <Input label="City" placeholder="Dubai" />
-                                        <Input label="Postal Code" placeholder="00000" />
-                                    </div>
-                                    <Button onClick={handleNext} className="w-full rounded-2xl h-14 font-black text-lg gap-2">
-                                        Continue to Payment
-                                        <ArrowRight className="w-5 h-5" />
-                                    </Button>
-                                </div>
-                            )}
+                        <div className="lg:col-span-2 space-y-10">
+                            <AnimatePresence mode="wait">
+                                {/* Step 1: Shipping */}
+                                {step === 1 && (
+                                    <motion.div
+                                        key="step1"
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: 20 }}
+                                        className="bg-card border border-border/50 p-10 sm:p-12 rounded-[40px] space-y-10 premium-shadow"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
+                                                <Truck className="text-primary" size={24} />
+                                            </div>
+                                            <h2 className="text-3xl font-heading font-bold">Distribution Point</h2>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                            <Input label="Fleet Manager Name" placeholder="Alex Sterling" />
+                                            <Input label="Business Entity" placeholder="Sterling Distribution LLC" />
+                                            <Input label="Logistics HUB Address" placeholder="Pier 42, Marine Drive" className="md:col-span-2" />
+                                            <Input label="Commercial Zone" placeholder="Dubai Logistics Center" />
+                                            <Input label="Warehouse Code" placeholder="7720-DXB" />
+                                        </div>
+                                        <Button onClick={handleNext} size="xl" className="w-full gap-3">
+                                            Confirm Logistics Point
+                                            <ArrowRight size={20} />
+                                        </Button>
+                                    </motion.div>
+                                )}
 
-                            {/* Step 2: Payment */}
-                            {step === 2 && (
-                                <div className="bg-surface border border-border/50 p-10 rounded-[2.5rem] space-y-8 animate-fade-in">
-                                    <div className="flex items-center gap-3">
-                                        <CreditCard className="w-6 h-6 text-primary" />
-                                        <h2 className="text-2xl font-bold">Payment Method</h2>
-                                    </div>
-                                    <div className="space-y-4">
-                                        <div className="p-6 border-2 border-primary bg-primary/5 rounded-2xl flex items-center justify-between group cursor-pointer">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 bg-white rounded-xl border border-border flex items-center justify-center font-bold italic text-blue-900">VISA</div>
-                                                <div>
-                                                    <p className="font-bold">Business Credit Card</p>
-                                                    <p className="text-sm text-foreground/60">Ending in **** 8821</p>
+                                {/* Step 2: Payment */}
+                                {step === 2 && (
+                                    <motion.div
+                                        key="step2"
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: 20 }}
+                                        className="bg-card border border-border/50 p-10 sm:p-12 rounded-[40px] space-y-10 premium-shadow"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
+                                                <CreditCard className="text-primary" size={24} />
+                                            </div>
+                                            <h2 className="text-3xl font-heading font-bold">Transaction Bridge</h2>
+                                        </div>
+                                        <div className="space-y-6">
+                                            <div className="p-8 border-2 border-primary bg-primary/5 rounded-3xl flex items-center justify-between group cursor-pointer relative overflow-hidden">
+                                                <div className="flex items-center gap-6 relative z-10">
+                                                    <div className="w-16 h-10 bg-white rounded-xl border border-border flex items-center justify-center font-bold italic text-blue-900 shadow-sm">VISA</div>
+                                                    <div>
+                                                        <p className="font-heading font-bold text-lg">Corporate Treasury Card</p>
+                                                        <p className="text-sm text-muted-foreground font-medium">Authorized Line: **** 9012</p>
+                                                    </div>
+                                                </div>
+                                                <div className="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center relative z-10">
+                                                    <div className="w-4 h-4 bg-primary rounded-full animate-in zoom-in" />
+                                                </div>
+                                                <div className="absolute top-0 right-0 p-2 opacity-10">
+                                                    <Globe size={120} />
                                                 </div>
                                             </div>
-                                            <div className="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center">
-                                                <div className="w-3 h-3 bg-primary rounded-full" />
+                                            <div className="p-8 border border-border rounded-3xl flex items-center justify-between group cursor-pointer hover:bg-muted/30 transition-all duration-300">
+                                                <div className="flex items-center gap-6 opacity-60">
+                                                    <div className="w-16 h-10 bg-card rounded-xl border border-border flex items-center justify-center font-black text-muted-foreground text-xs tracking-tighter shadow-sm uppercase">Net 60</div>
+                                                    <div>
+                                                        <p className="font-heading font-bold text-lg">Wholesale Credit Memo</p>
+                                                        <p className="text-sm text-muted-foreground font-medium">Standard B2B Multi-invoice Terms</p>
+                                                    </div>
+                                                </div>
+                                                <div className="w-8 h-8 rounded-full border-2 border-border group-hover:border-primary/50 transition-colors" />
                                             </div>
                                         </div>
-                                        <div className="p-6 border border-border rounded-2xl flex items-center justify-between group cursor-pointer hover:bg-muted/30 transition-colors">
-                                            <div className="flex items-center gap-4 opacity-60">
-                                                <div className="w-12 h-12 bg-white rounded-xl border border-border flex items-center justify-center font-bold text-gray-400">NET</div>
-                                                <p className="font-bold">Pay on Receipt (Net 30)</p>
-                                            </div>
-                                            <div className="w-6 h-6 rounded-full border-2 border-border" />
+                                        <div className="flex gap-4">
+                                            <Button variant="outline" size="xl" onClick={handleBack} className="flex-1">Previous Stage</Button>
+                                            <Button onClick={handleNext} size="xl" className="flex-[2] btn-hover">Review Procurement</Button>
                                         </div>
-                                    </div>
-                                    <div className="flex gap-4">
-                                        <Button variant="outline" onClick={handleBack} className="flex-1 rounded-2xl h-14 font-black">Back</Button>
-                                        <Button onClick={handleNext} className="flex-[2] rounded-2xl h-14 font-black text-lg">Review Order</Button>
-                                    </div>
-                                </div>
-                            )}
+                                    </motion.div>
+                                )}
 
-                            {/* Step 3: Review */}
-                            {step === 3 && (
-                                <div className="bg-surface border border-border/50 p-10 rounded-[2.5rem] space-y-8 animate-fade-in">
-                                    <div className="flex items-center gap-3">
-                                        <ShieldCheck className="w-6 h-6 text-primary" />
-                                        <h2 className="text-2xl font-bold">Review & Place Order</h2>
-                                    </div>
-                                    <div className="space-y-4">
-                                        <div className="flex justify-between p-4 bg-muted/30 rounded-2xl border border-border/50 text-sm">
-                                            <span className="text-foreground/60">Shipping to:</span>
-                                            <span className="font-bold">John Doe, 123 Logistics St, Dubai</span>
+                                {/* Step 3: Review */}
+                                {step === 3 && (
+                                    <motion.div
+                                        key="step3"
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: 20 }}
+                                        className="bg-card border border-border/50 p-10 sm:p-12 rounded-[40px] space-y-10 premium-shadow"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
+                                                <ShieldCheck className="text-primary" size={24} />
+                                            </div>
+                                            <h2 className="text-3xl font-heading font-bold">Final Validation</h2>
                                         </div>
-                                        <div className="flex justify-between p-4 bg-muted/30 rounded-2xl border border-border/50 text-sm">
-                                            <span className="text-foreground/60">Payment:</span>
-                                            <span className="font-bold">Visa ending in **** 8821</span>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="p-6 bg-muted/20 rounded-3xl border border-border/50 space-y-2">
+                                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Inbound To:</span>
+                                                <p className="font-bold text-sm leading-relaxed">Pier 42, Marine Drive, Dubai Logistics Hub</p>
+                                            </div>
+                                            <div className="p-6 bg-muted/20 rounded-3xl border border-border/50 space-y-2">
+                                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Treasury Bind:</span>
+                                                <p className="font-bold text-sm leading-relaxed">Corporate Line ending in **** 9012</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="flex gap-4">
-                                        <Button variant="outline" onClick={handleBack} className="flex-1 rounded-2xl h-14 font-black" disabled={isProcessing}>Back</Button>
-                                        <Button
-                                            onClick={handlePlaceOrder}
-                                            className="flex-[2] rounded-2xl h-14 font-black text-lg"
-                                            isLoading={isProcessing}
-                                        >
-                                            Place Wholesale Order
-                                        </Button>
-                                    </div>
-                                </div>
-                            )}
+                                        <div className="flex gap-4">
+                                            <Button variant="outline" size="xl" onClick={handleBack} className="flex-1" disabled={isProcessing}>Modify</Button>
+                                            <Button
+                                                onClick={handlePlaceOrder}
+                                                size="xl"
+                                                className="flex-[2]"
+                                                isLoading={isProcessing}
+                                            >
+                                                Authorize Batch Procurement
+                                            </Button>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
 
                         {/* Sidebar / Summary */}
-                        <div className="space-y-6">
-                            <div className="bg-surface border border-border/50 p-8 rounded-[2.5rem] shadow-sm space-y-6">
-                                <h3 className="text-xl font-bold">Order Summary</h3>
-                                <div className="space-y-4 text-sm">
-                                    <div className="flex justify-between">
-                                        <span className="text-foreground/60">Subtotal (12 items)</span>
-                                        <span className="font-bold">$1,250.00</span>
+                        <aside className="space-y-8">
+                            <div className="bg-card border border-border/50 p-10 rounded-[40px] premium-shadow space-y-10">
+                                <h3 className="font-heading font-bold text-2xl">Ledger Overview</h3>
+                                <div className="space-y-5 text-sm">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-muted-foreground font-medium">Batch Value</span>
+                                        <span className="font-heading font-bold text-base">$3,420.00</span>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-foreground/60">Bulk Discount (10%)</span>
-                                        <span className="text-success font-bold">-$125.00</span>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-muted-foreground font-medium">Sourcing Credit (5%)</span>
+                                        <span className="text-accent font-heading font-black">-$171.00</span>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-foreground/60">Bulk Shipping</span>
-                                        <span className="font-bold">FREE</span>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-muted-foreground font-medium">Logistics Allocation</span>
+                                        <span className="font-heading font-bold text-base text-accent uppercase tracking-widest text-[10px]">Included</span>
                                     </div>
-                                    <div className="pt-4 border-t border-border flex justify-between text-lg">
-                                        <span className="font-black">Total</span>
-                                        <span className="font-black text-primary">$1,125.00</span>
+                                    <div className="pt-8 border-t border-border flex justify-between items-end">
+                                        <div className="space-y-1">
+                                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Grand Total</span>
+                                            <p className="font-heading font-black text-3xl text-primary">$3,249.00</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="p-4 bg-primary/5 rounded-2xl flex items-start gap-3">
-                                    <Info className="w-5 h-5 text-primary shrink-0" />
-                                    <p className="text-xs text-primary leading-relaxed">
-                                        VAT will be calculated based on your business ID during invoice generation.
+                                <div className="p-5 bg-primary/5 rounded-3xl flex items-start gap-4 border border-primary/10">
+                                    <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                                    <p className="text-[11px] text-primary/80 leading-relaxed font-medium">
+                                        Procurement is subject to regional VAT regulations. Full tax manifests will be generated post-authorization.
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                        </aside>
                     </div>
                 )}
             </div>
