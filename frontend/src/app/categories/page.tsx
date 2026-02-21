@@ -9,7 +9,14 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 
-export default function CategoriesPage() {
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+
+import { Users } from 'lucide-react';
+import { Suspense } from 'react';
+
+function CategoriesContent() {
+    const searchParams = useSearchParams();
     const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [priceRange, setPriceRange] = useState({ min: '', max: '' });
@@ -17,6 +24,16 @@ export default function CategoriesPage() {
     const [sortBy, setSortBy] = useState('featured');
     const [showFilters, setShowFilters] = useState(false);
     const [localQuery, setLocalQuery] = useState('');
+
+    useEffect(() => {
+        const query = searchParams.get('q');
+        const brand = searchParams.get('brand');
+        const category = searchParams.get('category');
+
+        if (query) setLocalQuery(query);
+        if (brand) setSelectedBrands(brand.split(','));
+        if (category) setSelectedCategories(category.split(','));
+    }, [searchParams]);
 
     const handleBrandChange = (brand: string) => {
         setSelectedBrands((prev) => prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]);
@@ -148,22 +165,29 @@ export default function CategoriesPage() {
                         {activeFilters.length > 0 && (
                             <div className="flex flex-wrap gap-2 items-center">
                                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mr-2">Active Filters:</span>
-                                {activeFilters.map((f) => (
-                                    <motion.button
-                                        initial={{ scale: 0.8, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        key={f}
-                                        onClick={() => BRANDS.includes(f) ? handleBrandChange(f) : handleCategoryChange(f)}
-                                        className="bg-card border border-border px-4 py-2 rounded-xl text-xs font-bold text-foreground flex items-center gap-2 hover:border-primary transition-all shadow-sm"
+                                {selectedBrands.map((brand) => (
+                                    <button
+                                        key={brand}
+                                        onClick={() => handleBrandChange(brand)}
+                                        className="inline-flex items-center gap-2 bg-primary/5 text-primary px-3 py-1.5 rounded-lg text-[10px] font-black uppercase border border-primary/20 hover:bg-primary/10 transition-colors"
                                     >
-                                        {f} <X size={14} className="text-muted-foreground" />
-                                    </motion.button>
+                                        {brand} <X size={10} />
+                                    </button>
+                                ))}
+                                {selectedCategories.map((category) => (
+                                    <button
+                                        key={category}
+                                        onClick={() => handleCategoryChange(category)}
+                                        className="inline-flex items-center gap-2 bg-secondary/10 text-secondary-foreground px-3 py-1.5 rounded-lg text-[10px] font-black uppercase border border-secondary/20 hover:bg-secondary/20 transition-colors"
+                                    >
+                                        {category} <X size={10} />
+                                    </button>
                                 ))}
                                 <button
-                                    onClick={() => { setSelectedBrands([]); setSelectedCategories([]); setAppliedPrice({ min: '', max: '' }); }}
-                                    className="text-xs font-bold text-highlight hover:underline ml-2"
+                                    onClick={() => { setSelectedBrands([]); setSelectedCategories([]); setLocalQuery(''); }}
+                                    className="text-[10px] font-bold text-muted-foreground hover:text-foreground transition-colors ml-2 underline underline-offset-4"
                                 >
-                                    Clear All
+                                    Clear all
                                 </button>
                             </div>
                         )}
@@ -187,15 +211,17 @@ export default function CategoriesPage() {
 
                         {filteredProducts.length === 0 && (
                             <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="bg-card rounded-[40px] p-24 text-center border border-border shadow-sm flex flex-col items-center"
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="flex flex-col items-center justify-center py-24 text-center space-y-6 bg-muted/20 rounded-[40px] border border-dashed border-border"
                             >
-                                <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-8">
-                                    <Package className="text-muted-foreground" size={48} />
+                                <div className="w-20 h-20 bg-muted rounded-3xl flex items-center justify-center text-muted-foreground">
+                                    <Search size={32} />
                                 </div>
-                                <h3 className="text-2xl font-black mb-4">No matching results found</h3>
-                                <p className="text-muted-foreground mb-8 max-w-sm font-medium">Try broadening your filters or searching for more general terms.</p>
+                                <div className="space-y-2">
+                                    <h3 className="text-xl font-bold">No products found</h3>
+                                    <p className="text-muted-foreground text-sm max-w-xs">We couldn't find any products matching your specific filters. Try broadening your search.</p>
+                                </div>
                                 <Button
                                     onClick={() => { setSelectedBrands([]); setSelectedCategories([]); setLocalQuery(''); }}
                                     className="h-14 px-10 rounded-2xl bg-primary text-primary-foreground font-black btn-hover"
@@ -248,4 +274,10 @@ export default function CategoriesPage() {
     );
 }
 
-import { Users } from 'lucide-react';
+export default function CategoriesPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading Catalog...</div>}>
+            <CategoriesContent />
+        </Suspense>
+    );
+}

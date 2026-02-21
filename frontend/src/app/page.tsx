@@ -50,10 +50,10 @@ export default function Home() {
                         <AmazonCardTile
                             title="Global Beverage Leaders"
                             items={[
-                                { label: 'Pepsi Co.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Pepsi_logo_2014.svg/2000px-Pepsi_logo_2014.svg.png', link: '/categories?q=pepsi' },
-                                { label: 'Coca-Cola', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/2560px-Coca-Cola_logo.svg.png', link: '/categories?q=coke' },
-                                { label: 'Red Bull Energy', image: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Red_Bull_new_logo.svg/1200px-Red_Bull_new_logo.svg.png', link: '/categories?q=redbull' },
-                                { label: 'Nestlé Water', image: 'https://upload.wikimedia.org/wikipedia/en/thumb/e/e9/Lipton_logo.svg/1200px-Lipton_logo.svg.png', link: '/categories?q=lipton' },
+                                { label: 'Pepsi Co.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Pepsi_logo_2014.svg/2000px-Pepsi_logo_2014.svg.png', link: '/categories?brand=Pepsi' },
+                                { label: 'Coca-Cola', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/2560px-Coca-Cola_logo.svg.png', link: '/categories?brand=Coca-Cola' },
+                                { label: 'Red Bull Energy', image: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Red_Bull_new_logo.svg/1200px-Red_Bull_new_logo.svg.png', link: '/categories?brand=Red Bull' },
+                                { label: 'Nestlé Snacking', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Nestl%C3%A9_Logo.svg/1200px-Nestl%C3%A9_Logo.svg.png', link: '/categories?q=Nestle' },
                             ]}
                             footerLink="/categories"
                             footerText="Explore wholesale catalog"
@@ -62,7 +62,7 @@ export default function Home() {
                             title="Flash Case Deals"
                             singleItem={{
                                 image: "https://images.unsplash.com/photo-1543256283-42c206511a76?w=800",
-                                link: "/deals"
+                                link: "/categories?category=Snacks & Sweets"
                             }}
                             footerLink="/deals"
                             footerText="Save up to 40% today"
@@ -70,10 +70,10 @@ export default function Home() {
                         <AmazonCardTile
                             title="New Supply Arrivals"
                             items={[
-                                { label: 'Artisan Coffee', image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400', link: '/categories' },
-                                { label: 'Pure Hydration', image: 'https://images.unsplash.com/photo-1548839140-29ec703f21b7?w=400', link: '/categories' },
-                                { label: 'Sparkling Sodas', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400', link: '/categories' },
-                                { label: 'Fresh Organics', image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400', link: '/categories' },
+                                { label: 'Davidoff Coffee', image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400', link: '/categories?brand=Davidoff' },
+                                { label: 'Lavazza Oro', image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400', link: '/categories?brand=Lavazza' },
+                                { label: 'Snickers Cases', image: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=400', link: '/categories?brand=Snickers' },
+                                { label: 'Doritos Bulk', image: 'https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=400', link: '/categories?brand=Doritos' },
                             ]}
                             footerLink="/categories"
                             footerText="Browse newest stock"
