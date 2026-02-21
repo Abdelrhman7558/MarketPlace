@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import {
     Package,
     Truck,
@@ -70,8 +71,8 @@ export default function CustomerDashboard() {
                             return (
                                 <div key={item.step} className="flex flex-col items-center gap-3">
                                     <div className={`w-12 h-12 rounded-full flex items-center justify-center border-4 ${item.done ? 'bg-primary border-[#F5F7F7] dark:border-[#131921] text-[#131921]' :
-                                            item.active ? 'bg-white dark:bg-gray-800 border-primary text-primary animate-pulse' :
-                                                'bg-white dark:bg-gray-800 border-[#E6E6E6] dark:border-white/10 text-white/20'
+                                        item.active ? 'bg-white dark:bg-gray-800 border-primary text-primary animate-pulse' :
+                                            'bg-white dark:bg-gray-800 border-[#E6E6E6] dark:border-white/10 text-white/20'
                                         }`}>
                                         <Icon size={20} />
                                     </div>
