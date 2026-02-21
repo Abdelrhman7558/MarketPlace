@@ -4,26 +4,28 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-    size?: 'sm' | 'md' | 'lg';
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'highlight';
+    size?: 'sm' | 'md' | 'lg' | 'xl';
     isLoading?: boolean;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant = 'primary', size = 'md', isLoading, children, ...props }, ref) => {
-        const baseStyles = "inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none";
+        const baseStyles = "inline-flex items-center justify-center font-bold transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:pointer-events-none";
 
         const variants = {
-            primary: "bg-primary text-primary-foreground hover:shadow-lg hover:brightness-110",
-            secondary: "bg-secondary text-secondary-foreground hover:shadow-lg hover:brightness-110",
-            outline: "border-2 border-primary text-primary bg-transparent hover:bg-primary/10",
-            ghost: "text-primary bg-transparent hover:bg-primary/5 shadow-none",
+            primary: "bg-primary text-primary-foreground hover:bg-primary/90 premium-shadow btn-hover",
+            secondary: "bg-secondary text-secondary-foreground hover:brightness-110 premium-shadow btn-hover",
+            highlight: "bg-highlight text-highlight-foreground hover:brightness-110 premium-shadow btn-hover",
+            outline: "border-2 border-border bg-transparent hover:bg-muted text-foreground",
+            ghost: "text-muted-foreground bg-transparent hover:bg-muted hover:text-foreground shadow-none",
         };
 
         const sizes = {
-            sm: "px-4 py-1.5 text-xs",
-            md: "px-6 py-2.5 text-sm",
-            lg: "px-8 py-3 text-base font-bold",
+            sm: "px-4 py-2 text-xs rounded-xl",
+            md: "px-6 py-3 text-sm rounded-2xl",
+            lg: "px-8 py-4 text-base rounded-[20px] font-heading",
+            xl: "px-10 py-5 text-lg rounded-[24px] font-heading",
         };
 
         return (
