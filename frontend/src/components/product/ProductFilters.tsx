@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Percent, CheckCircle2 } from 'lucide-react';
 
@@ -41,8 +44,6 @@ function FilterSection({ title, children, defaultOpen = true }: { title: string;
         </div>
     );
 }
-
-import { AnimatePresence } from 'framer-motion';
 
 export default function ProductFilters(props: FilterProps) {
     const minVal = parseInt(props.priceRange.min) || 0;
@@ -199,5 +200,3 @@ export default function ProductFilters(props: FilterProps) {
         </div>
     );
 }
-
-import { CheckCircle2 } from 'lucide-react';
