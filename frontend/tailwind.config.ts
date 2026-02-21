@@ -50,7 +50,8 @@ const config: Config = {
                 sm: "calc(var(--radius) - 4px)",
             },
             boxShadow: {
-                premium: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                premium: "0 8px 30px rgba(0, 0, 0, 0.04)",
+                "premium-dark": "0 8px 30px rgba(0, 0, 0, 0.2)",
                 glow: "0 0 15px hsl(var(--ring) / 0.5)",
             },
             transitionProperty: {
