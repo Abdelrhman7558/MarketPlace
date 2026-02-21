@@ -2,7 +2,16 @@
 
 import * as React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, MoreVertical, CheckCircle, XCircle, Ban, ShieldCheck, Mail, Phone, Calendar } from 'lucide-react';
+import {
+    Search,
+    CheckCircle,
+    XCircle,
+    Ban,
+    ShieldCheck,
+    Phone,
+    Activity,
+    ShieldAlert
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type UserStatus = 'PENDING_APPROVAL' | 'ACTIVE' | 'REJECTED' | 'BLOCKED';
@@ -89,32 +98,132 @@ export default function AdminUsersPage() {
                 ))}
             </div>
 
-            {/* Users List */}
-                                                )}
-            {activeTab === 'BLOCKED' && (
-                <button
-                    onClick={() => updateStatus(user.email, 'ACTIVE')}
-                    className="h-10 px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-xs rounded-lg border border-emerald-500/20 flex items-center gap-2 transition-all"
-                >
-                    <CheckCircle size={14} /> Unblock
-                </button>
-            )}
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Users Table */}
+                <div className="lg:col-span-3 space-y-6">
+                    <div className="bg-[#131921] border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-white/5">
+                                        <th className="px-8 py-5 text-[10px] font-black text-white/40 uppercase tracking-widest border-b border-white/5">User Entity</th>
+                                        <th className="px-8 py-5 text-[10px] font-black text-white/40 uppercase tracking-widest border-b border-white/5">Role</th>
+                                        <th className="px-8 py-5 text-[10px] font-black text-white/40 uppercase tracking-widest border-b border-white/5">Status</th>
+                                        <th className="px-8 py-5 text-[10px] font-black text-white/40 uppercase tracking-widest border-b border-white/5 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/5">
+                                    <AnimatePresence mode="popLayout">
+                                        {filteredUsers.length > 0 ? filteredUsers.map((user) => (
+                                            <motion.tr
+                                                key={user.email}
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                exit={{ opacity: 0, x: -20 }}
+                                                className="group hover:bg-white/[0.02] transition-colors"
+                                            >
+                                                <td className="px-8 py-6">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center font-black text-primary border border-white/10">
+                                                            {user.name[0]}
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm font-black text-white">{user.name}</p>
+                                                            <p className="text-[11px] text-white/30 font-bold">{user.email}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-6">
+                                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                                                        <ShieldCheck size={12} className="text-primary" />
+                                                        <span className="text-[10px] text-white font-black uppercase tracking-tighter">{user.role}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-6">
+                                                    <div className={cn(
+                                                        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter border",
+                                                        user.status === 'ACTIVE' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                                                            user.status === 'PENDING_APPROVAL' ? "bg-amber-400/10 text-amber-400 border-amber-400/20" :
+                                                                "bg-red-500/10 text-red-500 border-red-500/20"
+                                                    )}>
+                                                        <div className={cn("w-1 h-1 rounded-full",
+                                                            user.status === 'ACTIVE' ? "bg-emerald-400" :
+                                                                user.status === 'PENDING_APPROVAL' ? "bg-amber-400" : "bg-red-400"
+                                                        )} />
+                                                        {user.status === 'PENDING_APPROVAL' ? 'Pending' : user.status}
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-6 text-right">
+                                                    <div className="flex items-center justify-end gap-2">
+                                                        {user.status === 'PENDING_APPROVAL' ? (
+                                                            <>
+                                                                <button onClick={() => updateStatus(user.email, 'ACTIVE')} className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors" title="Approve">
+                                                                    <CheckCircle size={18} />
+                                                                </button>
+                                                                <button onClick={() => updateStatus(user.email, 'REJECTED')} className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors" title="Reject">
+                                                                    <XCircle size={18} />
+                                                                </button>
+                                                            </>
+                                                        ) : user.status === 'ACTIVE' ? (
+                                                            <button onClick={() => updateStatus(user.email, 'BLOCKED')} className="p-2 hover:bg-amber-500/20 text-amber-400 rounded-lg transition-colors" title="Block">
+                                                                <ShieldAlert size={18} />
+                                                            </button>
+                                                        ) : (
+                                                            <button onClick={() => updateStatus(user.email, 'ACTIVE')} className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors" title="Unblock">
+                                                                <CheckCircle size={18} />
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </motion.tr>
+                                        )) : (
+                                            <tr>
+                                                <td colSpan={4} className="px-8 py-12 text-center text-white/20 text-sm font-medium">
+                                                    No users found for this status segment.
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </AnimatePresence>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Audit Log Panel */}
+                <div className="lg:col-span-1 space-y-6">
+                    <div className="bg-[#131921] border border-white/5 rounded-3xl p-6 shadow-2xl">
+                        <div className="flex items-center gap-2 mb-6">
+                            <Activity className="text-primary" size={20} />
+                            <h3 className="text-sm font-black text-white uppercase tracking-widest">System Audit</h3>
+                        </div>
+
+                        <div className="space-y-6">
+                            {[
+                                { action: "User Approved", target: "John S.", time: "2m ago", color: "bg-emerald-400" },
+                                { action: "Invite Sent", target: "Supplier Inc.", time: "15m ago", color: "bg-blue-400" },
+                                { action: "Role Changed", target: "Sarah L.", time: "1h ago", color: "bg-primary" },
+                                { action: "Placement Rejected", target: "PL-099", time: "3h ago", color: "bg-red-400" },
+                                { action: "System Entry", target: "Super Admin", time: "5h ago", color: "bg-white/20" }
+                            ].map((log, i) => (
+                                <div key={i} className="flex gap-4 relative">
+                                    {i !== 4 && <div className="absolute left-[7px] top-4 bottom-[-24px] w-[2px] bg-white/5" />}
+                                    <div className={cn("w-4 min-w-[16px] h-4 rounded-full border-4 border-[#131921] relative z-10", log.color)} />
+                                    <div className="space-y-0.5">
+                                        <p className="text-[10px] font-black text-white/80 leading-none">{log.action}</p>
+                                        <p className="text-[9px] text-white/30 font-bold uppercase tracking-tighter">{log.target} • {log.time}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <button className="w-full mt-8 py-3 text-[10px] font-black text-white/20 uppercase tracking-[0.2em] border border-white/5 rounded-xl hover:bg-white/5 transition-colors">
+                            View Full Logs
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-                                        </td >
-                                    </motion.tr >
-                                )) : (
-        <tr>
-            <td colSpan={4} className="px-8 py-12 text-center text-white/20 text-sm font-medium">
-                No users found for this status segment.
-            </td>
-        </tr>
-    )
-}
-                            </AnimatePresence >
-                        </tbody >
-                    </table >
-                </div >
-            </div >
-        </div >
     );
 }
