@@ -1,145 +1,121 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-    /* Light Mode Variables */
-    --background: #EAEDED;
-    --foreground: #050B18;
-    --card: #FFFFFF;
-    --card-foreground: #050B18;
-    --primary: #050B18;
-    --primary-foreground: #FFFFFF;
-    --secondary: #FF7A1A;
-    --secondary-foreground: #FFFFFF;
-    --success: #007600;
-    --accent: #B12704;
-    --border: #D5D9D9;
-    --input: #FFFFFF;
-    --ring: #FF7A1A;
+@layer base {
+    :root {
+        /* Brand HSL Colors */
+        --background: 210 40% 98%;
+        --foreground: 222 47% 11%;
 
-    /* Responsive Typography Transitions */
-    --transition-speed: 0.3s;
-}
+        --card: 0 0% 100%;
+        --card-foreground: 222 47% 11%;
 
-[data-theme='dark'] {
-    /* Dark Mode Variables */
-    --background: #111827;
-    --foreground: #F9FAFB;
-    --card: #1F2937;
-    --card-foreground: #F9FAFB;
-    --primary: #60A5FA;
-    --primary-foreground: #111827;
-    --secondary: #FBBF24;
-    --secondary-foreground: #111827;
-    --success: #34D399;
-    --accent: #FB7185;
-    --border: #374151;
-    --input: #1F2937;
-    --ring: #34D399;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222 47% 11%;
+
+        --primary: 221 45% 33%;
+        /* Deep Blue #1E3A8A equivalent */
+        --primary-foreground: 210 40% 98%;
+
+        --secondary: 35 92% 50%;
+        /* Amber #F59E0B equivalent */
+        --secondary-foreground: 210 40% 98%;
+
+        --accent: 161 72% 39%;
+        /* Emerald #10B981 equivalent */
+        --accent-foreground: 210 40% 98%;
+
+        --highlight: 348 89% 60%;
+        /* Soft Rose #F43F5E equivalent */
+        --highlight-foreground: 210 40% 98%;
+
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 221.2 83.2% 53.3%;
+
+        --radius: 0.5rem;
+    }
+
+    .dark {
+        --background: 222 47% 6%;
+        --foreground: 210 40% 98%;
+
+        --card: 222 47% 11%;
+        --card-foreground: 210 40% 98%;
+
+        --popover: 222 47% 11%;
+        --popover-foreground: 210 40% 98%;
+
+        --primary: 217 91% 60%;
+        --primary-foreground: 222 47% 11%;
+
+        --secondary: 35 92% 50%;
+        --secondary-foreground: 222 47% 11%;
+
+        --accent: 161 72% 39%;
+        --accent-foreground: 210 40% 98%;
+
+        --highlight: 348 89% 60%;
+        --highlight-foreground: 210 40% 98%;
+
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+
+        --border: 217.2 32.6% 17.5%;
+        --input: 217.2 32.6% 17.5%;
+        --ring: 224.3 76.3% 48%;
+    }
 }
 
 @layer base {
     * {
         @apply border-border;
-        transition: background-color var(--transition-speed) ease,
-            color var(--transition-speed) ease,
-            border-color var(--transition-speed) ease,
-            box-shadow var(--transition-speed) ease;
     }
 
     body {
-        @apply bg-background text-foreground antialiased overflow-x-hidden;
-        font-family: 'Inter', sans-serif;
-        width: 100%;
-        max-width: 100vw;
-    }
-
-    html {
-        @apply overflow-x-hidden;
-        scroll-behavior: smooth;
+        @apply bg-background text-foreground antialiased;
+        font-feature-settings: "rlig" 1, "calt" 1;
     }
 
     /* Responsive Typography with clamp() */
     h1 {
-        @apply font-poppins font-bold;
-        font-size: clamp(1.5rem, 5vw, 3rem);
-        line-height: 1.1;
+        @apply font-heading text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight;
     }
 
     h2 {
-        @apply font-poppins font-bold;
-        font-size: clamp(1.25rem, 4vw, 2.25rem);
-        line-height: 1.2;
+        @apply font-heading text-3xl sm:text-4xl font-bold tracking-tight;
     }
 
     h3 {
-        @apply font-poppins font-bold;
-        font-size: clamp(1.1rem, 3vw, 1.875rem);
+        @apply font-heading text-2xl sm:text-3xl font-bold;
     }
 
     h4 {
-        @apply font-poppins font-bold;
-        font-size: clamp(1rem, 2.5vw, 1.5rem);
-    }
-
-    p,
-    span,
-    div {
-        font-size: clamp(0.875rem, 1vw + 0.5rem, 1rem);
+        @apply font-heading text-xl font-bold;
     }
 }
 
 @layer components {
-    .btn-primary {
-        @apply bg-primary text-primary-foreground px-6 py-2.5 rounded-lg shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center font-semibold;
+    .glass {
+        @apply bg-background/80 backdrop-blur-md border border-border/50;
     }
 
-    .btn-secondary {
-        @apply bg-secondary text-secondary-foreground px-6 py-2.5 rounded-lg shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center font-semibold;
+    .btn-hover {
+        @apply transition-all duration-300 hover:scale-[1.02] active:scale-[0.98];
     }
 
-    .card-premium {
-        @apply bg-card text-card-foreground p-6 rounded-xl border border-border shadow-sm hover:shadow-md transition-shadow duration-300;
-    }
-
-    .input-standard {
-        @apply bg-input border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200;
+    .premium-shadow {
+        @apply shadow-[0_8px_30px_rgb(0, 0, 0, 0.04)] dark:shadow-[0_8px_30px_rgb(0, 0, 0, 0.2)];
     }
 }
 
-/* Custom Scrollbar for Modern Feel */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    @apply bg-background;
-}
-
-::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #9CA3AF;
-}
-
-/* Loading Animations */
-@keyframes shimmer {
-    0% {
-        background-position: -200% 0;
-    }
-
-    100% {
-        background-position: 200% 0;
-    }
-}
-
-.animate-shimmer {
-    background: linear-gradient(90deg, transparent 0%, var(--border) 50%, transparent 100%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite linear;
+/* Smooth color transitions for dark mode */
+* {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
 }

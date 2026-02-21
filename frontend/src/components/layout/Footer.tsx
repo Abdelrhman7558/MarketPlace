@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronRight, Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { ChevronRight, Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, PackageSearch } from 'lucide-react';
 
 const FOOTER_COLUMNS = [
     {
@@ -17,13 +17,13 @@ const FOOTER_COLUMNS = [
         title: 'For Suppliers',
         links: [
             { name: 'Register as Supplier', href: '/auth/register' },
-            { name: 'Partner Program', href: '/auth/register' },
+            { name: 'Partner Program', href: '/auth/partner' },
             { name: 'Supplier Dashboard', href: '/dashboard/supplier' },
-            { name: 'Marketing Tools', href: '/auth/register' },
+            { name: 'Marketing Tools', href: '/marketing' },
         ],
     },
     {
-        title: 'Customer Support',
+        title: 'Support',
         links: [
             { name: 'Help Center', href: '/help' },
             { name: 'Track My Order', href: '/orders' },
@@ -35,29 +35,25 @@ const FOOTER_COLUMNS = [
 
 export default function Footer() {
     return (
-        <footer className="bg-[#050B18] text-white border-t border-white/5">
-            {/* Back to top - Refined style */}
-            <button
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="w-full bg-[#111827] hover:bg-[#1a2130] text-gray-400 hover:text-white text-xs font-black py-4 text-center cursor-pointer transition-all border-b border-white/5"
-            >
-                BACK TO TOP
-            </button>
-
-            {/* Main Footer Content */}
-            <div className="container-wide py-16 px-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24">
+        <footer className="bg-background border-t border-border mt-auto">
+            <div className="container mx-auto px-6 py-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {/* Brand Info */}
                     <div className="space-y-6">
-                        <Link href="/" className="inline-block">
-                            <span className="font-black text-3xl tracking-tighter">Market<span className="text-[#FF7A1A]">Place</span></span>
+                        <Link href="/" className="flex items-center gap-2 group">
+                            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center premium-shadow group-hover:rotate-12 transition-transform duration-300">
+                                <PackageSearch className="text-primary-foreground" size={24} />
+                            </div>
+                            <span className="font-heading font-bold text-2xl tracking-tight">
+                                Bev<span className="text-secondary">Market</span>
+                            </span>
                         </Link>
-                        <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-                            The premier B2B wholesale marketplace for beverages and consumer goods across the region.
+                        <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
+                            The premier B2B wholesale marketplace for beverages, connecting global brands with local distributors since 2026.
                         </p>
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                             {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
-                                <a key={i} href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#FF7A1A] hover:text-white transition-all text-gray-400">
+                                <a key={i} href="#" className="w-10 h-10 rounded-xl bg-muted/50 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-300">
                                     <Icon size={18} />
                                 </a>
                             ))}
@@ -67,15 +63,14 @@ export default function Footer() {
                     {/* Dynamic Columns */}
                     {FOOTER_COLUMNS.map((col) => (
                         <div key={col.title}>
-                            <h3 className="text-lg font-black mb-6 text-white uppercase tracking-wider text-sm">{col.title}</h3>
-                            <ul className="space-y-4">
+                            <h3 className="font-heading font-bold text-sm uppercase tracking-widest mb-6 opacity-80">{col.title}</h3>
+                            <ul className="space-y-3">
                                 {col.links.map((link) => (
                                     <li key={link.name}>
                                         <Link
                                             href={link.href}
-                                            className="text-gray-400 text-sm hover:text-[#FF7A1A] transition-colors flex items-center group"
+                                            className="text-muted-foreground text-sm hover:text-primary hover:translate-x-1 transition-all flex items-center group"
                                         >
-                                            <ChevronRight size={12} className="mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                                             {link.name}
                                         </Link>
                                     </li>
@@ -86,17 +81,16 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Bottom Legal Bar */}
-            <div className="border-t border-white/5 py-8 bg-[#030712]">
-                <div className="container-wide px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <p className="text-gray-500 text-[11px] font-medium">
-                        © 2026 BevMarket Marketplace. All Rights Reserved.
+            {/* Bottom Bar */}
+            <div className="border-t border-border py-8 bg-muted/30">
+                <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <p className="text-muted-foreground text-xs font-medium">
+                        © 2026 BevMarket. Built for Performance & Security.
                     </p>
-                    <div className="flex items-center gap-8 text-[11px] font-bold text-gray-400">
-                        <Link href="#" className="hover:text-white">Conditions of Use</Link>
-                        <Link href="#" className="hover:text-white">Privacy Notice</Link>
-                        <Link href="#" className="hover:text-white">Cookies</Link>
-                        <Link href="#" className="hover:text-white">Interest-Based Ads</Link>
+                    <div className="flex items-center gap-6 text-xs font-semibold text-muted-foreground">
+                        <Link href="#" className="hover:text-foreground transition-colors">Privacy</Link>
+                        <Link href="#" className="hover:text-foreground transition-colors">Terms</Link>
+                        <Link href="#" className="hover:text-foreground transition-colors">Cookies</Link>
                     </div>
                 </div>
             </div>
