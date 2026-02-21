@@ -8,7 +8,7 @@ import {
     ShieldCheck, RotateCcw, ChevronRight, Share2,
     Heart, Info, Package, Sparkles, ArrowLeft, ShoppingCart
 } from 'lucide-react';
-import { PRODUCTS } from '@/lib/products';
+import { PRODUCTS, type Product } from '@/lib/products';
 import { useCart } from '@/lib/cart';
 import ProductCard from '@/components/product/ProductCard';
 import { motion, AnimatePresence } from 'framer-motion';

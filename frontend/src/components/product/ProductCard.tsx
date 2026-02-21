@@ -6,21 +6,9 @@ import { useState } from 'react';
 import { useCart } from '@/lib/cart';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { type Product } from '@/lib/products';
 
-export interface Product {
-    id: string;
-    name: string;
-    brand: string;
-    price: number;
-    unit: string;
-    minOrder: number;
-    image: string;
-    inStock: boolean;
-    category: string;
-    bulkSave?: boolean;
-    rating?: number;
-    reviews?: number;
-}
+// Product interface is now imported from @/lib/products
 
 export default function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
     const [isAdded, setIsAdded] = useState(false);

@@ -2,13 +2,15 @@
 
 import * as React from 'react';
 import { motion } from 'framer-motion';
-import { Users, Package, DollarSign, Clock, TrendingUp, ArrowUpRight, ArrowDownRight, UserCheck } from 'lucide-react';
+import { Users, Package, DollarSign, Clock, TrendingUp, ArrowUpRight, ArrowDownRight, UserCheck, ShoppingCart } from 'lucide-react';
 
 const STATS = [
     { label: 'Total Users', value: '1,284', trend: '+12%', up: true, icon: Users, color: 'text-primary' },
-    { label: 'Active Suppliers', value: '48', trend: '+5%', up: true, icon: Package, color: 'text-blue-400' },
-    { label: 'Daily Revenue', value: '$12,450', trend: '-2%', up: false, icon: DollarSign, color: 'text-emerald-400' },
+    { label: 'Verified Suppliers', value: '48', trend: '+5%', up: true, icon: Package, color: 'text-blue-400' },
+    { label: 'Total Revenue', value: '$124,500', trend: '+18%', up: true, icon: DollarSign, color: 'text-emerald-400' },
     { label: 'Pending Approvals', value: '14', trend: 'High', up: true, icon: Clock, color: 'text-amber-400' },
+    { label: 'Active Placements', value: '8', trend: 'Stable', up: true, icon: TrendingUp, color: 'text-purple-400' },
+    { label: 'Orders Today', value: '156', trend: '+22%', up: true, icon: ShoppingCart, color: 'text-primary' },
 ];
 
 export default function AdminOverviewPage() {

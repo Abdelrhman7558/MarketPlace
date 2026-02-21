@@ -2,16 +2,27 @@
 
 import * as React from 'react';
 import { useCart } from '@/lib/cart';
-import { Search, ShoppingCart, User, Menu, MapPin, ChevronDown } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, MapPin, ChevronDown, Coffee, Zap, Droplets, IceCream, ShieldCheck, Home, Grid } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
+import { CATEGORIES_LIST } from '@/lib/products';
+
+const CATEGORY_ICONS: Record<string, any> = {
+    'Soft Drinks': Droplets,
+    'Energy Drinks': Zap,
+    'Coffee & Tea': Coffee,
+    'Snacks & Sweets': IceCream,
+    'Personal Care': ShieldCheck,
+    'Home Care': Home,
+};
 
 export default function AmazonNavbar() {
     const { items } = useCart();
     const { user } = useAuth();
     const [searchTerm, setSearchTerm] = React.useState('');
+    const [isCategoriesOpen, setIsCategoriesOpen] = React.useState(false);
     const router = useRouter();
     const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -57,16 +68,20 @@ export default function AmazonNavbar() {
                 {/* Right Actions */}
                 <div className="flex items-center gap-1 h-full">
                     {/* Account & Lists */}
-                    <Link
-                        href={user ? (user.role === 'admin' ? '/dashboard/super-admin-7bd0' : `/dashboard/${user.role}`) : '/auth/login'}
-                        className="flex flex-col items-start p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full whitespace-nowrap min-w-max"
-                    >
-                        <span className="text-[11px] leading-tight font-medium text-white/80">Hello, {user ? user.name.split(' ')[0] : 'Sign in'}</span>
-                        <div className="flex items-center gap-0.5">
-                            <span className="text-xs md:text-sm font-bold leading-tight">Account</span>
-                            <ChevronDown size={10} className="text-white/60" />
-                        </div>
-                    </Link>
+                    <div className="relative group h-full">
+                        <Link
+                            href={user ? (user.role === 'admin' ? '/admin' : `/dashboard/${user.role}`) : '/auth/login'}
+                            className="flex flex-col items-start p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full whitespace-nowrap min-w-max"
+                        >
+                            <span className="text-[11px] leading-tight font-medium text-white/80">Hello, {user ? user.name.split(' ')[0] : 'Sign in'}</span>
+                            <div className="flex items-center gap-0.5">
+                                <span className="text-xs md:text-sm font-bold leading-tight">Account</span>
+                                <ChevronDown size={10} className="text-white/60" />
+                            </div>
+                        </Link>
+
+                        {/* Dropdown would go here if needed, keeping it simple as per Amazon style */}
+                    </div>
 
                     {/* Orders */}
                     <Link href="/dashboard" className="hidden md:flex flex-col items-start p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full whitespace-nowrap">
@@ -87,12 +102,54 @@ export default function AmazonNavbar() {
                 </div>
             </div>
 
-            {/* Bottom Bar - Simplified */}
-            <div className="bg-[#232F3E] text-white py-0.5 px-4 flex items-center justify-start gap-4 h-9 overflow-x-auto no-scrollbar shadow-md">
-                <button className="flex items-center gap-1 font-bold text-xs hover:border-white/30 border border-transparent rounded px-2 py-1 transition-all whitespace-nowrap">
-                    <Menu size={18} /> All
-                </button>
-                <div className="flex items-center gap-3 text-xs font-medium text-white/90">
+            {/* Bottom Bar */}
+            <div className="bg-[#232F3E] text-white py-0.5 px-4 flex items-center justify-start gap-4 h-9 relative shadow-md">
+                {/* Categories Dropdown Trigger */}
+                <div
+                    className="relative group h-full flex items-center"
+                    onMouseEnter={() => setIsCategoriesOpen(true)}
+                    onMouseLeave={() => setIsCategoriesOpen(false)}
+                >
+                    <button className="flex items-center gap-1 font-bold text-xs hover:border-white/30 border border-transparent rounded px-2 py-1 transition-all whitespace-nowrap h-8">
+                        <Menu size={18} /> Categories
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    <div className={cn(
+                        "absolute top-full left-0 w-64 bg-white shadow-2xl rounded-b-xl overflow-hidden transition-all duration-300 origin-top transform z-[60]",
+                        isCategoriesOpen ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0 pointer-events-none"
+                    )}>
+                        <div className="py-2">
+                            {CATEGORIES_LIST.map((cat) => {
+                                const Icon = CATEGORY_ICONS[cat] || Grid;
+                                return (
+                                    <Link
+                                        key={cat}
+                                        href={`/categories?category=${encodeURIComponent(cat)}`}
+                                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors group"
+                                        onClick={() => setIsCategoriesOpen(false)}
+                                    >
+                                        <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                            <Icon size={18} className="text-gray-500 group-hover:text-primary" />
+                                        </div>
+                                        <span className="font-bold">{cat}</span>
+                                    </Link>
+                                );
+                            })}
+                            <div className="border-t border-gray-100 mt-2 pt-2">
+                                <Link
+                                    href="/categories"
+                                    className="flex items-center justify-center py-3 text-xs font-black text-primary uppercase tracking-widest hover:bg-primary/5 transition-colors"
+                                    onClick={() => setIsCategoriesOpen(false)}
+                                >
+                                    Browse All Catalog
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-3 text-xs font-medium text-white/90 h-full">
                     {["Today's Deals", "Customer Service", "Registry", "Sell"].map((item) => (
                         <Link key={item} href="#" className="hover:border-white/30 border border-transparent rounded px-2 py-1 transition-all whitespace-nowrap">
                             {item}

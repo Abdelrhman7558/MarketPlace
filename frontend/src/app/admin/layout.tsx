@@ -99,29 +99,45 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <header className="h-20 bg-[#131921]/50 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-8 z-40">
                     <div className="flex items-center gap-4">
                         <div className="flex flex-col">
-                            <h2 className="text-white font-bold tracking-tight">Admin Control Center</h2>
-                            <p className="text-white/40 text-[11px] font-medium uppercase tracking-widest leading-none mt-1">Status: Active</p>
+                            <h2 className="text-white font-black tracking-tight text-xl">Command Hub</h2>
+                            <p className="text-primary text-[10px] font-black uppercase tracking-[0.2em] leading-none mt-1">Enterprise Administration</p>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-6">
-                        <button className="relative text-white/60 hover:text-white transition-colors">
-                            <Bell size={20} />
-                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full border-2 border-[#131921]" />
+                        {/* Notification Bell */}
+                        <button className="relative group p-2 rounded-xl hover:bg-white/5 transition-all">
+                            <Bell size={20} className="text-white/60 group-hover:text-primary group-hover:rotate-12 transition-all" />
+                            <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-[#131921] animate-pulse" />
+
+                            {/* Hover Notification Preview */}
+                            <div className="absolute top-full right-0 mt-4 w-80 bg-[#131921] border border-white/10 rounded-2xl shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none translate-y-2 group-hover:translate-y-0 transition-all p-4 z-[100]">
+                                <h4 className="text-xs font-black text-white uppercase tracking-widest mb-4">Urgent Actions</h4>
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5">
+                                        <div className="w-2 h-2 rounded-full bg-amber-400" />
+                                        <p className="text-[10px] text-white/80 font-medium">3 new supplier approvals pending</p>
+                                    </div>
+                                    <div className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5">
+                                        <div className="w-2 h-2 rounded-full bg-primary" />
+                                        <p className="text-[10px] text-white/80 font-medium">New placement request for Hero Slot</p>
+                                    </div>
+                                </div>
+                            </div>
                         </button>
 
                         <div className="h-8 w-[1px] bg-white/10 mx-2" />
 
                         <div className="flex items-center gap-3">
                             <div className="text-right hidden sm:block">
-                                <p className="text-sm font-bold text-white">{user?.name}</p>
-                                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
+                                <p className="text-sm font-black text-white">{user?.name}</p>
+                                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20">
                                     <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                    <span className="text-[10px] text-primary font-black uppercase tracking-tighter">Admin</span>
+                                    <span className="text-[9px] text-primary font-black uppercase tracking-tighter">Super Admin</span>
                                 </div>
                             </div>
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-[#FF8C33] flex items-center justify-center font-black text-[#131921] border-2 border-white/10">
-                                {user?.name[0]}
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-[#FF8C33] flex items-center justify-center font-black text-[#131921] border-2 border-white/10 shadow-lg shadow-primary/10">
+                                {user?.name?.[0] || 'A'}
                             </div>
                         </div>
                     </div>

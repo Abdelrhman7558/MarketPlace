@@ -2,8 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { Plus, Search, Edit3, Trash2, X, Package, Check, AlertTriangle, Upload, Link as LinkIcon, Image as ImageIcon, Eye, Star, ShoppingCart } from 'lucide-react';
-import { PRODUCTS as INITIAL_PRODUCTS } from '@/lib/products';
-import { Product } from '@/components/product/ProductCard';
+import { PRODUCTS as INITIAL_PRODUCTS, type Product } from '@/lib/products';
 
 export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);

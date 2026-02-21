@@ -6,24 +6,28 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const SLIDES = [
     {
-        image: "/images/ads/bloom-hero.jpg",
-        title: "Bloom Sparkling Energy",
-        subtitle: "Zero Sugar. 100% Obsessed. 10 Calories."
+        image: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&q=80&w=2000",
+        title: "Limited Time Offer: 30% Off Energy Drinks",
+        subtitle: "Bulk orders for Red Bull & Monster at exclusive wholesale prices.",
+        badge: "Seasonal Deal"
     },
     {
         image: "https://images.unsplash.com/photo-1550345332-09e3ac987658?auto=format&fit=crop&q=80&w=2000",
-        title: "Wholesale Beverages",
-        subtitle: "Direct from top global suppliers"
+        title: "Wholesale Beverages Direct",
+        subtitle: "Global brands delivered to your doorstep. Verified suppliers only.",
+        badge: "B2B Exclusive"
     },
     {
         image: "https://images.unsplash.com/photo-1543256283-42c206511a76?auto=format&fit=crop&q=80&w=2000",
-        title: "Bulk Deals",
-        subtitle: "Save up to 40% on case orders"
+        title: "Bulk Coffee & Tea Savings",
+        subtitle: "Save up to 40% on case orders of Nescafe, Lavazza, and more.",
+        badge: "Best Seller"
     },
     {
         image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=2000",
-        title: "New Arrivals",
-        subtitle: "Check out the latest energy drinks"
+        title: "Supplier Spotlight: Bloom Energy",
+        subtitle: "Check out the latest sparkling energy flavors from Bloom.",
+        badge: "New Arrival"
     }
 ];
 

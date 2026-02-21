@@ -1,4 +1,17 @@
-import { Product } from '@/components/product/ProductCard';
+export interface Product {
+    id: string;
+    name: string;
+    brand: string;
+    price: number;
+    unit: string;
+    minOrder: number;
+    image: string;
+    inStock: boolean;
+    category: string;
+    bulkSave?: boolean;
+    rating?: number;
+    reviews?: number;
+}
 
 export const PRODUCTS: Product[] = [
     // --- BEVERAGES ---
@@ -239,6 +252,72 @@ export const PRODUCTS: Product[] = [
         inStock: true,
         category: 'Coffee & Tea',
     },
+    {
+        id: '206',
+        name: 'Mars Milk Chocolate Bar, 51g (Box of 24)',
+        brand: 'Mars',
+        price: 18.50,
+        unit: 'box',
+        minOrder: 5,
+        image: 'https://images.unsplash.com/photo-1621317911081-999335882f06?w=400&h=400&fit=crop',
+        inStock: true,
+        category: 'Snacks & Sweets',
+    },
+    {
+        id: '207',
+        name: 'Twix Caramel Cookie Chocolate, 50g (Box of 30)',
+        brand: 'Twix',
+        price: 22.99,
+        unit: 'box',
+        minOrder: 5,
+        image: 'https://images.unsplash.com/photo-1590323739811-322ca218c06f?w=400&h=400&fit=crop',
+        inStock: true,
+        category: 'Snacks & Sweets',
+    },
+    {
+        id: '208',
+        name: 'Bounty Coconut Chocolate Bar, 57g (Case of 24)',
+        brand: 'Bounty',
+        price: 19.50,
+        unit: 'box',
+        minOrder: 4,
+        image: 'https://images.unsplash.com/photo-1596773344160-59f0f9caab6d?w=400&h=400&fit=crop',
+        inStock: true,
+        category: 'Snacks & Sweets',
+    },
+    {
+        id: '601',
+        name: 'Red Rose Premium Tea Bags (Pack of 100)',
+        brand: 'Red Rose',
+        price: 12.25,
+        unit: 'box',
+        minOrder: 20,
+        image: 'https://images.unsplash.com/photo-1594631252845-29fc4586d517?w=400&h=400&fit=crop',
+        inStock: true,
+        category: 'Coffee & Tea',
+    },
+    {
+        id: '503',
+        name: 'Lay\'s Classic Salted Chips, 170g (Case of 12)',
+        brand: 'Lay\'s',
+        price: 26.40,
+        unit: 'case',
+        minOrder: 3,
+        image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&h=400&fit=crop',
+        inStock: true,
+        category: 'Snacks & Sweets',
+    },
+    {
+        id: '504',
+        name: 'Takis Fuego Hot Chili Pepper & Lime, 280g (12pk)',
+        brand: 'Takis',
+        price: 38.50,
+        unit: 'case',
+        minOrder: 2,
+        image: 'https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=400&h=400&fit=crop',
+        inStock: true,
+        category: 'Snacks & Sweets',
+    },
 ];
 
 export const BRANDS = [
@@ -247,7 +326,7 @@ export const BRANDS = [
     'Orbit', 'Trident', 'Mentos', 'Oreo', 'KitKat', 'Nutella', 'Mars',
     'Twix', 'Snickers', 'm&m\'s', 'Doritos', 'Pringles', 'Lay\'s', 'Takis',
     'Lindt', 'Ferrero Rocher', 'Dove', 'Rexona', 'Lifebuoy', 'Lux',
-    'Persil', 'Comfort', 'Cif'
+    'Persil', 'Comfort', 'Cif', 'Red Rose', 'Bounty'
 ];
 
 export const CATEGORIES_LIST = [
