@@ -1,46 +1,37 @@
 'use client';
 
-import * as React from "react";
+import * as React from 'react';
+import { cn } from '@/lib/utils';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     error?: string;
-    helperText?: string;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-    ({ className, label, error, helperText, ...props }, ref) => {
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+    ({ className, type, label, error, ...props }, ref) => {
         return (
-            <div className="w-full space-y-1.5">
+            <div className="space-y-2">
                 {label && (
-                    <label className="text-sm font-semibold text-foreground/80 ml-1">
+                    <label className="text-sm font-bold text-foreground/60 uppercase tracking-widest ml-1">
                         {label}
                     </label>
                 )}
                 <input
+                    type={type}
+                    className={cn(
+                        "flex h-14 w-full rounded-2xl border border-border/50 bg-surface px-6 py-4 text-lg ring-offset-background transition-all file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 hover:border-primary/50",
+                        error && "border-destructive focus-visible:ring-destructive",
+                        className
+                    )}
                     ref={ref}
-                    className={`
-            w-full bg-input border border-border rounded-lg px-4 py-2.5 
-            text-sm text-foreground placeholder:text-foreground/40 
-            focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring 
-            transition-all duration-200
-            ${error ? 'border-accent ring-accent/20' : ''}
-            ${className || ''}
-          `}
                     {...props}
                 />
-                {error ? (
-                    <p className="text-xs font-medium text-accent ml-1 animate-fade-in">
-                        {error}
-                    </p>
-                ) : helperText ? (
-                    <p className="text-xs text-foreground/50 ml-1">
-                        {helperText}
-                    </p>
-                ) : null}
+                {error && <p className="text-xs font-bold text-destructive ml-1">{error}</p>}
             </div>
         );
     }
 );
+Input.displayName = 'Input';
 
-Input.displayName = "Input";
+export { Input };

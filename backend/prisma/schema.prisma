@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SUPPLIER
+  BUYER
+}
+
+enum PlacementType {
+  HERO
+  FEATURED
+  LISTING
+  BANNER
+  SIDEBAR
+  POPUP
+}
+
+enum PlacementStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(BUYER)
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products  Product[]
+  orders    Order[]
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  stock       Int      @default(0)
+  category    String
+  images      String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  supplierId  String
+  supplier    User     @relation(fields: [supplierId], references: [id])
+
+  placements  ProductPlacement[]
+  orderItems  OrderItem[]
+}
+
+model ProductPlacement {
+  id             String          @id @default(uuid())
+  placementType  PlacementType
+  status         PlacementStatus @default(PENDING)
+  price          Float           @default(0)
+  priorityOrder  Int             @default(0)
+  
+  startDate      DateTime?
+  endDate        DateTime?
+  
+  productId      String
+  product        Product         @relation(fields: [productId], references: [id])
+
+  history        ProductPlacementHistory[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ProductPlacementHistory {
+  id               String          @id @default(uuid())
+  placementId      String
+  placement        ProductPlacement @relation(fields: [placementId], references: [id])
+  
+  previousStatus   PlacementStatus?
+  newStatus        PlacementStatus
+  changedById      String
+  reason           String?
+  
+  createdAt        DateTime @default(now())
+}
+
+model Order {
+  id          String   @id @default(uuid())
+  totalAmount Float
+  status      String   @default("PENDING")
+  
+  buyerId     String
+  buyer       User     @relation(fields: [buyerId], references: [id])
+
+  items       OrderItem[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  quantity  Int
+  price     Float
+  
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+}
