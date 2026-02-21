@@ -93,31 +93,43 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
             <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
                 {/* Header Row */}
                 <header className="h-20 bg-[#131921]/50 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-8 z-40">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-8">
                         <div className="flex flex-col">
-                            <h2 className="text-white font-bold tracking-tight">Supplier Portal</h2>
-                            <p className="text-white/40 text-[11px] font-medium uppercase tracking-widest leading-none mt-1">Direct Sales Access</p>
+                            <h2 className="text-white font-black tracking-tight text-xl">Business Hub</h2>
+                            <p className="text-emerald-500 text-[10px] font-black uppercase tracking-[0.2em] leading-none mt-1">Direct Sales Access</p>
+                        </div>
+
+                        {/* Quick KPIs in Header */}
+                        <div className="hidden lg:flex items-center gap-8 border-l border-white/10 pl-8">
+                            <div className="flex flex-col">
+                                <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">Revenue (MTD)</span>
+                                <span className="text-sm font-black text-white">$8,420.00</span>
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">Active Sales</span>
+                                <span className="text-sm font-black text-emerald-400">12</span>
+                            </div>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-6">
-                        <button className="relative text-white/60 hover:text-white transition-colors">
-                            <Bell size={20} />
-                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full border-2 border-[#131921]" />
+                        <button className="relative group p-2 rounded-xl hover:bg-white/5 transition-all">
+                            <Bell size={20} className="text-white/60 group-hover:text-emerald-400 transition-colors" />
+                            <span className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full border-2 border-[#131921]" />
                         </button>
 
                         <div className="h-8 w-[1px] bg-white/10 mx-2" />
 
                         <div className="flex items-center gap-3">
                             <div className="text-right hidden sm:block">
-                                <p className="text-sm font-bold text-white">{user?.name}</p>
+                                <p className="text-sm font-black text-white">{user?.name}</p>
                                 <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="text-[10px] text-emerald-500 font-black uppercase tracking-tighter">Verified Supplier</span>
+                                    <span className="text-[9px] text-emerald-500 font-black uppercase tracking-tighter">Verified Supplier</span>
                                 </div>
                             </div>
-                            <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center font-black text-white border border-white/10">
-                                {user?.name[0]}
+                            <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center font-black text-white border border-white/10 shadow-lg">
+                                {user?.name?.[0] || 'S'}
                             </div>
                         </div>
                     </div>
