@@ -7,7 +7,7 @@ const FOOTER_COLUMNS = [
     {
         title: 'Sourcing',
         links: [
-            { name: 'Browse Catalog', href: '/catalog' },
+            { name: 'Browse Categories', href: '/categories' },
             { name: 'Daily Deals', href: '/deals' },
             { name: 'Brand Spotlights', href: '/suppliers' },
             { name: 'Bulk Wholesale', href: '/wholesale' },

@@ -87,8 +87,8 @@ export default function Hero() {
                             transition={{ delay: 0.9, duration: 0.5 }}
                             className="flex flex-wrap gap-4 mb-10"
                         >
-                            <Link href="/catalog" className="btn-primary text-base px-8 py-4 inline-flex items-center gap-2 rounded-xl group">
-                                Browse Catalog
+                            <Link href="/categories" className="btn-primary text-base px-8 py-4 inline-flex items-center gap-2 rounded-xl group">
+                                Browse Categories
                                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                             </Link>
                             <Link href="/auth/register" className="btn-secondary text-base px-8 py-4 inline-flex items-center gap-2 rounded-xl">
