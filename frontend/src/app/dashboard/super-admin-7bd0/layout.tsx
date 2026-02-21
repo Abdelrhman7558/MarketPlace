@@ -8,7 +8,7 @@ import {
     Menu, X, Bell, Search, Check, Info, AlertTriangle, Gift,
     ArrowLeft, ChevronDown, User
 } from 'lucide-react';
-import { useAuth } from '../../../lib/auth';
+import { useAuth } from '@/lib/auth';
 
 const NAV_ITEMS = [
     { name: 'Overview', icon: LayoutDashboard, href: '/dashboard/super-admin-7bd0' },

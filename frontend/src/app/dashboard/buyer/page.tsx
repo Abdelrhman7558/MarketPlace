@@ -9,7 +9,7 @@ import {
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/app/providers';
+import { useAuth } from '@/lib/auth';
 
 const MOCK_ORDERS = [
     { id: 'ORD-7721', date: 'Oct 24, 2023', total: '$450.00', status: 'Delivered', items: 12 },

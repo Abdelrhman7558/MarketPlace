@@ -9,7 +9,7 @@ import {
     Eye, EyeOff
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../../../lib/auth';
+import { useAuth } from '@/lib/auth';
 
 export default function RegisterPage() {
     const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '', role: 'customer' });

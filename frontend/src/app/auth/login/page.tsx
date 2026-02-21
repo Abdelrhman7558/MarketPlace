@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Lock, Mail, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useAuth } from '../../../lib/auth';
+import { useAuth } from '@/lib/auth';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
