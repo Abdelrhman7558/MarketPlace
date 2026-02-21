@@ -7,12 +7,13 @@ interface User {
     email: string;
     phone?: string;
     role: string;
+    status: 'PENDING_APPROVAL' | 'ACTIVE' | 'REJECTED' | 'BLOCKED';
 }
 
 interface AuthContextType {
     user: User | null;
     isLoggedIn: boolean;
-    login: (email: string, password: string) => boolean;
+    login: (email: string, password: string) => { success: boolean; message?: string };
     register: (data: { name: string; email: string; phone?: string; password: string; role: string }) => boolean;
     logout: () => void;
 }
@@ -20,7 +21,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
     user: null,
     isLoggedIn: false,
-    login: () => false,
+    login: () => ({ success: false }),
     register: () => false,
     logout: () => { },
 });
@@ -49,45 +50,77 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const usersRaw = localStorage.getItem('bev-users') || '[]';
         const users = JSON.parse(usersRaw);
         if (users.find((u: any) => u.email === data.email)) return false;
-        users.push({ name: data.name, email: data.email, phone: data.phone, password: data.password, role: data.role });
+
+        // Use PENDING_APPROVAL by default
+        const newUser = {
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            password: data.password,
+            role: data.role,
+            status: 'PENDING_APPROVAL'
+        };
+
+        users.push(newUser);
         localStorage.setItem('bev-users', JSON.stringify(users));
 
-        // Auto-login after register
-        const userData: User = { name: data.name, email: data.email, phone: data.phone, role: data.role };
+        // Auto-login (but status will be PENDING_APPROVAL)
+        const userData: User = {
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            role: data.role,
+            status: 'PENDING_APPROVAL'
+        };
         setUser(userData);
         localStorage.setItem('bev-user', JSON.stringify(userData));
         return true;
     };
 
     const login = (email: string, password: string) => {
-        if (typeof window === 'undefined') return false;
+        if (typeof window === 'undefined') return { success: false };
 
         // Super Admin Shortcut
         if (email === '7bd0205@gmail.com' && password === '123456789') {
-            const userData: User = { name: 'Super Admin', email, role: 'admin' };
+            const userData: User = { name: 'Super Admin', email, role: 'admin', status: 'ACTIVE' };
             setUser(userData);
             localStorage.setItem('bev-user', JSON.stringify(userData));
-            return true;
+            return { success: true };
         }
 
         // Previous Admin shortcut (Compatibility)
         if (email === '7bd02025@gmail.com') {
-            const userData: User = { name: 'Admin', email, role: 'admin' };
+            const userData: User = { name: 'Admin', email, role: 'admin', status: 'ACTIVE' };
             setUser(userData);
             localStorage.setItem('bev-user', JSON.stringify(userData));
-            return true;
+            return { success: true };
         }
+
         // Check registered users
         const usersRaw = localStorage.getItem('bev-users') || '[]';
         const users = JSON.parse(usersRaw);
         const found = users.find((u: any) => u.email === email && u.password === password);
         if (found) {
-            const userData: User = { name: found.name, email: found.email, phone: found.phone, role: found.role };
+            // Check status
+            if (found.status === 'REJECTED') {
+                return { success: false, message: 'Your registration has been rejected.' };
+            }
+            if (found.status === 'BLOCKED') {
+                return { success: false, message: 'Your account has been blocked.' };
+            }
+
+            const userData: User = {
+                name: found.name,
+                email: found.email,
+                phone: found.phone,
+                role: found.role,
+                status: found.status
+            };
             setUser(userData);
             localStorage.setItem('bev-user', JSON.stringify(userData));
-            return true;
+            return { success: true };
         }
-        return false;
+        return { success: false, message: 'Invalid email or password.' };
     };
 
     const logout = () => {

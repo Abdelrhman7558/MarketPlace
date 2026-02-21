@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useCart } from '@/lib/cart';
-import { Search, ShoppingCart, User, Menu, PackageSearch, Bell, Moon, Sun } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, PackageSearch, Bell, Moon, Sun, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
@@ -37,77 +37,67 @@ export default function Navbar() {
             scrolled ? "glass py-2" : "bg-transparent py-4 text-white"
         )}>
             <div className="container mx-auto px-6 flex items-center justify-between gap-8">
-                {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 group">
-                    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center premium-shadow group-hover:rotate-12 transition-transform duration-300">
-                        <PackageSearch className="text-primary-foreground" size={24} />
-                    </div>
-                    <span className="font-heading font-bold text-2xl tracking-tight hidden sm:block">
-                        Bev<span className="text-secondary">Market</span>
-                    </span>
-                </Link>
+                {/* Logo & Categories */}
+                <div className="flex items-center gap-6">
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <span className="font-heading font-black text-2xl tracking-tighter">
+                            Market<span className="text-secondary">Place</span>
+                        </span>
+                    </Link>
+
+                    <button className="hidden lg:flex items-center gap-2 text-sm font-bold hover:text-secondary transition-colors group">
+                        <Menu size={20} className="group-hover:rotate-90 transition-transform" />
+                        <span>Categories</span>
+                        <ChevronRight size={16} className="rotate-90" />
+                    </button>
+                </div>
 
                 {/* Main Search Bar */}
-                <form onSubmit={handleSearch} className="flex-1 max-w-2xl hidden md:flex relative group">
+                <form onSubmit={handleSearch} className="flex-1 max-w-2xl hidden md:flex relative group h-11">
                     <input
                         type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search wholesale beverages..."
-                        className="w-full h-12 bg-muted/50 dark:bg-muted/20 border-border/50 rounded-2xl px-12 text-sm font-medium outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all backdrop-blur-sm"
+                        placeholder="Search products, brands, SKU..."
+                        className="w-full h-full bg-white text-black rounded-l-lg px-12 text-sm font-medium outline-none border-none"
                     />
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4 group-focus-within:text-primary transition-colors" />
-                    <kbd className="absolute right-4 top-1/2 -translate-y-1/2 hidden lg:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                        <span className="text-xs">⌘</span>K
-                    </kbd>
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <button
+                        type="submit"
+                        className="bg-secondary hover:bg-secondary/90 text-secondary-foreground px-8 font-bold text-sm rounded-r-lg transition-colors"
+                    >
+                        Search
+                    </button>
                 </form>
 
                 {/* Actions */}
-                <div className="flex items-center gap-2 sm:gap-4">
-                    {/* Theme Toggle */}
-                    <button
-                        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                        className="w-10 h-10 rounded-xl hover:bg-muted/50 flex items-center justify-center transition-colors"
-                    >
-                        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-                    </button>
+                <div className="flex items-center gap-6">
+                    {/* Help & Support (Desktop Only) */}
+                    <div className="hidden xl:flex flex-col items-end text-[10px] font-bold uppercase tracking-widest text-white/50">
+                        <span>Help Center</span>
+                        <span className="text-white">Become a Supplier</span>
+                    </div>
 
-                    {/* Notifications */}
-                    <button className="w-10 h-10 rounded-xl hover:bg-muted/50 flex items-center justify-center transition-colors relative">
-                        <Bell size={20} />
-                        <span className="absolute top-2 right-2 w-2 h-2 bg-highlight rounded-full" />
-                    </button>
-
-                    <div className="w-px h-6 bg-border mx-1 hidden sm:block" />
+                    <div className="w-px h-8 bg-white/10 mx-2 hidden lg:block" />
 
                     {/* Account */}
                     <Link
                         href={user ? (user.role === 'admin' ? '/dashboard/super-admin-7bd0' : `/dashboard/${user.role}`) : '/auth/login'}
-                        className="flex items-center gap-3 p-1 rounded-2xl hover:bg-muted/50 transition-colors group"
+                        className="flex flex-col items-center gap-0.5 group"
                     >
-                        <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors">
-                            <User className="w-5 h-5 text-primary group-hover:text-primary-foreground" />
-                        </div>
-                        <div className="hidden lg:flex flex-col">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                                {user ? user.role : 'Guest'}
-                            </span>
-                            <span className="text-sm font-bold leading-tight">
-                                {user ? user.name.split(' ')[0] : 'Sign In'}
-                            </span>
-                        </div>
+                        <User className="w-5 h-5 group-hover:text-secondary transition-colors" />
+                        <span className="text-[10px] font-bold">Account</span>
                     </Link>
 
                     {/* Cart */}
-                    <Link href="/cart" className="relative group">
-                        <div className="w-11 h-11 rounded-2xl bg-secondary flex items-center justify-center premium-shadow group-hover:bg-secondary/90 transition-colors">
-                            <ShoppingCart className="w-5 h-5 text-secondary-foreground" />
-                            {cartCount > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-highlight text-highlight-foreground text-[10px] font-bold w-5 h-5 rounded-lg flex items-center justify-center border-2 border-background animate-pulse">
-                                    {cartCount}
-                                </span>
-                            )}
-                        </div>
+                    <Link href="/cart" className="relative flex flex-col items-center gap-0.5 group">
+                        <ShoppingCart className="w-5 h-5 group-hover:text-secondary transition-colors" />
+                        <span className="text-[10px] font-bold">Cart</span>
+                        {cartCount > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-secondary text-secondary-foreground text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                {cartCount}
+                            </span>
+                        )}
                     </Link>
                 </div>
             </div>
