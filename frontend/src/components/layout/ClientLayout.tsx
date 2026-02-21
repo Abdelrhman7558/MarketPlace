@@ -9,12 +9,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     const isDashboard = pathname?.startsWith('/dashboard');
 
     return (
-        <>
+        <div className="flex flex-col min-h-screen">
             {!isDashboard && <Navbar />}
-            <main className="flex-grow">
+            <main className={`flex-grow ${!isDashboard ? 'pt-20' : ''}`}>
                 {children}
             </main>
             {!isDashboard && <Footer />}
-        </>
+        </div>
     );
 }
