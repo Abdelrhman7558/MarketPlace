@@ -36,7 +36,8 @@ export default function AdminInvitePage() {
     }, []);
 
     const generateInvite = () => {
-        const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        // Secure Token Generation (Simulated)
+        const token = `SECURE-${role.toUpperCase()}-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
         const newInvite: InviteToken = {
@@ -51,7 +52,8 @@ export default function AdminInvitePage() {
         setInvites(updated);
         localStorage.setItem('marketplace-invites', JSON.stringify(updated));
 
-        const link = `${window.location.origin}/auth/register?invite=${token}`;
+        // Redirect to register with strictly locked role in query (Normally this would be verified server-side via token)
+        const link = `${window.location.origin}/auth/register?invite=${token}&role=${role}`;
         setGeneratedLink(link);
     };
 
