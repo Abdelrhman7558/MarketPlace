@@ -35,15 +35,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     // Load from localStorage
     useEffect(() => {
-        try {
-            const saved = localStorage.getItem('bev-cart');
-            if (saved) setItems(JSON.parse(saved));
-        } catch { }
+        if (typeof window !== 'undefined') {
+            try {
+                const saved = localStorage.getItem('bev-cart');
+                if (saved) setItems(JSON.parse(saved));
+            } catch (err) {
+                console.error("Failed to parse cart items:", err);
+                localStorage.removeItem('bev-cart');
+            }
+        }
     }, []);
 
     // Save to localStorage
     useEffect(() => {
-        localStorage.setItem('bev-cart', JSON.stringify(items));
+        if (typeof window !== 'undefined' && items.length > 0) {
+            localStorage.setItem('bev-cart', JSON.stringify(items));
+        }
     }, [items]);
 
     const addItem = (item: Omit<CartItem, 'quantity'>, qty = 1) => {

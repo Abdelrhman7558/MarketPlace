@@ -31,9 +31,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Load from localStorage on mount
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('bev-user');
-            if (saved) {
-                try { setUser(JSON.parse(saved)); } catch { /* ignore */ }
+            try {
+                const saved = localStorage.getItem('bev-user');
+                if (saved) {
+                    setUser(JSON.parse(saved));
+                }
+            } catch (err) {
+                console.error("Failed to parse auth user:", err);
+                localStorage.removeItem('bev-user');
             }
         }
     }, []);
