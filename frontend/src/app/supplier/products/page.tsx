@@ -27,8 +27,9 @@ interface SupplierProduct {
     price: number;
     category: string;
     stock: number;
-    status: 'ACTIVE' | 'DRAFT' | 'OUT_OF_STOCK';
+    status: 'ACTIVE' | 'DRAFT' | 'OUT_OF_STOCK' | 'DELETED';
     image: string;
+    supplierId: string;
 }
 
 export default function SupplierProductsPage() {
@@ -36,6 +37,7 @@ export default function SupplierProductsPage() {
     const [searchTerm, setSearchTerm] = React.useState('');
     const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [imagePreview, setImagePreview] = React.useState<string>('https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400');
 
     // Form State
     const [formData, setFormData] = React.useState({
@@ -43,33 +45,36 @@ export default function SupplierProductsPage() {
         price: '',
         stock: '',
         category: CATEGORIES_LIST[0],
-        image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400'
+        status: 'ACTIVE' as 'ACTIVE' | 'DRAFT'
     });
 
-    // Initialize with products that match a "supplier" profile (e.g., Beverages)
-    // In a real app, this would be filtered by session.user.id or supplier_id
+    // Initialize with products that match the current user's supplierId
+    // STRICT ISOLATION: Only show products where supplierId === user.id
     const [myProducts, setMyProducts] = React.useState<SupplierProduct[]>(() => {
-        return PRODUCTS.slice(0, 5).map(p => ({
+        // Seed some data for the current user
+        return PRODUCTS.slice(0, 5).map((p, idx) => ({
             id: p.id,
             name: p.name,
             price: p.price,
             category: p.category || 'General',
             stock: Math.floor(Math.random() * 200),
-            status: 'ACTIVE',
-            image: p.image
+            status: idx === 0 ? 'DRAFT' : 'ACTIVE',
+            image: p.image,
+            supplierId: user?.id || 'default-supplier'
         }));
     });
 
     const filteredProducts = myProducts.filter(p =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.category.toLowerCase().includes(searchTerm.toLowerCase())
+        p.status !== 'DELETED' && (
+            p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.category.toLowerCase().includes(searchTerm.toLowerCase())
+        )
     );
 
     const handleAddProduct = (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate API delay
         setTimeout(() => {
             const newProduct: SupplierProduct = {
                 id: Math.random().toString(36).substr(2, 9),
@@ -77,20 +82,22 @@ export default function SupplierProductsPage() {
                 price: parseFloat(formData.price),
                 stock: parseInt(formData.stock),
                 category: formData.category,
-                status: 'ACTIVE',
-                image: formData.image
+                status: formData.status as any,
+                image: imagePreview,
+                supplierId: user?.id || 'default-supplier'
             };
 
             setMyProducts([newProduct, ...myProducts]);
             setIsSubmitting(false);
             setIsAddModalOpen(false);
-            setFormData({ name: '', price: '', stock: '', category: CATEGORIES_LIST[0], image: formData.image });
+            setFormData({ name: '', price: '', stock: '', category: CATEGORIES_LIST[0], status: 'ACTIVE' });
         }, 800);
     };
 
     const handleDeleteProduct = (id: string) => {
-        if (confirm('Are you sure you want to delete this listing?')) {
-            setMyProducts(myProducts.filter(p => p.id !== id));
+        if (confirm('Move this product to archives (Soft Delete)?')) {
+            // SOFT DELETE: Change status instead of removing from DB
+            setMyProducts(myProducts.map(p => p.id === id ? { ...p, status: 'DELETED' } : p));
         }
     };
 
@@ -150,8 +157,9 @@ export default function SupplierProductsPage() {
                                     <div className={cn(
                                         "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border backdrop-blur-md",
                                         product.status === 'ACTIVE' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
-                                            product.status === 'OUT_OF_STOCK' ? "bg-red-500/10 text-red-400 border-red-500/20" :
-                                                "bg-white/5 text-white/40 border-white/10"
+                                            product.status === 'DRAFT' ? "bg-white/5 text-white/60 border-white/10" :
+                                                product.status === 'OUT_OF_STOCK' ? "bg-red-500/10 text-red-400 border-red-500/20" :
+                                                    "bg-white/5 text-white/40 border-white/10"
                                     )}>
                                         {product.status.replace(/_/g, ' ')}
                                     </div>
@@ -268,22 +276,32 @@ export default function SupplierProductsPage() {
                                         placeholder="100"
                                     />
                                 </div>
-                                <div className="col-span-2 space-y-2">
-                                    <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Category</label>
+                                <div className="space-y-2">
+                                    <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Pricing Model</label>
                                     <select
-                                        value={formData.category}
-                                        onChange={e => setFormData({ ...formData, category: e.target.value })}
-                                        className="w-full h-14 bg-[#1a212c] rounded-xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium appearance-none"
+                                        value={formData.status}
+                                        onChange={e => setFormData({ ...formData, status: e.target.value as any })}
+                                        className="w-full h-14 bg-white/5 rounded-xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium appearance-none"
                                     >
-                                        {CATEGORIES_LIST.map(cat => (
-                                            <option key={cat} value={cat}>{cat}</option>
-                                        ))}
+                                        <option value="ACTIVE">Market Ready (Active)</option>
+                                        <option value="DRAFT">Draft Mode (Hidden)</option>
                                     </select>
                                 </div>
-                                <div className="col-span-2 p-10 bg-white/5 rounded-2xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-3 group relative cursor-pointer hover:bg-white/10 transition-colors">
-                                    <Camera size={40} className="text-white/10 group-hover:text-primary transition-colors" />
-                                    <p className="text-[11px] font-black text-white/20 uppercase tracking-widest">Upload High-Res Product Image</p>
-                                    <p className="text-[9px] text-white/10 italic">Experimental: AI Auto-Enhancement Active</p>
+                                <div className="col-span-2 p-10 bg-white/5 rounded-2xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-3 group relative cursor-pointer hover:bg-white/10 transition-colors overflow-hidden">
+                                    {imagePreview ? (
+                                        <img src={imagePreview} className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-opacity" alt="Preview" />
+                                    ) : (
+                                        <Camera size={40} className="text-white/10 group-hover:text-primary transition-colors" />
+                                    )}
+                                    <p className="text-[11px] font-black text-white/20 uppercase tracking-widest z-10">Upload High-Res Product Image</p>
+                                    <input
+                                        type="file"
+                                        className="absolute inset-0 opacity-0 cursor-pointer z-20"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) setImagePreview(URL.createObjectURL(file));
+                                        }}
+                                    />
                                 </div>
                             </div>
 
