@@ -53,7 +53,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (users.find((u: any) => u.email === data.email)) return false;
 
         // Use PENDING_APPROVAL by default
+        const id = Math.random().toString(36).substring(2, 10);
         const newUser = {
+            id,
             name: data.name,
             email: data.email,
             phone: data.phone,
@@ -67,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Auto-login (but status will be PENDING_APPROVAL)
         const userData: User = {
+            id,
             name: data.name,
             email: data.email,
             phone: data.phone,
@@ -83,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Super Admin Shortcut
         if (email === '7bd0205@gmail.com' && password === '123456789') {
-            const userData: User = { name: 'Super Admin', email, role: 'admin', status: 'ACTIVE' };
+            const userData: User = { id: 'sa-7bd0', name: 'Super Admin', email, role: 'admin', status: 'ACTIVE' };
             setUser(userData);
             localStorage.setItem('bev-user', JSON.stringify(userData));
             return { success: true, user: userData };
@@ -91,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Previous Admin shortcut (Compatibility)
         if (email === '7bd02025@gmail.com') {
-            const userData: User = { name: 'Admin', email, role: 'admin', status: 'ACTIVE' };
+            const userData: User = { id: 'admin-legacy', name: 'Admin', email, role: 'admin', status: 'ACTIVE' };
             setUser(userData);
             localStorage.setItem('bev-user', JSON.stringify(userData));
             return { success: true, user: userData };
@@ -111,6 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
 
             const userData: User = {
+                id: found.id || Math.random().toString(36).substring(2, 10),
                 name: found.name,
                 email: found.email,
                 phone: found.phone,
