@@ -8,6 +8,7 @@ import { PricingModule } from './pricing/pricing.module';
 import { ProductsModule } from './products/products.module';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 @Module({
@@ -19,7 +20,8 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
         PricingModule,
         ProductsModule,
         AdminModule,
-        AuthModule
+        AuthModule,
+        UsersModule
     ],
     controllers: [AppController],
     providers: [
