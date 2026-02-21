@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { Star, Check, ShieldCheck } from 'lucide-react';
+import { Star, Check, ShieldCheck, ShoppingCart, ArrowUpRight } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '@/lib/cart';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 export interface Product {
     id: string;
@@ -25,7 +26,6 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
     const [isAdded, setIsAdded] = useState(false);
     const { addItem } = useCart();
 
-    // Simulated Amazon-style metrics
     const rating = product.rating || (4.2 + (index % 10) / 10);
     const reviews = product.reviews || (120 + (index * 45));
     const isBestSeller = index % 4 === 0;
@@ -48,110 +48,99 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
         setTimeout(() => setIsAdded(false), 2000);
     };
 
-    const wholePrice = Math.floor(product.price);
-    const fractionalPrice = Math.round((product.price - wholePrice) * 100);
-
     return (
-        <div className="bg-white border border-gray-200 rounded-sm hover:shadow-lg transition-shadow duration-300 flex flex-col h-full group">
-            <Link href={`/products/${product.id}`} className="flex flex-col flex-1 p-4">
-                {/* Badges */}
-                <div className="h-6 mb-2">
-                    {isBestSeller && (
-                        <span className="bg-[#E67A00] text-white text-[12px] font-bold px-2 py-1 rounded-r-sm -ml-4 inline-block shadow-sm">
-                            Best Seller
-                        </span>
-                    )}
-                </div>
-
-                {/* Product Image */}
-                <div className="relative h-48 mb-4 flex items-center justify-center overflow-hidden">
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.05 }}
+            className="group bg-card text-card-foreground rounded-[32px] border border-border/50 hover:border-primary/20 hover:premium-shadow transition-all duration-300 flex flex-col h-full overflow-hidden"
+        >
+            <div className="relative p-2">
+                {/* Image Container */}
+                <div className="relative aspect-square rounded-[24px] bg-muted/30 overflow-hidden flex items-center justify-center p-6 transition-colors group-hover:bg-muted/50">
                     <img
                         src={product.image}
                         alt={product.name}
-                        className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                        className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-110"
                         loading="lazy"
                     />
+
+                    {/* Floating Badges */}
+                    <div className="absolute top-3 left-3 flex flex-col gap-2">
+                        {isBestSeller && (
+                            <div className="glass px-3 py-1.5 rounded-xl flex items-center gap-1.5 premium-shadow">
+                                <span className="w-2 h-2 bg-secondary rounded-full animate-pulse" />
+                                <span className="text-[10px] font-bold uppercase tracking-wider">Top Rated</span>
+                            </div>
+                        )}
+                        {product.bulkSave && (
+                            <div className="bg-highlight/10 text-highlight backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border border-highlight/20">
+                                Bulk Save
+                            </div>
+                        )}
+                    </div>
+
                     {!product.inStock && (
-                        <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center">
-                            <span className="bg-gray-800 text-white text-xs font-bold px-3 py-1 rounded">OUT OF STOCK</span>
+                        <div className="absolute inset-0 bg-background/60 backdrop-blur-[2px] flex items-center justify-center">
+                            <span className="glass px-4 py-2 rounded-2xl text-xs font-bold uppercase tracking-widest text-foreground">Out of Stock</span>
                         </div>
                     )}
                 </div>
+            </div>
 
-                {/* Brand & Name */}
-                <div className="space-y-1 mb-2">
-                    <p className="text-xs text-blue-600 font-medium hover:underline">{product.brand}</p>
-                    <h3 className="text-sm font-medium text-gray-900 line-clamp-2 leading-snug group-hover:text-[#C45500]">
+            <div className="flex flex-col flex-1 p-5 pt-2">
+                {/* Brand & Stats */}
+                <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary/60">{product.brand}</span>
+                    <div className="flex items-center gap-1">
+                        <Star className="w-3 h-3 fill-secondary text-secondary" />
+                        <span className="text-xs font-bold">{rating.toFixed(1)}</span>
+                    </div>
+                </div>
+
+                {/* Title */}
+                <Link href={`/products/${product.id}`} className="group/title">
+                    <h3 className="font-heading font-bold text-base leading-snug line-clamp-2 mb-4 group-hover/title:text-primary transition-colors">
                         {product.name}
                     </h3>
-                </div>
+                </Link>
 
-                {/* Stats */}
-                <div className="flex items-center gap-1 mb-2">
-                    <div className="flex">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                            <Star
-                                key={s}
-                                className={cn(
-                                    "w-3.5 h-3.5",
-                                    s <= Math.floor(rating) ? "fill-[#FFA41C] text-[#FFA41C]" : "text-gray-300"
-                                )}
-                            />
-                        ))}
+                {/* Price & Min Order */}
+                <div className="mt-auto space-y-4">
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-heading font-black">${product.price.toFixed(2)}</span>
+                        <span className="text-muted-foreground text-xs font-medium">/ {product.unit}</span>
                     </div>
-                    <span className="text-xs text-blue-600">{reviews}</span>
-                </div>
 
-                {/* Price & Unit */}
-                <div className="mb-2">
-                    <div className="flex items-start">
-                        <span className="text-xs font-medium mt-1 mr-0.5">$</span>
-                        <span className="text-2xl font-bold leading-none">{wholePrice}</span>
-                        <span className="text-xs font-medium mt-1 ml-0.5">{fractionalPrice.toString().padStart(2, '0')}</span>
-                        <span className="text-sm text-gray-500 ml-2 self-end mb-0.5">/ {product.unit}</span>
-                    </div>
-                    <p className="text-[11px] text-gray-500 font-medium">
-                        Min Order: {product.minOrder} units
-                    </p>
-                </div>
-
-                {/* Bulk Info */}
-                <div className="space-y-1 mb-4">
-                    <div className="flex items-center gap-1 text-[11px] text-green-700 font-bold">
-                        <ShieldCheck className="w-3 h-3" />
-                        Verified Supplier
-                    </div>
-                    {product.bulkSave && (
-                        <div className="text-[11px] text-red-700 font-bold bg-red-50 px-2 py-0.5 rounded-sm inline-block">
-                            Bulk Save Available
+                    <div className="flex items-center justify-between gap-3">
+                        <div className="flex flex-col">
+                            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Min Order</span>
+                            <span className="text-xs font-bold">{product.minOrder} units</span>
                         </div>
-                    )}
-                </div>
-            </Link>
 
-            {/* Action Footer */}
-            <div className="p-4 pt-0 mt-auto">
-                <button
-                    onClick={handleAddToCart}
-                    disabled={!product.inStock || isAdded}
-                    className={cn(
-                        "w-full py-2 rounded-full text-sm font-medium transition-all shadow-sm border",
-                        isAdded
-                            ? "bg-green-600 border-green-700 text-white"
-                            : "bg-[#FFD814] border-[#FCD200] hover:bg-[#F7CA00] text-black"
-                    )}
-                >
-                    {isAdded ? (
-                        <span className="flex items-center justify-center gap-1">
-                            <Check className="w-4 h-4" /> Added
-                        </span>
-                    ) : product.inStock ? (
-                        "Add to Cart"
-                    ) : (
-                        "Out of Stock"
-                    )}
-                </button>
+                        <button
+                            onClick={handleAddToCart}
+                            disabled={!product.inStock || isAdded}
+                            className={cn(
+                                "flex-1 h-12 rounded-2xl flex items-center justify-center gap-2 transition-all duration-300 premium-shadow",
+                                isAdded
+                                    ? "bg-accent text-accent-foreground"
+                                    : "bg-primary text-primary-foreground hover:bg-primary/90 btn-hover"
+                            )}
+                        >
+                            {isAdded ? (
+                                <Check size={18} className="animate-in zoom-in duration-300" />
+                            ) : (
+                                <>
+                                    <ShoppingCart size={18} />
+                                    <span className="text-sm font-bold">Add</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
+        </motion.div>
     );
 }

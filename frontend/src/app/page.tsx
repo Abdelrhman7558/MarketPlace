@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/Button';
 import { PRODUCTS } from '@/lib/products';
 import ProductCard from '@/components/product/ProductCard';
+import { cn } from '@/lib/utils';
 
 const FEATURES = [
     {
