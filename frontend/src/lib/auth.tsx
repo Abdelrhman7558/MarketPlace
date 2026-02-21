@@ -56,7 +56,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const login = (email: string, password: string) => {
         if (typeof window === 'undefined') return false;
-        // Admin shortcut
+
+        // Super Admin Shortcut
+        if (email === '7bd0205@gmail.com' && password === '123456789') {
+            const userData: User = { name: 'Super Admin', email, role: 'admin' };
+            setUser(userData);
+            localStorage.setItem('bev-user', JSON.stringify(userData));
+            return true;
+        }
+
+        // Previous Admin shortcut (Compatibility)
         if (email === '7bd02025@gmail.com') {
             const userData: User = { name: 'Admin', email, role: 'admin' };
             setUser(userData);
