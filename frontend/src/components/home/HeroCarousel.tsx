@@ -27,6 +27,11 @@ const ADS = [
 export default function HeroCarousel() {
     const [current, setCurrent] = useState(0);
 
+    const overlayClass = React.useMemo(() => {
+        if (ADS[current].theme === 'purple') return "absolute inset-0 bg-gradient-to-r from-purple-900/90 via-purple-900/40 to-transparent";
+        return "absolute inset-0 bg-gradient-to-r from-[#050B18]/90 via-[#050B18]/40 to-transparent";
+    }, [current]);
+
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrent((prev) => (prev + 1) % ADS.length);
@@ -55,10 +60,7 @@ export default function HeroCarousel() {
                             className="w-full h-full object-cover"
                             alt={ADS[current].title}
                         />
-                        <div className={React.useMemo(() => {
-                            if (ADS[current].theme === 'purple') return "absolute inset-0 bg-gradient-to-r from-purple-900/90 via-purple-900/40 to-transparent";
-                            return "absolute inset-0 bg-gradient-to-r from-[#050B18]/90 via-[#050B18]/40 to-transparent";
-                        }, [current])} />
+                        <div className={overlayClass} />
                     </div>
 
                     <div className="container-wide px-10 relative z-20 w-full">
