@@ -49,7 +49,6 @@ export default function ProductFilters(props: FilterProps) {
     const minVal = parseInt(props.priceRange.min) || 0;
     const maxVal = parseInt(props.priceRange.max) || 1000;
 
-    // Simple Slider Logic
     const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'min' | 'max') => {
         const value = e.target.value;
         if (type === 'min') {
@@ -64,7 +63,7 @@ export default function ProductFilters(props: FilterProps) {
     };
 
     return (
-        <div className="bg-white rounded-[2rem] p-8 shadow-xl shadow-gray-200/50 border border-gray-50">
+        <div className="bg-white rounded-[2rem] p-8 shadow-xl shadow-gray-200/50 border border-gray-50 uppercase-fix">
             {/* Department */}
             <FilterSection title="Categories">
                 <div className="flex flex-col gap-2">
@@ -80,7 +79,7 @@ export default function ProductFilters(props: FilterProps) {
                                         : 'text-gray-500 font-bold hover:bg-gray-50 hover:text-[#050B18]'
                                     }`}
                             >
-                                <span>{cat}</span>
+                                <span className="uppercase tracking-wide">{cat}</span>
                                 {isActive && <motion.div layoutId="active-dot" className="w-1.5 h-1.5 rounded-full bg-white" />}
                             </button>
                         );
@@ -119,10 +118,10 @@ export default function ProductFilters(props: FilterProps) {
             {/* Price Slider */}
             <FilterSection title="Wholesale Price Range">
                 <div className="space-y-8 pt-2">
-                    <div className="relative h-2 bg-gray-100 rounded-full">
+                    <div className="relative h-2 bg-gray-200/50 rounded-full group/slider">
                         {/* Track Highlights */}
                         <div
-                            className="absolute h-full bg-[#FF7A1A] rounded-full"
+                            className="absolute h-full bg-[#FF7A1A] rounded-full z-10 shadow-[0_0_10px_rgba(255,122,26,0.3)]"
                             style={{
                                 left: `${(minVal / 1000) * 100}%`,
                                 right: `${100 - (maxVal / 1000) * 100}%`
@@ -130,22 +129,24 @@ export default function ProductFilters(props: FilterProps) {
                         />
 
                         {/* Range Inputs (Overlaid) */}
-                        <input
-                            type="range"
-                            min="0"
-                            max="1000"
-                            value={minVal}
-                            onChange={(e) => handleSliderChange(e, 'min')}
-                            className="absolute w-full h-full appearance-none bg-transparent pointer-events-none z-20 slider-thumb"
-                        />
-                        <input
-                            type="range"
-                            min="0"
-                            max="1000"
-                            value={maxVal}
-                            onChange={(e) => handleSliderChange(e, 'max')}
-                            className="absolute w-full h-full appearance-none bg-transparent pointer-events-none z-20 slider-thumb"
-                        />
+                        <div className="relative w-full h-full flex items-center">
+                            <input
+                                type="range"
+                                min="0"
+                                max="1000"
+                                value={minVal}
+                                onChange={(e) => handleSliderChange(e, 'min')}
+                                className="absolute w-full h-1 appearance-none bg-transparent pointer-events-none z-30 cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-4 [&::-webkit-slider-thumb]:border-[#FF7A1A] [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110"
+                            />
+                            <input
+                                type="range"
+                                min="0"
+                                max="1000"
+                                value={maxVal}
+                                onChange={(e) => handleSliderChange(e, 'max')}
+                                className="absolute w-full h-1 appearance-none bg-transparent pointer-events-none z-30 cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-4 [&::-webkit-slider-thumb]:border-[#FF7A1A] [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110"
+                            />
+                        </div>
                     </div>
 
                     <div className="flex items-center justify-between gap-4">
@@ -162,29 +163,10 @@ export default function ProductFilters(props: FilterProps) {
 
                     <button
                         onClick={props.onApplyPrice}
-                        className="w-full bg-[#050B18] text-white py-4 rounded-xl font-black text-sm hover:bg-[#1a2130] transition-all shadow-xl shadow-gray-200 active:scale-95"
+                        className="w-full bg-[#050B18] text-white py-4 rounded-xl font-black text-sm hover:bg-[#1a2130] transition-all shadow-xl shadow-gray-200 active:scale-95 uppercase tracking-widest"
                     >
                         APPLY RANGE
                     </button>
-
-                    <style jsx>{`
-                        .slider-thumb::-webkit-slider-thumb {
-                            appearance: none;
-                            width: 24px;
-                            height: 24px;
-                            background: white;
-                            border: 4px solid #FF7A1A;
-                            border-radius: 50%;
-                            cursor: pointer;
-                            pointer-events: auto;
-                            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-                            transition: all 0.2s;
-                        }
-                        .slider-thumb::-webkit-slider-thumb:hover {
-                            transform: scale(1.1);
-                            background: #FF7A1A;
-                        }
-                    `}</style>
                 </div>
             </FilterSection>
 
