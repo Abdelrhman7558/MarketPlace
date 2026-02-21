@@ -13,7 +13,7 @@ datasource db {
 enum Role {
   ADMIN
   SUPPLIER
-  BUYER
+  CUSTOMER
 }
 
 enum PlacementType {
@@ -21,8 +21,6 @@ enum PlacementType {
   FEATURED
   LISTING
   BANNER
-  SIDEBAR
-  POPUP
 }
 
 enum PlacementStatus {
@@ -33,18 +31,27 @@ enum PlacementStatus {
   INACTIVE
 }
 
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
   name      String
-  role      Role     @default(BUYER)
+  role      Role     @default(CUSTOMER)
   phone     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  products  Product[]
-  orders    Order[]
+  products       Product[]
+  orders         Order[]
+  adminActions   AdminActionLog[] @relation("AdminActions")
 }
 
 model Product {
@@ -98,17 +105,31 @@ model ProductPlacementHistory {
 }
 
 model Order {
-  id          String   @id @default(uuid())
+  id          String      @id @default(uuid())
   totalAmount Float
-  status      String   @default("PENDING")
+  status      OrderStatus @default(PENDING)
   
   buyerId     String
-  buyer       User     @relation(fields: [buyerId], references: [id])
+  buyer       User        @relation(fields: [buyerId], references: [id])
 
   items       OrderItem[]
+  history     OrderStatusHistory[]
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model OrderStatusHistory {
+  id             String      @id @default(uuid())
+  orderId        String
+  order          Order       @relation(fields: [orderId], references: [id])
+  
+  previousStatus OrderStatus?
+  newStatus      OrderStatus
+  changedById    String
+  reason         String?
+  
+  createdAt      DateTime    @default(now())
 }
 
 model OrderItem {
@@ -121,4 +142,17 @@ model OrderItem {
   
   productId String
   product   Product  @relation(fields: [productId], references: [id])
+}
+
+model AdminActionLog {
+  id          String   @id @default(uuid())
+  action      String   // e.g., "APPROVE_PLACEMENT", "REJECT_SUPPLIER"
+  entityType  String   // e.g., "ProductPlacement", "Supplier"
+  entityId    String
+  details     Json?
+  
+  adminId     String
+  admin       User     @relation("AdminActions", fields: [adminId], references: [id])
+  
+  createdAt   DateTime @default(now())
 }
