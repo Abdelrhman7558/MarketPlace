@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from "@/lib/utils"; // Assuming a utility exists, else I'll define a simple one
+import { cn } from "@/lib/utils";
 
 interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
     variant?: 'rectangular' | 'circle' | 'text' | 'card';
@@ -18,7 +18,7 @@ export const Skeleton = ({ className, variant = 'rectangular', ...props }: Skele
 
     return (
         <div
-            className={`${baseStyles} ${variants[variant]} ${className || ''}`}
+            className={cn(baseStyles, variants[variant], className)}
             {...props}
         >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/5 to-transparent -translate-x-full animate-shimmer" />

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from "react";
-import { ThemeContext } from "@/app/providers"; // Placeholder if needed
+import { cn } from "@/lib/utils";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
@@ -29,7 +29,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         return (
             <button
                 ref={ref}
-                className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className || ''}`}
+                className={cn(baseStyles, variants[variant], sizes[size], className)}
                 disabled={isLoading || props.disabled}
                 {...props}
             >
