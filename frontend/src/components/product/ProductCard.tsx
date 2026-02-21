@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { Star, Check } from 'lucide-react';
+import { Star, Check, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '@/lib/cart';
+import { cn } from '@/lib/utils';
 
 export interface Product {
     id: string;
@@ -16,19 +17,24 @@ export interface Product {
     inStock: boolean;
     category: string;
     bulkSave?: boolean;
+    rating?: number;
+    reviews?: number;
 }
 
 export default function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
     const [isAdded, setIsAdded] = useState(false);
     const { addItem } = useCart();
-    const rating = 4.0 + Math.random();
-    const reviewCount = Math.floor(Math.random() * 5000) + 50;
-    const isBestSeller = index % 3 === 0;
+
+    // Simulated Amazon-style metrics
+    const rating = product.rating || (4.2 + (index % 10) / 10);
+    const reviews = product.reviews || (120 + (index * 45));
+    const isBestSeller = index % 4 === 0;
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         if (isAdded) return;
+
         addItem({
             id: product.id,
             name: product.name,
@@ -37,113 +43,115 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
             image: product.image,
             unit: product.unit,
         });
+
         setIsAdded(true);
         setTimeout(() => setIsAdded(false), 2000);
     };
 
+    const wholePrice = Math.floor(product.price);
+    const fractionalPrice = Math.round((product.price - wholePrice) * 100);
+
     return (
-        <Link href={`/products/${product.id}`} className="block hover:no-underline">
-            <div className="bg-white p-5 h-full flex flex-col relative group">
-                {/* Best Seller Badge */}
-                {isBestSeller && (
-                    <div className="absolute top-2 left-2 z-10">
-                        <span className="bg-[#E67A00] text-white text-[12px] font-bold px-2 py-[2px] rounded-sm">
+        <div className="bg-white border border-gray-200 rounded-sm hover:shadow-lg transition-shadow duration-300 flex flex-col h-full group">
+            <Link href={`/products/${product.id}`} className="flex flex-col flex-1 p-4">
+                {/* Badges */}
+                <div className="h-6 mb-2">
+                    {isBestSeller && (
+                        <span className="bg-[#E67A00] text-white text-[12px] font-bold px-2 py-1 rounded-r-sm -ml-4 inline-block shadow-sm">
                             Best Seller
                         </span>
-                    </div>
-                )}
+                    )}
+                </div>
 
-                {/* Image */}
-                <div className="flex items-center justify-center h-[200px] mb-2">
+                {/* Product Image */}
+                <div className="relative h-48 mb-4 flex items-center justify-center overflow-hidden">
                     <img
                         src={product.image}
                         alt={product.name}
-                        className="max-h-full max-w-full object-contain"
+                        className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
                     />
-                </div>
-
-                {/* Product Info */}
-                <div className="flex-1 flex flex-col">
-                    {/* Title */}
-                    <h2 className="text-[15px] text-amz-link leading-[20px] mb-1 line-clamp-3 group-hover:text-amz-blue-hover group-hover:underline">
-                        {product.name}
-                    </h2>
-
-                    {/* Rating */}
-                    <div className="flex items-center gap-1 mb-1">
-                        <div className="flex">
-                            {[1, 2, 3, 4, 5].map((i) => (
-                                <Star
-                                    key={i}
-                                    className={`w-[15px] h-[15px] ${i <= rating ? 'text-amz-star fill-amz-star' : 'text-gray-300'}`}
-                                />
-                            ))}
-                        </div>
-                        <span className="text-amz-link text-[13px]">{reviewCount.toLocaleString()}</span>
-                    </div>
-
-                    {/* Price */}
-                    <div className="mb-1">
-                        <span className="text-[12px] align-top relative top-[2px]">$</span>
-                        <span className="text-[28px] font-light text-amz-text leading-none">
-                            {Math.floor(product.price)}
-                        </span>
-                        <span className="text-[12px] align-top relative top-[2px]">
-                            {((product.price % 1) * 100).toFixed(0).padStart(2, '0')}
-                        </span>
-                        <span className="text-[12px] text-amz-text2 ml-1">
-                            (${product.price.toFixed(2)}/{product.unit})
-                        </span>
-                    </div>
-
-                    {/* Bulk Save */}
-                    {product.bulkSave && (
-                        <div className="text-[12px] text-amz-red font-medium mb-1">
-                            Save 5% with Subscribe & Save
+                    {!product.inStock && (
+                        <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center">
+                            <span className="bg-gray-800 text-white text-xs font-bold px-3 py-1 rounded">OUT OF STOCK</span>
                         </div>
                     )}
-
-                    {/* Min Order */}
-                    <div className="text-[12px] text-amz-text2 mb-1">
-                        Min. order: {product.minOrder} {product.unit}s
-                    </div>
-
-                    {/* Delivery */}
-                    <div className="text-[12px] text-amz-text2 mb-3">
-                        <span className="text-amz-green font-medium">FREE delivery</span>
-                        {' '}
-                        <span className="font-bold text-amz-text">Tomorrow</span>
-                    </div>
-
-                    {/* Add to Cart */}
-                    <div className="mt-auto">
-                        <button
-                            onClick={handleAddToCart}
-                            disabled={!product.inStock}
-                            className={`w-full py-[6px] px-3 text-[13px] rounded-[20px] border cursor-pointer transition-colors ${isAdded
-                                    ? 'bg-amz-green text-white border-amz-green'
-                                    : !product.inStock
-                                        ? 'bg-gray-200 text-gray-500 border-gray-300 cursor-not-allowed'
-                                        : 'text-amz-text border-amz-yellow-border hover:bg-[#f5d78e]'
-                                }`}
-                            style={!isAdded && product.inStock ? {
-                                background: 'linear-gradient(to bottom, #f7dfa5, #f0c14b)',
-                            } : undefined}
-                        >
-                            {isAdded ? (
-                                <span className="flex items-center justify-center gap-1">
-                                    <Check className="w-4 h-4" /> Added to Cart
-                                </span>
-                            ) : !product.inStock ? (
-                                'Out of Stock'
-                            ) : (
-                                'Add to Cart'
-                            )}
-                        </button>
-                    </div>
                 </div>
+
+                {/* Brand & Name */}
+                <div className="space-y-1 mb-2">
+                    <p className="text-xs text-blue-600 font-medium hover:underline">{product.brand}</p>
+                    <h3 className="text-sm font-medium text-gray-900 line-clamp-2 leading-snug group-hover:text-[#C45500]">
+                        {product.name}
+                    </h3>
+                </div>
+
+                {/* Stats */}
+                <div className="flex items-center gap-1 mb-2">
+                    <div className="flex">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                            <Star
+                                key={s}
+                                className={cn(
+                                    "w-3.5 h-3.5",
+                                    s <= Math.floor(rating) ? "fill-[#FFA41C] text-[#FFA41C]" : "text-gray-300"
+                                )}
+                            />
+                        ))}
+                    </div>
+                    <span className="text-xs text-blue-600">{reviews}</span>
+                </div>
+
+                {/* Price & Unit */}
+                <div className="mb-2">
+                    <div className="flex items-start">
+                        <span className="text-xs font-medium mt-1 mr-0.5">$</span>
+                        <span className="text-2xl font-bold leading-none">{wholePrice}</span>
+                        <span className="text-xs font-medium mt-1 ml-0.5">{fractionalPrice.toString().padStart(2, '0')}</span>
+                        <span className="text-sm text-gray-500 ml-2 self-end mb-0.5">/ {product.unit}</span>
+                    </div>
+                    <p className="text-[11px] text-gray-500 font-medium">
+                        Min Order: {product.minOrder} units
+                    </p>
+                </div>
+
+                {/* Bulk Info */}
+                <div className="space-y-1 mb-4">
+                    <div className="flex items-center gap-1 text-[11px] text-green-700 font-bold">
+                        <ShieldCheck className="w-3 h-3" />
+                        Verified Supplier
+                    </div>
+                    {product.bulkSave && (
+                        <div className="text-[11px] text-red-700 font-bold bg-red-50 px-2 py-0.5 rounded-sm inline-block">
+                            Bulk Save Available
+                        </div>
+                    )}
+                </div>
+            </Link>
+
+            {/* Action Footer */}
+            <div className="p-4 pt-0 mt-auto">
+                <button
+                    onClick={handleAddToCart}
+                    disabled={!product.inStock || isAdded}
+                    className={cn(
+                        "w-full py-2 rounded-full text-sm font-medium transition-all shadow-sm border",
+                        isAdded
+                            ? "bg-green-600 border-green-700 text-white"
+                            : "bg-[#FFD814] border-[#FCD200] hover:bg-[#F7CA00] text-black"
+                    )}
+                >
+                    {isAdded ? (
+                        <span className="flex items-center justify-center gap-1">
+                            <Check className="w-4 h-4" /> Added
+                        </span>
+                    ) : product.inStock ? (
+                        "Add to Cart"
+                    ) : (
+                        "Out of Stock"
+                    )}
+                </button>
             </div>
-        </Link>
+        </div>
     );
 }

@@ -23,6 +23,13 @@ const config: Config = {
                     DEFAULT: "var(--secondary)",
                     foreground: "var(--secondary-foreground)",
                 },
+                amazon: {
+                    orange: "#FF7A1A",
+                    dark: "#050B18",
+                    light: "#111827",
+                    blue: "#37475A",
+                    gray: "#EAEDED",
+                },
                 success: {
                     DEFAULT: "var(--success)",
                 },

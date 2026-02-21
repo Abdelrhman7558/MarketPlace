@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../../lib/auth';
 
 export default function LoginPage() {
@@ -23,7 +24,7 @@ export default function LoginPage() {
         setTimeout(() => {
             const success = login(email, password);
             if (!success) {
-                setError('Invalid email or password. Register first or use admin email.');
+                setError('Invalid email or password. Please try again.');
                 setLoading(false);
                 return;
             }
@@ -33,119 +34,125 @@ export default function LoginPage() {
                 router.push('/');
             }
             setLoading(false);
-        }, 1000);
+        }, 1200);
     };
 
     return (
-        <div className="min-h-screen bg-[#f0f0f0] flex flex-col">
-            <div className="bg-white py-4 flex justify-center">
-                <Link href="/" className="text-[28px] font-bold text-amz-dark hover:no-underline">
-                    Bev<span className="text-amz-orange">Market</span>
-                    <span className="text-[12px] text-amz-dark">.eg</span>
-                </Link>
-            </div>
+        <div className="min-h-screen bg-[#050B18] flex items-center justify-center p-6 relative overflow-hidden">
+            {/* Animated Background Gradients */}
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#FF7A1A]/10 rounded-full blur-[120px] animate-pulse" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[150px] animate-pulse" />
 
-            <div className="flex-1 flex items-center justify-center px-4 py-6">
-                <div className="w-full max-w-[350px]">
-                    <div className="bg-white border border-[#ddd] rounded-[4px] p-[26px]">
-                        <h1 className="text-[28px] font-normal text-amz-text mb-5">Sign in</h1>
+            <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="w-full max-w-[450px] z-10"
+            >
+                {/* Logo Section */}
+                <div className="text-center mb-10">
+                    <Link href="/" className="inline-block group">
+                        <motion.span
+                            initial={{ scale: 0.8 }}
+                            animate={{ scale: 1 }}
+                            whileHover={{ scale: 1.05 }}
+                            className="font-black text-4xl tracking-tighter text-white"
+                        >
+                            Market<span className="text-[#FF7A1A]">Place</span>
+                        </motion.span>
+                    </Link>
+                    <p className="text-gray-400 mt-2 font-medium">Wholesale Sourcing Excellence</p>
+                </div>
 
-                        {error && (
-                            <div className="bg-white border border-[#cc0c39] rounded-[4px] p-3 mb-4">
-                                <div className="flex items-start gap-2">
-                                    <span className="text-[#c40000] text-[20px] mt-[-2px]">!</span>
-                                    <div>
-                                        <p className="text-[13px] font-bold text-[#c40000]">There was a problem</p>
-                                        <p className="text-[13px] text-amz-text">{error}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                {/* Form Card */}
+                <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-10 shadow-2xl overflow-hidden relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
 
-                        <form onSubmit={handleLogin}>
-                            <div className="mb-4">
-                                <label className="text-[13px] font-bold text-amz-text block mb-1">Email</label>
+                    <h1 className="text-3xl font-black text-white mb-8 flex items-center gap-3">
+                        Sign In <Sparkles className="text-[#FF7A1A] w-6 h-6" />
+                    </h1>
+
+                    {error && (
+                        <motion.div
+                            initial={{ x: -10, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-6"
+                        >
+                            <p className="text-red-400 text-sm font-bold flex items-center gap-2">
+                                <span className="bg-red-500 text-white w-4 h-4 rounded-full flex items-center justify-center text-[10px]">!</span>
+                                {error}
+                            </p>
+                        </motion.div>
+                    )}
+
+                    <form onSubmit={handleLogin} className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="text-sm font-black text-gray-300 uppercase tracking-widest ml-1">Work Email</label>
+                            <div className="relative">
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full border border-[#888c8c] rounded-[3px] px-[7px] py-[3px] text-[13px] h-[31px] outline-none focus:border-[#e77600] focus:shadow-[0_0_0_3px_#c8f3fa]"
+                                    placeholder="name@company.com"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white outline-none focus:border-[#FF7A1A] focus:ring-4 focus:ring-[#FF7A1A]/10 transition-all placeholder:text-gray-600 font-medium"
                                 />
                             </div>
+                        </div>
 
-                            <div className="mb-4">
-                                <div className="flex items-center justify-between mb-1">
-                                    <label className="text-[13px] font-bold text-amz-text">Password</label>
-                                    <span className="text-[13px] text-amz-link">Forgot password?</span>
-                                </div>
-                                <div className="relative">
-                                    <input
-                                        type={showPass ? 'text' : 'password'}
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full border border-[#888c8c] rounded-[3px] px-[7px] py-[3px] text-[13px] h-[31px] outline-none focus:border-[#e77600] focus:shadow-[0_0_0_3px_#c8f3fa] pr-8"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPass(!showPass)}
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 text-amz-text2"
-                                    >
-                                        {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                    </button>
-                                </div>
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between ml-1">
+                                <label className="text-sm font-black text-gray-300 uppercase tracking-widest">Password</label>
+                                <button type="button" className="text-xs font-bold text-[#FF7A1A] hover:underline">Forgot?</button>
                             </div>
-
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full py-[6px] text-[13px] rounded-[3px] border border-[#a88734] cursor-pointer disabled:opacity-60"
-                                style={{ background: 'linear-gradient(to bottom, #f7dfa5, #f0c14b)' }}
-                            >
-                                {loading ? 'Signing in...' : 'Sign in'}
-                            </button>
-                        </form>
-
-                        <p className="text-[12px] text-amz-text mt-4 leading-[18px]">
-                            By continuing, you agree to BevMarket&apos;s{' '}
-                            <span className="text-amz-link">Conditions of Use</span>{' '}
-                            and{' '}
-                            <span className="text-amz-link">Privacy Notice</span>.
-                        </p>
-
-                        <div className="mt-4 pt-4 border-t border-[#e7e7e7]">
-                            <p className="text-[11px] text-amz-text2 text-center">
-                                Admin? Use <span className="font-mono text-amz-link">7bd02025@gmail.com</span>
-                            </p>
+                            <div className="relative">
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                                <input
+                                    type={showPass ? 'text' : 'password'}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-12 py-4 text-white outline-none focus:border-[#FF7A1A] focus:ring-4 focus:ring-[#FF7A1A]/10 transition-all placeholder:text-gray-600 font-medium"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPass(!showPass)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+                                >
+                                    {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
+                            </div>
                         </div>
+
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-[#FF7A1A] hover:bg-[#e66c17] text-white py-5 rounded-2xl font-black text-lg shadow-xl shadow-[#FF7A1A]/20 flex items-center justify-center gap-3 disabled:opacity-50 transition-all"
+                        >
+                            {loading ? (
+                                <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                                <>Sign In <ArrowRight size={20} /></>
+                            )}
+                        </motion.button>
+                    </form>
+
+                    <div className="mt-8 flex items-center justify-center gap-2 text-sm text-gray-400 border-t border-white/10 pt-8">
+                        <ShieldCheck className="w-4 h-4 text-green-500" />
+                        Verified Business Login
                     </div>
+                </div>
 
-                    <div className="relative my-5">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-[#e7e7e7]" />
-                        </div>
-                        <div className="relative text-center">
-                            <span className="bg-[#f0f0f0] px-2 text-[12px] text-[#767676]">New to BevMarket?</span>
-                        </div>
-                    </div>
-
-                    <Link
-                        href="/auth/register"
-                        className="block w-full text-center py-[6px] text-[13px] rounded-[3px] border border-[#adb1b8] hover:no-underline text-amz-text"
-                        style={{ background: 'linear-gradient(to bottom, #f7f8fa, #e7e9ec)' }}
-                    >
-                        Create your BevMarket account
+                {/* Footer Link */}
+                <p className="text-center mt-8 text-gray-500 font-medium tracking-tight">
+                    Don't have an account? {' '}
+                    <Link href="/auth/register" className="text-white font-black hover:text-[#FF7A1A] underline-offset-8 hover:underline transition-all">
+                        Create Marketplace Account
                     </Link>
-                </div>
-            </div>
-
-            <div className="bg-gradient-to-b from-transparent to-[#f0f0f0] pt-8 pb-4 text-center">
-                <div className="flex items-center justify-center gap-4 text-[11px] text-amz-link mb-2">
-                    <span className="hover:underline cursor-pointer">Conditions of Use</span>
-                    <span className="hover:underline cursor-pointer">Privacy Notice</span>
-                    <span className="hover:underline cursor-pointer">Help</span>
-                </div>
-                <p className="text-[11px] text-[#555]">© 2026, BevMarket.com, Inc. or its affiliates</p>
-            </div>
+                </p>
+            </motion.div>
         </div>
     );
 }

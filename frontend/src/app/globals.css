@@ -6,19 +6,19 @@
 
 :root {
     /* Light Mode Variables */
-    --background: #F3F4F6;
-    --foreground: #111827;
+    --background: #EAEDED;
+    --foreground: #050B18;
     --card: #FFFFFF;
-    --card-foreground: #111827;
-    --primary: #1E3A8A;
-    --primary-foreground: #F9FAFB;
-    --secondary: #F59E0B;
-    --secondary-foreground: #111827;
-    --success: #10B981;
-    --accent: #F43F5E;
-    --border: #E5E7EB;
+    --card-foreground: #050B18;
+    --primary: #050B18;
+    --primary-foreground: #FFFFFF;
+    --secondary: #FF7A1A;
+    --secondary-foreground: #FFFFFF;
+    --success: #007600;
+    --accent: #B12704;
+    --border: #D5D9D9;
     --input: #FFFFFF;
-    --ring: #10B981;
+    --ring: #FF7A1A;
 
     /* Responsive Typography Transitions */
     --transition-speed: 0.3s;
@@ -51,8 +51,15 @@
     }
 
     body {
-        @apply bg-background text-foreground antialiased;
+        @apply bg-background text-foreground antialiased overflow-x-hidden;
         font-family: 'Inter', sans-serif;
+        width: 100%;
+        max-width: 100vw;
+    }
+
+    html {
+        @apply overflow-x-hidden;
+        scroll-behavior: smooth;
     }
 
     /* Responsive Typography with clamp() */
