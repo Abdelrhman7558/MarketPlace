@@ -1,3 +1,5 @@
+'use client';
+
 import { ThemeProvider } from 'next-themes';
 import { ToastProvider } from '@/components/ui/ToastProvider';
 import { AuthProvider } from '@/lib/auth';
