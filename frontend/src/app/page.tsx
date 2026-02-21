@@ -6,6 +6,9 @@ import AmazonHero from '@/components/ui/AmazonHero';
 import AmazonCardTile from '@/components/ui/AmazonCardTile';
 import { PRODUCTS } from '@/lib/products';
 import ProductCard from '@/components/product/ProductCard';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { useState, useMemo } from 'react';
 
 function CatalogSection({ title, children }: { title: string; children: React.ReactNode }) {
     return (
@@ -19,6 +22,16 @@ function CatalogSection({ title, children }: { title: string; children: React.Re
 }
 
 export default function Home() {
+    const [selectedPopularBrand, setSelectedPopularBrand] = useState<string | null>(null);
+
+    const popularProducts = useMemo(() => {
+        let filtered = PRODUCTS.slice(0, 20); // Initial set of popular products
+        if (selectedPopularBrand) {
+            filtered = filtered.filter(p => p.brand === selectedPopularBrand);
+        }
+        return filtered.slice(0, 8); // Show up to 8
+    }, [selectedPopularBrand]);
+
     return (
         <div className="flex flex-col min-h-screen bg-[#F5F7F7] dark:bg-[#0A0D12] transition-colors duration-500">
             <AmazonNavbar />
@@ -84,6 +97,52 @@ export default function Home() {
                                     <ProductCard product={product} index={i} />
                                 </div>
                             ))}
+                        </div>
+                    </CatalogSection>
+
+                    {/* Popular Products with Filter */}
+                    <CatalogSection title="Popular Wholesale Picks">
+                        <div className="flex flex-col gap-8">
+                            {/* Simple Brand Filter */}
+                            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+                                <button
+                                    onClick={() => setSelectedPopularBrand(null)}
+                                    className={cn(
+                                        "px-6 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap border",
+                                        selectedPopularBrand === null
+                                            ? "bg-primary text-primary-foreground border-primary"
+                                            : "bg-white dark:bg-white/5 text-foreground border-border hover:border-primary/50"
+                                    )}
+                                >
+                                    All Brands
+                                </button>
+                                {['Coca-Cola', 'Pepsi', 'Red Bull', 'Oreo', 'KitKat', 'Doritos', 'Pringles'].map(brand => (
+                                    <button
+                                        key={brand}
+                                        onClick={() => setSelectedPopularBrand(brand)}
+                                        className={cn(
+                                            "px-6 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap border",
+                                            selectedPopularBrand === brand
+                                                ? "bg-primary text-primary-foreground border-primary"
+                                                : "bg-white dark:bg-white/5 text-foreground border-border hover:border-primary/50"
+                                        )}
+                                    >
+                                        {brand}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                {popularProducts.map((product, i) => (
+                                    <ProductCard key={product.id} product={product} index={i} />
+                                ))}
+                            </div>
+
+                            {popularProducts.length === 0 && (
+                                <div className="py-12 text-center text-muted-foreground font-medium">
+                                    No products found for this brand in the popular selection.
+                                </div>
+                            )}
                         </div>
                     </CatalogSection>
 

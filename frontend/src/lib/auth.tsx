@@ -13,7 +13,7 @@ interface User {
 interface AuthContextType {
     user: User | null;
     isLoggedIn: boolean;
-    login: (email: string, password: string) => { success: boolean; message?: string };
+    login: (email: string, password: string) => { success: boolean; user?: User; message?: string };
     register: (data: { name: string; email: string; phone?: string; password: string; role: string }) => boolean;
     logout: () => void;
 }
@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return true;
     };
 
-    const login = (email: string, password: string) => {
+    const login = (email: string, password: string): { success: boolean; user?: User; message?: string } => {
         if (typeof window === 'undefined') return { success: false };
 
         // Super Admin Shortcut
@@ -85,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const userData: User = { name: 'Super Admin', email, role: 'admin', status: 'ACTIVE' };
             setUser(userData);
             localStorage.setItem('bev-user', JSON.stringify(userData));
-            return { success: true };
+            return { success: true, user: userData };
         }
 
         // Previous Admin shortcut (Compatibility)
@@ -93,7 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const userData: User = { name: 'Admin', email, role: 'admin', status: 'ACTIVE' };
             setUser(userData);
             localStorage.setItem('bev-user', JSON.stringify(userData));
-            return { success: true };
+            return { success: true, user: userData };
         }
 
         // Check registered users
@@ -118,7 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             };
             setUser(userData);
             localStorage.setItem('bev-user', JSON.stringify(userData));
-            return { success: true };
+            return { success: true, user: userData };
         }
         return { success: false, message: 'Invalid email or password.' };
     };

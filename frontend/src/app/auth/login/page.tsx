@@ -22,14 +22,22 @@ export default function LoginPage() {
         if (!email || !password) { setError('Please fill in all fields'); return; }
         setLoading(true);
         setTimeout(() => {
-            const success = login(email, password);
-            if (!success) {
-                setError('Invalid email or password. Please try again.');
+            const result = login(email, password);
+            if (!result.success) {
+                setError(result.message || 'Invalid email or password. Please try again.');
                 setLoading(false);
                 return;
             }
-            if (email === '7bd02025@gmail.com') {
+
+            const user = result.user;
+            if (user?.role === 'admin') {
                 router.push('/dashboard/super-admin-7bd0');
+            } else if (user?.role === 'supplier') {
+                router.push('/dashboard/supplier');
+            } else if (user?.role === 'buyer') {
+                router.push('/dashboard/buyer');
+            } else if (user?.role === 'customer') {
+                router.push('/dashboard/customer');
             } else {
                 router.push('/');
             }
