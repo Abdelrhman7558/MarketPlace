@@ -90,100 +90,31 @@ export default function AdminUsersPage() {
             </div>
 
             {/* Users List */}
-            <div className="bg-[#131921] rounded-3xl border border-white/5 overflow-hidden layered-3d-shadow">
-                <div className="overflow-x-auto no-scrollbar">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="border-b border-white/5">
-                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-white/30">User Identity</th>
-                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-white/30">Assigned Role</th>
-                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-white/30">Contact Metrics</th>
-                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-white/30 text-right">Access Control</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5">
-                            <AnimatePresence mode="popLayout">
-                                {filteredUsers.length > 0 ? filteredUsers.map((user, i) => (
-                                    <motion.tr
-                                        key={user.email}
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0, x: -20 }}
-                                        className="group hover:bg-white/[0.02] transition-colors"
-                                    >
-                                        <td className="px-8 py-6">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-black text-primary">
-                                                    {user.name[0]}
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <span className="text-sm font-bold text-white group-hover:text-primary transition-colors">{user.name}</span>
-                                                    <span className="text-xs text-white/40">{user.email}</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-6">
-                                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">
-                                                <ShieldCheck size={12} className="text-primary" />
-                                                <span className="text-[10px] text-white font-black uppercase tracking-tighter">{user.role}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-6">
-                                            <div className="flex flex-col gap-1.5">
-                                                <div className="flex items-center gap-2 text-[11px] text-white/60">
-                                                    <Phone size={12} className="text-primary/70" /> {user.phone || 'Not provided'}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-6 text-right">
-                                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                {activeTab === 'PENDING_APPROVAL' && (
-                                                    <>
-                                                        <button
-                                                            onClick={() => updateStatus(user.email, 'ACTIVE')}
-                                                            className="h-10 px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-xs rounded-lg border border-emerald-500/20 flex items-center gap-2 transition-all"
-                                                        >
-                                                            <CheckCircle size={14} /> Approve
-                                                        </button>
-                                                        <button
-                                                            onClick={() => updateStatus(user.email, 'REJECTED')}
-                                                            className="h-10 px-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-bold text-xs rounded-lg border border-red-500/20 flex items-center gap-2 transition-all"
-                                                        >
-                                                            <XCircle size={14} /> Reject
-                                                        </button>
-                                                    </>
                                                 )}
-                                                {activeTab === 'ACTIVE' && (
-                                                    <button
-                                                        onClick={() => updateStatus(user.email, 'BLOCKED')}
-                                                        className="h-10 px-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-bold text-xs rounded-lg border border-red-500/20 flex items-center gap-2 transition-all"
-                                                    >
-                                                        <Ban size={14} /> Block Access
-                                                    </button>
-                                                )}
-                                                {activeTab === 'BLOCKED' && (
-                                                    <button
-                                                        onClick={() => updateStatus(user.email, 'ACTIVE')}
-                                                        className="h-10 px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-xs rounded-lg border border-emerald-500/20 flex items-center gap-2 transition-all"
-                                                    >
-                                                        <CheckCircle size={14} /> Unblock
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </motion.tr>
-                                )) : (
-                                    <tr>
-                                        <td colSpan={4} className="px-8 py-12 text-center text-white/20 text-sm font-medium">
-                                            No users found for this status segment.
-                                        </td>
-                                    </tr>
-                                )}
-                            </AnimatePresence>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {activeTab === 'BLOCKED' && (
+                <button
+                    onClick={() => updateStatus(user.email, 'ACTIVE')}
+                    className="h-10 px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-xs rounded-lg border border-emerald-500/20 flex items-center gap-2 transition-all"
+                >
+                    <CheckCircle size={14} /> Unblock
+                </button>
+            )}
         </div>
+                                        </td >
+                                    </motion.tr >
+                                )) : (
+        <tr>
+            <td colSpan={4} className="px-8 py-12 text-center text-white/20 text-sm font-medium">
+                No users found for this status segment.
+            </td>
+        </tr>
+    )
+}
+                            </AnimatePresence >
+                        </tbody >
+                    </table >
+                </div >
+            </div >
+        </div >
     );
 }
