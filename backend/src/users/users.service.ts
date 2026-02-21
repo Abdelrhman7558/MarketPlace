@@ -21,7 +21,7 @@ export class UsersService {
             data: {
                 ...data,
                 password: hashedPassword,
-                role: data.role || Role.CUSTOMER,
+                role: (data.role as Role) || Role.CUSTOMER,
             },
         });
     }
