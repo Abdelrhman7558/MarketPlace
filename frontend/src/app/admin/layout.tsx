@@ -23,11 +23,12 @@ import { UserMenu } from '@/components/dashboard/UserMenu';
 
 const ADMIN_LINKS = [
     { label: 'Overview', href: '/admin', icon: LayoutDashboard },
-    { label: 'User Management', href: '/admin/users', icon: Users },
+    { label: 'Users & Approvals', href: '/admin/users', icon: Users },
     { label: 'Suppliers', href: '/admin/suppliers', icon: Package },
     { label: 'Offer Approvals', href: '/admin/offers', icon: Tag },
     { label: 'Placements', href: '/admin/placements', icon: LayoutList },
     { label: 'Orders', href: '/admin/orders', icon: ShoppingCart },
+    { label: 'Team', href: '/admin/team', icon: Users },
     { label: 'Invite Center', href: '/admin/invite', icon: UserPlus },
     { label: 'Settings', href: '/admin/settings', icon: Settings },
 ];

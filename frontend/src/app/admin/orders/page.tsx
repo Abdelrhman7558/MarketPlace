@@ -22,6 +22,14 @@ export default function AdminOrdersPage() {
         { id: 'ORD-7723', customer: 'Tech City Office', supplier: 'Red Bull GmbH', total: 850.00, status: 'PENDING', date: '2026-02-21' },
     ]);
 
+    const handleApprove = (id: string) => {
+        setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'PAID' } : o));
+    };
+
+    const handleReject = (id: string) => {
+        setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'CANCELLED' } : o));
+    };
+
     return (
         <div className="space-y-10 max-w-7xl mx-auto pb-20">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -92,9 +100,28 @@ export default function AdminOrdersPage() {
                                         </div>
                                     </td>
                                     <td className="px-8 py-6 text-right">
-                                        <button className="p-2 hover:bg-white/5 text-white/40 hover:text-white rounded-lg transition-all">
-                                            <MoreVertical size={18} />
-                                        </button>
+                                        <div className="flex items-center justify-end gap-2">
+                                            {order.status === 'PENDING' ? (
+                                                <>
+                                                    <button
+                                                        onClick={() => handleApprove(order.id)}
+                                                        className="h-9 px-4 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 rounded-lg text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 transition-all flex items-center gap-2"
+                                                    >
+                                                        <CheckCircle2 size={14} /> Approve
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleReject(order.id)}
+                                                        className="w-9 h-9 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-lg border border-red-500/20 transition-all flex items-center justify-center"
+                                                    >
+                                                        <XCircle size={16} />
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <button className="p-2 hover:bg-white/5 text-white/40 hover:text-white rounded-lg transition-all">
+                                                    <MoreVertical size={18} />
+                                                </button>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

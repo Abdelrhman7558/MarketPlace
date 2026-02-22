@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 interface UserMenuProps {
-    role: 'admin' | 'supplier';
+    role?: string;
 }
 
 export function UserMenu({ role }: UserMenuProps) {
@@ -43,7 +43,8 @@ export function UserMenu({ role }: UserMenuProps) {
         {
             label: 'Dashboard',
             icon: LayoutDashboard,
-            href: role === 'admin' ? '/admin' : '/supplier'
+            href: role === 'admin' ? '/admin' : '/supplier',
+            hidden: role !== 'admin' && role !== 'supplier'
         },
         {
             label: 'Settings',
@@ -65,21 +66,25 @@ export function UserMenu({ role }: UserMenuProps) {
                 className="flex items-center gap-3 p-1.5 rounded-2xl hover:bg-white/5 transition-all group border border-transparent hover:border-white/10"
             >
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-[#FF8C33] flex items-center justify-center font-black text-[#131921] border-2 border-white/10 shadow-lg group-hover:scale-105 transition-transform">
-                        {user?.name?.[0] || 'U'}
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-[#FF8C33] flex items-center justify-center font-black text-[#131921] border-2 border-white/10 shadow-lg group-hover:scale-105 transition-transform overflow-hidden">
+                        {user?.avatar ? (
+                            <img src={user.avatar} className="w-full h-full object-cover" alt={user.name} />
+                        ) : (
+                            user?.name?.[0] || 'U'
+                        )}
                     </div>
-                    <div className="text-left hidden sm:block">
+                    <div className="text-left hidden lg:block">
                         <p className="text-xs font-black text-white group-hover:text-primary transition-colors">{user?.name}</p>
                         <div className="flex items-center gap-1.5">
                             <div className={cn(
                                 "w-1.5 h-1.5 rounded-full animate-pulse",
-                                role === 'admin' ? "bg-primary" : "bg-emerald-500"
+                                role === 'admin' ? "bg-primary" : role === 'supplier' ? "bg-emerald-500" : "bg-blue-500"
                             )} />
                             <span className={cn(
                                 "text-[9px] font-black uppercase tracking-tighter",
-                                role === 'admin' ? "text-primary" : "text-emerald-500"
+                                role === 'admin' ? "text-primary" : role === 'supplier' ? "text-emerald-500" : "text-blue-500"
                             )}>
-                                {role === 'admin' ? 'Super Admin' : 'Verified Supplier'}
+                                {role === 'admin' ? 'Super Admin' : role === 'supplier' ? 'Verified Supplier' : 'Partner'}
                             </span>
                         </div>
                     </div>

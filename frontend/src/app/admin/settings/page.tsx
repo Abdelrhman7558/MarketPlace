@@ -20,11 +20,13 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/auth';
 
 export default function AdminSettingsPage() {
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
     const [avatar, setAvatar] = React.useState<string | null>(null);
     const [name, setName] = React.useState(user?.name || 'Admin');
-    const [phone, setPhone] = React.useState('+20 100 000 0000');
+    const [phone, setPhone] = React.useState(user?.phone || '+20 100 000 0000');
     const [email] = React.useState(user?.email || 'admin@marketplace.com');
+
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const [oldPass, setOldPass] = React.useState('');
     const [newPass, setNewPass] = React.useState('');
@@ -39,11 +41,29 @@ export default function AdminSettingsPage() {
         setTimeout(() => setToast(null), 3000);
     };
 
+    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setAvatar(base64String);
+                updateUser({ avatar: base64String } as any); // Type cast since avatar might not be in User interface yet but we want to store it
+                showToast('success', 'Avatar updated!');
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSaving(true);
+
+        // Update global auth state
+        updateUser({ name, phone });
+
         // Simulate API call
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise(r => setTimeout(r, 800));
         setIsSaving(false);
         showToast('success', 'Profile settings updated successfully!');
     };

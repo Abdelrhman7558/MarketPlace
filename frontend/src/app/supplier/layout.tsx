@@ -13,7 +13,9 @@ import {
     LogOut,
     Menu,
     X,
+    Clock
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { UserMenu } from '@/components/dashboard/UserMenu';
@@ -128,7 +130,51 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
 
 
                 {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto p-8 no-scrollbar">
+                <div className="flex-1 overflow-y-auto p-8 no-scrollbar relative">
+                    <AnimatePresence>
+                        {user?.status === 'PENDING_APPROVAL' && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="absolute inset-0 z-50 bg-[#131921]/60 backdrop-blur-md flex items-center justify-center p-8"
+                            >
+                                <motion.div
+                                    initial={{ scale: 0.9, y: 20 }}
+                                    animate={{ scale: 1, y: 0 }}
+                                    className="max-w-md w-full bg-[#131921] border border-white/10 rounded-[40px] p-10 text-center shadow-2xl relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500/0 via-amber-500 to-amber-500/0" />
+
+                                    <div className="w-20 h-20 bg-amber-500/10 rounded-[32px] flex items-center justify-center mx-auto mb-8 border border-amber-500/20">
+                                        <Clock className="text-amber-500 animate-pulse" size={40} />
+                                    </div>
+
+                                    <h3 className="text-2xl font-black text-white mb-4 tracking-tight">Registration Pending</h3>
+                                    <p className="text-white/40 text-sm font-medium leading-relaxed mb-10">
+                                        Your supplier application is currently under review by our administration team.
+                                        You'll get full access to the vendor hub as soon as your account is verified.
+                                    </p>
+
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5 text-left">
+                                            <div className="w-2 h-2 rounded-full bg-amber-500" />
+                                            <div>
+                                                <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">Current Status</p>
+                                                <p className="text-xs font-bold text-white">Manual Verification in Progress</p>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            onClick={() => logout()}
+                                            className="w-full py-4 text-[11px] font-black text-white/20 hover:text-white uppercase tracking-[0.2em] transition-colors"
+                                        >
+                                            Sign Out
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                     {children}
                 </div>
             </main>

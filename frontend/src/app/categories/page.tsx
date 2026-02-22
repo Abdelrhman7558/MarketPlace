@@ -89,10 +89,10 @@ function CategoriesContent() {
                                 <Package className="text-primary" size={20} />
                                 <span className="text-xs font-bold text-primary uppercase tracking-wider">Verified Inventory</span>
                             </motion.div>
-                            <h1 className="text-foreground max-w-xl">
+                            <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight max-w-xl">
                                 Explore Our Wholesale <span className="text-secondary">Collections</span>
                             </h1>
-                            <p className="text-muted-foreground text-lg font-medium">{filteredProducts.length} premium products available for bulk order</p>
+                            <p className="text-muted-foreground text-sm font-bold tracking-tight">{filteredProducts.length} premium products available for bulk order</p>
                         </div>
 
                         <div className="flex flex-wrap items-center gap-4">

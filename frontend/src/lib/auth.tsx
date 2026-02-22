@@ -7,6 +7,7 @@ interface User {
     name: string;
     email: string;
     phone?: string;
+    avatar?: string;
     role: string;
     status: 'PENDING_APPROVAL' | 'ACTIVE' | 'REJECTED' | 'BLOCKED';
 }
@@ -16,6 +17,7 @@ interface AuthContextType {
     isLoggedIn: boolean;
     login: (email: string, password: string) => { success: boolean; user?: User; message?: string };
     register: (data: { name: string; email: string; phone?: string; password: string; role: string }) => boolean;
+    updateUser: (data: Partial<User>) => void;
     logout: () => void;
 }
 
@@ -24,6 +26,7 @@ const AuthContext = createContext<AuthContextType>({
     isLoggedIn: false,
     login: () => ({ success: false }),
     register: () => false,
+    updateUser: () => { },
     logout: () => { },
 });
 
@@ -128,6 +131,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, message: 'Invalid email or password.' };
     };
 
+    const updateUser = (data: Partial<User>) => {
+        if (!user) return;
+        const updatedUser = { ...user, ...data };
+        setUser(updatedUser);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('bev-user', JSON.stringify(updatedUser));
+
+            // Also update the persistent users list if necessary
+            const usersRaw = localStorage.getItem('bev-users') || '[]';
+            const users = JSON.parse(usersRaw);
+            const index = users.findIndex((u: any) => u.email === user.email);
+            if (index !== -1) {
+                users[index] = { ...users[index], ...data };
+                localStorage.setItem('bev-users', JSON.stringify(users));
+            }
+        }
+    };
+
     const logout = () => {
         setUser(null);
         if (typeof window !== 'undefined') {
@@ -136,7 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, register, logout }}>
+        <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, register, updateUser, logout }}>
             {children}
         </AuthContext.Provider>
     );

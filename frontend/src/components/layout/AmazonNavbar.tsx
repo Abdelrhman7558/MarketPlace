@@ -2,12 +2,13 @@
 
 import * as React from 'react';
 import { useCart } from '@/lib/cart';
-import { Search, ShoppingCart, User, Menu, MapPin, ChevronDown, Coffee, Zap, Droplets, IceCream, ShieldCheck, Home, Grid, Sparkles, Heart } from 'lucide-react';
+import { Search, ShoppingCart, Menu, ChevronDown, Coffee, Zap, Droplets, IceCream, ShieldCheck, Home, Grid, Sparkles, Heart } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { CATEGORIES_LIST } from '@/lib/products';
+import { UserMenu } from '@/components/dashboard/UserMenu';
 
 const CATEGORY_ICONS: Record<string, any> = {
     'Soft Drinks': Droplets,
@@ -68,27 +69,29 @@ export default function AmazonNavbar() {
                 </form>
 
                 {/* Right Actions */}
-                <div className="flex items-center gap-1 h-full">
+                <div className="flex items-center gap-1 h-full font-heading">
                     {/* Account & Lists */}
-                    <div className="relative group h-full">
-                        <Link
-                            href={user ? (user.role === 'admin' ? '/admin' : `/dashboard/${user.role}`) : '/auth/login'}
-                            className="flex flex-col items-start p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full whitespace-nowrap min-w-max"
-                        >
-                            <span className="text-[11px] leading-tight font-medium text-white/80">Hello, {user ? user.name.split(' ')[0] : 'Sign in'}</span>
-                            <div className="flex items-center gap-0.5">
-                                <span className="text-xs md:text-sm font-bold leading-tight">Account</span>
-                                <ChevronDown size={10} className="text-white/60" />
-                            </div>
-                        </Link>
-
-                        {/* Dropdown would go here if needed, keeping it simple as per Amazon style */}
+                    <div className="relative group h-full flex items-center">
+                        {user ? (
+                            <UserMenu role={user.role} />
+                        ) : (
+                            <Link
+                                href="/auth/login"
+                                className="flex flex-col items-start p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full whitespace-nowrap min-w-max justify-center"
+                            >
+                                <span className="text-[11px] leading-tight font-medium text-white/80">Hello, Sign in</span>
+                                <div className="flex items-center gap-0.5">
+                                    <span className="text-xs md:text-sm font-black leading-tight">Account</span>
+                                    <ChevronDown size={10} className="text-white/60" />
+                                </div>
+                            </Link>
+                        )}
                     </div>
 
                     {/* Orders */}
-                    <Link href="/dashboard" className="hidden md:flex flex-col items-start p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full whitespace-nowrap">
+                    <Link href="/dashboard" className="hidden md:flex flex-col items-start p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full whitespace-nowrap justify-center">
                         <span className="text-[11px] leading-tight font-medium text-white/80">Returns</span>
-                        <span className="text-xs md:text-sm font-bold leading-tight">& Orders</span>
+                        <span className="text-xs md:text-sm font-black leading-tight">& Orders</span>
                     </Link>
 
                     {/* Cart */}
@@ -99,7 +102,7 @@ export default function AmazonNavbar() {
                                 {cartCount}
                             </span>
                         </div>
-                        <span className="hidden sm:block text-sm font-bold mb-0.5 ml-1">Cart</span>
+                        <span className="hidden sm:block text-sm font-black mb-0.5 ml-1">Cart</span>
                     </Link>
                 </div>
             </div>
@@ -112,7 +115,7 @@ export default function AmazonNavbar() {
                     onMouseEnter={() => setIsCategoriesOpen(true)}
                     onMouseLeave={() => setIsCategoriesOpen(false)}
                 >
-                    <button className="flex items-center gap-1 font-bold text-xs hover:border-white/30 border border-transparent rounded px-2 py-1 transition-all whitespace-nowrap h-8">
+                    <button className="flex items-center gap-1 font-black text-xs hover:border-white/30 border border-transparent rounded px-2 py-1 transition-all whitespace-nowrap h-8 uppercase tracking-widest">
                         <Menu size={18} /> Categories
                     </button>
 
@@ -151,7 +154,7 @@ export default function AmazonNavbar() {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3 text-xs font-medium text-white/90 h-full">
+                <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-white/90 h-full">
                     {["Today's Deals", "Customer Service", "Registry", "Sell"].map((item) => (
                         <Link key={item} href="#" className="hover:border-white/30 border border-transparent rounded px-2 py-1 transition-all whitespace-nowrap">
                             {item}

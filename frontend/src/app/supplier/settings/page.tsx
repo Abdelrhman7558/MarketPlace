@@ -21,12 +21,14 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/auth';
 
 export default function SupplierSettingsPage() {
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
     const [avatar, setAvatar] = React.useState<string | null>(null);
     const [name, setName] = React.useState(user?.name || 'Vendor');
     const [company, setCompany] = React.useState('Hellenic Beverages Ltd.');
-    const [phone, setPhone] = React.useState('+20 123 456 7890');
+    const [phone, setPhone] = React.useState(user?.phone || '+20 123 456 7890');
     const [email] = React.useState(user?.email || 'vendor@marketplace.com');
+
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const [isSaving, setIsSaving] = React.useState(false);
     const [toast, setToast] = React.useState<{ type: 'success' | 'error', msg: string } | null>(null);
@@ -36,10 +38,27 @@ export default function SupplierSettingsPage() {
         setTimeout(() => setToast(null), 3000);
     };
 
+    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setAvatar(base64String);
+                updateUser({ avatar: base64String });
+                showToast('success', 'Logo updated!');
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSaving(true);
-        await new Promise(r => setTimeout(r, 1000));
+
+        updateUser({ name, phone });
+
+        await new Promise(r => setTimeout(r, 800));
         setIsSaving(false);
         showToast('success', 'Supplier settings updated!');
     };
