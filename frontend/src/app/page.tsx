@@ -9,6 +9,7 @@ import ProductCard from '@/components/product/ProductCard';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useState, useMemo } from 'react';
+import { AdPlacements } from '@/components/marketplace/AdPlacements';
 
 function CatalogSection({ title, children }: { title: string; children: React.ReactNode }) {
     return (
@@ -45,7 +46,13 @@ export default function Home() {
 
                 {/* Overlapping Content - Catalog Section */}
                 <div className="container mx-auto px-4 -mt-24 md:-mt-64 relative z-20 pb-20">
+                    {/* 3D Ad Placements */}
+                    <div className="mb-12">
+                        <AdPlacements />
+                    </div>
+
                     {/* Catalog Grid */}
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
                         <AmazonCardTile
                             title="Makeup for Everyone"
