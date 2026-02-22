@@ -11,15 +11,19 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     const { user, isLoggedIn } = useAuth();
     const router = useRouter();
 
+    const isAuthPage = pathname?.startsWith('/auth');
+    const isPendingPage = pathname === '/auth/pending';
     const isDashboard = pathname?.startsWith('/dashboard') || pathname?.startsWith('/admin') || pathname?.startsWith('/supplier');
     const isHome = pathname === '/';
 
-    // Enforcement logic
+    // Enforcement logic: Block unapproved users from everything except the pending page and auth flows
     useEffect(() => {
-        if (isLoggedIn && user?.status === 'PENDING_APPROVAL' && isDashboard) {
-            router.push('/auth/pending');
+        if (isLoggedIn && user?.status === 'PENDING_APPROVAL') {
+            if (!isPendingPage && pathname !== '/auth/login' && pathname !== '/auth/register') {
+                router.push('/auth/pending');
+            }
         }
-    }, [user, isLoggedIn, isDashboard, router]);
+    }, [user, isLoggedIn, pathname, isPendingPage, router]);
 
     return (
         <div className="flex flex-col min-h-screen">

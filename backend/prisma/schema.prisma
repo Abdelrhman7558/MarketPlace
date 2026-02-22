@@ -16,6 +16,13 @@ enum Role {
   CUSTOMER
 }
 
+enum UserStatus {
+  PENDING_APPROVAL
+  ACTIVE
+  REJECTED
+  BLOCKED
+}
+
 enum PlacementType {
   HERO
   FEATURED
