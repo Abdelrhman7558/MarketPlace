@@ -88,9 +88,20 @@ export default function AdminSettingsPage() {
                         <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
                             <div className="relative group shrink-0">
                                 <div className="w-24 h-24 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-3xl font-black text-primary overflow-hidden">
-                                    {avatar ? <img src={avatar} className="w-full h-full object-cover" /> : name[0]}
+                                    {avatar || user?.avatar ? <img src={avatar || user?.avatar} className="w-full h-full object-cover" /> : name[0]}
                                 </div>
-                                <button type="button" className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-[#131921] shadow-lg hover:scale-110 transition-transform">
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={handleAvatarChange}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-[#131921] shadow-lg hover:scale-110 transition-transform"
+                                >
                                     <Camera size={14} strokeWidth={3} />
                                 </button>
                             </div>
@@ -151,23 +162,34 @@ export default function AdminSettingsPage() {
                         </h3>
 
                         <div className="space-y-4">
-                            <div className="space-y-2">
-                                <label className="text-[11px] font-black text-white/30 uppercase tracking-widest ml-1">New Password</label>
-                                <div className="relative">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-[11px] font-black text-white/30 uppercase tracking-widest ml-1">Current Password</label>
                                     <input
-                                        type={showPass ? 'text' : 'password'}
-                                        value={newPass}
-                                        onChange={e => setNewPass(e.target.value)}
-                                        placeholder="Leave blank to keep current"
-                                        className="w-full h-14 bg-white/5 rounded-2xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium placeholder:text-white/10"
+                                        type="password"
+                                        value={oldPass}
+                                        onChange={e => setOldPass(e.target.value)}
+                                        className="w-full h-14 bg-white/5 rounded-2xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium"
                                     />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPass(!showPass)}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
-                                    >
-                                        {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    </button>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[11px] font-black text-white/30 uppercase tracking-widest ml-1">New Password</label>
+                                    <div className="relative">
+                                        <input
+                                            type={showPass ? 'text' : 'password'}
+                                            value={newPass}
+                                            onChange={e => setNewPass(e.target.value)}
+                                            placeholder="Leave blank to keep current"
+                                            className="w-full h-14 bg-white/5 rounded-2xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium placeholder:text-white/10"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPass(!showPass)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
+                                        >
+                                            {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <button className="h-10 px-6 bg-white/5 border border-white/5 text-white/60 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-white/10 transition-all flex items-center gap-2">

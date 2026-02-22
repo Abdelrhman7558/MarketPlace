@@ -309,3 +309,6 @@ export default function AdminOffersPage() {
                     </div>
                 )}
             </AnimatePresence>
+        </div>
+    );
+}
