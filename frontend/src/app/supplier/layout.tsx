@@ -21,10 +21,11 @@ import { UserMenu } from '@/components/dashboard/UserMenu';
 const SUPPLIER_LINKS = [
     { label: 'Business Overview', href: '/supplier', icon: LayoutDashboard },
     { label: 'Inventory Manager', href: '/supplier/products', icon: Box },
-    { label: 'Placement Requests', href: '/supplier/placements', icon: ListPlus },
+    { label: 'Offers & Ads', href: '/supplier/offers', icon: ListPlus },
     { label: 'My Sales', href: '/supplier/orders', icon: ShoppingCart },
     { label: 'Customer Chat', href: '/supplier/messages', icon: MessageSquare },
 ];
+
 
 export default function SupplierLayout({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = React.useState(true);

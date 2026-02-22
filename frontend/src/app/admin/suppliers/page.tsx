@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Package, Search, Plus, MapPin, Star, Building2, ShieldCheck, ExternalLink } from 'lucide-react';
+import { Package, Search, Plus, MapPin, Star, Building2, ShieldCheck, ExternalLink, X, Trash2, DollarSign, Tag, ShoppingBag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ManagedSupplier {
@@ -13,16 +13,47 @@ interface ManagedSupplier {
     rating: number;
     status: 'VERIFIED' | 'PENDING' | 'SUSPENDED';
     productCount: number;
+    avatar?: string;
+    description?: string;
+    totalEarnings?: number;
 }
 
 export default function AdminSuppliersPage() {
     const [searchTerm, setSearchTerm] = React.useState('');
-    const [suppliers] = React.useState<ManagedSupplier[]>([
-        { id: 'SUP-01', company: 'Coca-Cola Hellenic', category: 'Beverages', location: 'Athens, GR', rating: 4.9, status: 'VERIFIED', productCount: 142 },
-        { id: 'SUP-02', company: 'Nestlé Professional', category: 'Multi-Category', location: 'Vevey, CH', rating: 4.8, status: 'VERIFIED', productCount: 850 },
-        { id: 'SUP-03', company: 'Red Bull Trading', category: 'Energy', location: 'Fuschl, AT', rating: 4.7, status: 'VERIFIED', productCount: 24 },
-        { id: 'SUP-04', company: 'Local Brew Co.', category: 'Craft Beverages', location: 'London, UK', rating: 4.5, status: 'PENDING', productCount: 12 },
+    const [selectedSupplier, setSelectedSupplier] = React.useState<ManagedSupplier | null>(null);
+    const [suppliers, setSuppliers] = React.useState<ManagedSupplier[]>([
+        {
+            id: 'SUP-01',
+            company: 'Coca-Cola Hellenic',
+            category: 'Beverages',
+            location: 'Athens, GR',
+            rating: 4.9,
+            status: 'VERIFIED',
+            productCount: 142,
+            description: 'Global leader in beverage manufacturing and distribution, specializing in carbonated soft drinks and juices.',
+            totalEarnings: 124500,
+            avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/1200px-Coca-Cola_logo.svg.png'
+        },
+        { id: 'SUP-02', company: 'Nestlé Professional', category: 'Multi-Category', location: 'Vevey, CH', rating: 4.8, status: 'VERIFIED', productCount: 850, totalEarnings: 85400 },
+        { id: 'SUP-03', company: 'Red Bull Trading', category: 'Energy', location: 'Fuschl, AT', rating: 4.7, status: 'VERIFIED', productCount: 24, totalEarnings: 32000 },
+        { id: 'SUP-04', company: 'Local Brew Co.', category: 'Craft Beverages', location: 'London, UK', rating: 4.5, status: 'PENDING', productCount: 12, totalEarnings: 1500 },
     ]);
+
+    // Mock products for the selected supplier
+    const [mockProducts, setMockProducts] = React.useState([
+        { id: 'P1', name: 'Original Taste 330ml', price: 12.50, stock: 450 },
+        { id: 'P2', name: 'Zero Sugar 500ml', price: 15.00, stock: 220 },
+        { id: 'P3', name: 'Diet Coke 330ml', price: 11.50, stock: 180 },
+    ]);
+
+    const deleteSupplier = (id: string) => {
+        setSuppliers(suppliers.filter(s => s.id !== id));
+        setSelectedSupplier(null);
+    };
+
+    const deleteProduct = (id: string) => {
+        setMockProducts(mockProducts.filter(p => p.id !== id));
+    };
 
     return (
         <div className="space-y-10 max-w-7xl mx-auto pb-20">
@@ -47,8 +78,12 @@ export default function AdminSuppliersPage() {
                         className="bg-[#131921] border border-white/5 rounded-3xl p-6 hover:border-primary/20 transition-all group relative overflow-hidden"
                     >
                         <div className="flex justify-between items-start mb-6">
-                            <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-primary/20 transition-colors">
-                                <Building2 className="text-primary" size={24} />
+                            <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-primary/20 transition-colors overflow-hidden p-2">
+                                {supplier.avatar ? (
+                                    <img src={supplier.avatar} className="w-full h-full object-contain" alt={supplier.company} />
+                                ) : (
+                                    <Building2 className="text-primary" size={24} />
+                                )}
                             </div>
                             <div className={cn(
                                 "px-2.5 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border",
@@ -86,16 +121,174 @@ export default function AdminSuppliersPage() {
                         </div>
 
                         <div className="mt-8 flex gap-3">
-                            <button className="flex-1 h-10 bg-white/5 hover:bg-white/10 text-white font-black text-[10px] uppercase rounded-xl transition-all border border-white/5">
+                            <button
+                                onClick={() => setSelectedSupplier(supplier)}
+                                className="flex-1 h-10 bg-white/5 hover:bg-white/10 text-white font-black text-[10px] uppercase rounded-xl transition-all border border-white/5"
+                            >
                                 View Profile
                             </button>
-                            <button className="w-10 h-10 bg-white/5 hover:bg-primary hover:text-[#131921] text-white/40 rounded-xl transition-all border border-white/5 flex items-center justify-center">
-                                <ExternalLink size={16} />
+                            <button
+                                onClick={() => deleteSupplier(supplier.id)}
+                                className="w-10 h-10 bg-white/5 hover:bg-red-500 hover:text-white text-white/40 rounded-xl transition-all border border-white/5 flex items-center justify-center group/del"
+                            >
+                                <Trash2 size={16} className="group-hover/del:scale-110 transition-transform" />
                             </button>
                         </div>
                     </motion.div>
                 ))}
             </div>
+
+            {/* Mac-style Profile Popup */}
+            <AnimatePresence>
+                {selectedSupplier && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedSupplier(null)}
+                            className="absolute inset-0 bg-black/60 backdrop-blur-md"
+                        />
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="bg-[#1c1c1e] w-full max-w-4xl max-h-[85vh] rounded-[24px] border border-white/10 overflow-hidden shadow-2xl relative flex flex-col"
+                        >
+                            {/* Mac Window Controls */}
+                            <div className="h-12 bg-[#2c2c2e] border-b border-black/20 flex items-center px-4 justify-between sticky top-0 z-10">
+                                <div className="flex gap-2">
+                                    <button onClick={() => setSelectedSupplier(null)} className="w-3 h-3 rounded-full bg-[#ff5f57] hover:bg-[#ff5f57e6] border border-black/10 flex items-center justify-center group">
+                                        <X size={8} className="text-black/40 opacity-0 group-hover:opacity-100" />
+                                    </button>
+                                    <div className="w-3 h-3 rounded-full bg-[#febc2e] border border-black/10" />
+                                    <div className="w-3 h-3 rounded-full bg-[#28c840] border border-black/10" />
+                                </div>
+                                <p className="text-[11px] font-bold text-white/40 uppercase tracking-widest">{selectedSupplier.company} – Vendor Intelligence</p>
+                                <div className="w-12" />
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto no-scrollbar">
+                                {/* Header / Hero */}
+                                <div className="p-8 pb-0 flex flex-col md:flex-row gap-8">
+                                    <div className="w-32 h-32 rounded-3xl bg-white/5 flex items-center justify-center border border-white/10 overflow-hidden p-4 shrink-0 shadow-inner">
+                                        {selectedSupplier.avatar ? (
+                                            <img src={selectedSupplier.avatar} className="w-full h-full object-contain" alt={selectedSupplier.company} />
+                                        ) : (
+                                            <Building2 className="text-primary" size={48} />
+                                        )}
+                                    </div>
+                                    <div className="space-y-4 flex-1">
+                                        <div>
+                                            <h2 className="text-3xl font-black text-white tracking-tight">{selectedSupplier.company}</h2>
+                                            <p className="text-primary font-black text-xs uppercase tracking-[0.2em] mt-1">{selectedSupplier.category}</p>
+                                        </div>
+                                        <p className="text-sm text-white/60 leading-relaxed font-medium">
+                                            {selectedSupplier.description || "No company description provided. This enterprise vendor specializes in high-volume distribution and supply chain logistics for modern retail markets."}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Stats Grid */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-8">
+                                    <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
+                                        <DollarSign className="text-emerald-400 mb-2" size={18} />
+                                        <p className="text-[9px] font-black text-white/20 uppercase tracking-widest">Total Earnings</p>
+                                        <p className="text-lg font-black text-white">${(selectedSupplier.totalEarnings || 0).toLocaleString()}</p>
+                                    </div>
+                                    <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
+                                        <Tag className="text-primary mb-2" size={18} />
+                                        <p className="text-[9px] font-black text-white/20 uppercase tracking-widest">Open Offers</p>
+                                        <p className="text-lg font-black text-white">4</p>
+                                    </div>
+                                    <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
+                                        <ShoppingBag className="text-blue-400 mb-2" size={18} />
+                                        <p className="text-[9px] font-black text-white/20 uppercase tracking-widest">Active SKU</p>
+                                        <p className="text-lg font-black text-white">{selectedSupplier.productCount}</p>
+                                    </div>
+                                    <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
+                                        <Star className="text-amber-400 mb-2" size={18} />
+                                        <p className="text-[9px] font-black text-white/20 uppercase tracking-widest">Trust Rating</p>
+                                        <p className="text-lg font-black text-white">{selectedSupplier.rating} / 5.0</p>
+                                    </div>
+                                </div>
+
+                                {/* Products List */}
+                                <div className="px-8 pb-10">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+                                            <Package size={16} className="text-primary" />
+                                            Active Inventory
+                                        </h3>
+                                        <button className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline">View All</button>
+                                    </div>
+                                    <div className="space-y-2">
+                                        {mockProducts.map((product) => (
+                                            <div key={product.id} className="bg-white/[0.03] border border-white/5 rounded-xl p-4 flex items-center justify-between group hover:bg-white/5 transition-colors">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center border border-white/5">
+                                                        <ImageIcon size={18} className="text-white/20" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-bold text-white mb-0.5">{product.name}</p>
+                                                        <div className="flex items-center gap-3">
+                                                            <span className="text-[10px] text-white/40 font-bold">${product.price.toFixed(2)}</span>
+                                                            <span className="w-1 h-1 rounded-full bg-white/10" />
+                                                            <span className="text-[10px] text-emerald-400/60 font-black">{product.stock} in stock</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => deleteProduct(product.id)}
+                                                    className="w-8 h-8 rounded-lg bg-red-400/0 text-red-400/40 hover:bg-red-400/10 hover:text-red-400 transition-all flex items-center justify-center"
+                                                >
+                                                    <X size={16} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Footer Actions */}
+                            <div className="p-6 bg-[#2c2c2e]/50 border-t border-white/5 flex justify-between items-center">
+                                <button className="flex items-center gap-2 text-white/40 hover:text-white transition-colors">
+                                    <ShieldCheck size={16} />
+                                    <span className="text-[11px] font-black uppercase tracking-widest">Verify Documents</span>
+                                </button>
+                                <button
+                                    onClick={() => deleteSupplier(selectedSupplier.id)}
+                                    className="h-11 px-6 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
+                                >
+                                    <Trash2 size={14} /> Delete Supplier
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
+    );
+}
+
+// Helper icons
+function ImageIcon({ size, className }: { size?: number, className?: string }) {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size || 24}
+            height={size || 24}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+            <circle cx="9" cy="9" r="2" />
+            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+        </svg>
     );
 }

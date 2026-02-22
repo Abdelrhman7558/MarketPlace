@@ -14,7 +14,8 @@ import {
     Menu,
     X,
     UserPlus,
-    LayoutList
+    LayoutList,
+    Tag
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
@@ -24,11 +25,13 @@ const ADMIN_LINKS = [
     { label: 'Overview', href: '/admin', icon: LayoutDashboard },
     { label: 'User Management', href: '/admin/users', icon: Users },
     { label: 'Suppliers', href: '/admin/suppliers', icon: Package },
+    { label: 'Offer Approvals', href: '/admin/offers', icon: Tag },
     { label: 'Placements', href: '/admin/placements', icon: LayoutList },
     { label: 'Orders', href: '/admin/orders', icon: ShoppingCart },
     { label: 'Invite Center', href: '/admin/invite', icon: UserPlus },
     { label: 'Settings', href: '/admin/settings', icon: Settings },
 ];
+
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = React.useState(true);
