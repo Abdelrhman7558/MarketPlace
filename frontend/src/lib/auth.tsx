@@ -16,7 +16,7 @@ interface AuthContextType {
     user: User | null;
     isLoggedIn: boolean;
     login: (email: string, password: string) => Promise<{ success: boolean; user?: User; message?: string }>;
-    register: (data: { name: string; email: string; phone?: string; password: string; role: string }) => Promise<boolean>;
+    register: (data: { name: string; email: string; phone?: string; password: string; role: string }) => Promise<boolean | string>;
     updateUser: (data: Partial<User>) => void;
     logout: () => void;
 }
@@ -48,14 +48,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
-    const register = async (data: { name: string; email: string; phone?: string; password: string; role: string }) => {
+    const register = async (data: { name: string; email: string; phone?: string; password: string; role: string }): Promise<boolean | string> => {
         try {
             const res = await fetch('http://localhost:3005/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
             });
-            if (!res.ok) return false;
+            if (!res.ok) {
+                const error = await res.json().catch(() => ({}));
+                return error.message || 'Registration failed.';
+            }
 
             const result = await res.json();
             const userData = result.user;
@@ -65,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             return true;
         } catch (err) {
             console.error("Registration failed:", err);
-            return false;
+            return 'Server is currently unreachable. Please try again later.';
         }
     };
 

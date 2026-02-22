@@ -164,3 +164,36 @@ model AdminActionLog {
   
   createdAt   DateTime @default(now())
 }
+
+model SecurityLog {
+  id          String   @id @default(uuid())
+  level       String   // INFO, WARN, CRITICAL
+  eventType   String   // BRUTE_FORCE, XSS_ATTEMPT, SQLI_ATTEMPT, UNAUTHORIZED_ACCESS, etc.
+  description String
+  ip          String?
+  userId      String?
+  path        String?
+  method      String?
+  payload     Json?
+  headers     Json?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+}
+
+model BlockedIp {
+  id          String   @id @default(uuid())
+  ip          String   @unique
+  reason      String
+  expiresAt   DateTime?
+  isPermanent Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SecurityConfig {
+  id              String   @id @default(uuid())
+  key             String   @unique // e.g., "EMERGENCY_LOCKDOWN", "BRUTE_FORCE_THRESHOLD"
+  value           String
+  description     String?
+  updatedAt       DateTime @updatedAt
+}

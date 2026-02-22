@@ -39,7 +39,12 @@ export default function RegisterPage() {
             });
 
             if (!success) {
-                setError('An account with this email already exists or server is down.');
+                // If it's a string, it's an error message. If it's false, it's a generic error.
+                if (typeof success === 'string') {
+                    setError(success);
+                } else {
+                    setError('Unable to reach the registration server. Please check your internet or try again later.');
+                }
                 setLoading(false);
                 return;
             }
