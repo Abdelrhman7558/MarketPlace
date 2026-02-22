@@ -52,6 +52,7 @@ model User {
   password  String
   name      String
   role      Role     @default(CUSTOMER)
+  status    UserStatus @default(PENDING_APPROVAL)
   phone     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

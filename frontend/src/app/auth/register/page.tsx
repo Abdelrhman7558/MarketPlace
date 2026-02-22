@@ -29,22 +29,24 @@ export default function RegisterPage() {
         if (form.password !== form.confirmPassword) { setError('Passwords must match.'); return; }
 
         setLoading(true);
-        setTimeout(() => {
-            const success = register({
+        const submitRegister = async () => {
+            const success = await register({
                 name: form.name,
                 email: form.email,
                 phone: form.phone,
                 password: form.password,
                 role: form.role,
             });
+
             if (!success) {
-                setError('An account with this email already exists.');
+                setError('An account with this email already exists or server is down.');
                 setLoading(false);
                 return;
             }
             router.push('/');
             setLoading(false);
-        }, 1500);
+        };
+        submitRegister();
     };
 
     return (

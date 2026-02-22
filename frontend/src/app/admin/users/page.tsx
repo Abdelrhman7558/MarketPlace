@@ -31,19 +31,44 @@ export default function AdminUsersPage() {
     const [searchTerm, setSearchTerm] = React.useState('');
 
     React.useEffect(() => {
-        const loadUsers = () => {
-            const raw = localStorage.getItem('bev-users') || '[]';
-            setUsers(JSON.parse(raw));
+        const loadUsers = async () => {
+            try {
+                const token = localStorage.getItem('bev-token');
+                const res = await fetch('http://localhost:3005/users', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setUsers(data);
+                }
+            } catch (err) {
+                console.error("Failed to load users:", err);
+            }
         };
         loadUsers();
-        window.addEventListener('storage', loadUsers);
-        return () => window.removeEventListener('storage', loadUsers);
     }, []);
 
-    const updateStatus = (email: string, status: UserStatus) => {
-        const updated = users.map(u => u.email === email ? { ...u, status } : u);
-        setUsers(updated);
-        localStorage.setItem('bev-users', JSON.stringify(updated));
+    const updateStatus = async (email: string, status: UserStatus) => {
+        try {
+            const token = localStorage.getItem('bev-token');
+            const user = users.find(u => u.email === email);
+            if (!user) return;
+
+            const res = await fetch(`http://localhost:3005/users/${(user as any).id}/status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status })
+            });
+
+            if (res.ok) {
+                setUsers(users.map(u => u.email === email ? { ...u, status } : u));
+            }
+        } catch (err) {
+            console.error("Failed to update status:", err);
+        }
     };
 
     const filteredUsers = users.filter(u =>

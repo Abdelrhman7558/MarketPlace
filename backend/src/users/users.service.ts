@@ -22,11 +22,22 @@ export class UsersService {
                 ...data,
                 password: hashedPassword,
                 role: (data.role as Role) || Role.CUSTOMER,
+                status: 'PENDING_APPROVAL',
             },
         });
     }
 
-    async findAll() {
-        return this.prisma.user.findMany();
+    async findAll(status?: any) {
+        return this.prisma.user.findMany({
+            where: status ? { status } : {},
+            orderBy: { createdAt: 'desc' },
+        });
+    }
+
+    async updateStatus(id: string, status: any) {
+        return this.prisma.user.update({
+            where: { id },
+            data: { status },
+        });
     }
 }

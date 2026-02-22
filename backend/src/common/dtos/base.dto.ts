@@ -13,6 +13,9 @@ export class UserDto {
     @Expose()
     role: string;
 
+    @Expose()
+    status: string;
+
     @Exclude()
     password?: string;
 

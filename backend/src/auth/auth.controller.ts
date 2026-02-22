@@ -9,9 +9,10 @@ export class AuthController {
 
     @Post('register')
     async register(@Body() createUserDto: any) {
-        // Note: Registration logic should be in usersService, but I'll add a basic placeholder here
-        // In a real app, we'd use a dedicated 'register' service method
-        return this.authService.login(await this.authService.validateUser(createUserDto.email, createUserDto.password));
+        const { password, ...userData } = createUserDto;
+        // The service already handles hashing and duplicate checks
+        const user = await this.authService.register(createUserDto);
+        return this.authService.login(user);
     }
 
     @Post('login')

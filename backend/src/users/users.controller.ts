@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards, Post, Param, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -17,5 +17,11 @@ export class UsersController {
     async findAll() {
         const users = await this.usersService.findAll();
         return plainToInstance(UserDto, users);
+    }
+
+    @Post(':id/status')
+    @Roles(Role.ADMIN)
+    async updateStatus(@Param('id') id: string, @Body('status') status: string) {
+        return this.usersService.updateStatus(id, status);
     }
 }
