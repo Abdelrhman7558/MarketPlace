@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
+import { UserMenu } from '@/components/dashboard/UserMenu';
 
 const SUPPLIER_LINKS = [
     { label: 'Business Overview', href: '/supplier', icon: LayoutDashboard },
@@ -120,20 +121,10 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
 
                         <div className="h-8 w-[1px] bg-white/10 mx-2" />
 
-                        <div className="flex items-center gap-3">
-                            <div className="text-right hidden sm:block">
-                                <p className="text-sm font-black text-white">{user?.name}</p>
-                                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="text-[9px] text-emerald-500 font-black uppercase tracking-tighter">Verified Supplier</span>
-                                </div>
-                            </div>
-                            <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center font-black text-white border border-white/10 shadow-lg">
-                                {user?.name?.[0] || 'S'}
-                            </div>
-                        </div>
+                        <UserMenu role="supplier" />
                     </div>
                 </header>
+
 
                 {/* Scrollable Content */}
                 <div className="flex-1 overflow-y-auto p-8 no-scrollbar">

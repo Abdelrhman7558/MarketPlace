@@ -6,6 +6,12 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const SLIDES = [
     {
+        image: "C:/Users/AK/.gemini/antigravity/brain/c6a8e3a6-9bb6-4e8a-9ec6-466706da33a2/media__1771711698529.png",
+        title: "Bloom Zero Sugar: 100% Obsessed",
+        subtitle: "10 Calories. Guilt-Free. Bulk orders available now.",
+        badge: "Hot Deal"
+    },
+    {
         image: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&q=80&w=2000",
         title: "Limited Time Offer: 30% Off Energy Drinks",
         subtitle: "Bulk orders for Red Bull & Monster at exclusive wholesale prices.",

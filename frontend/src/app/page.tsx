@@ -48,48 +48,48 @@ export default function Home() {
                     {/* Catalog Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
                         <AmazonCardTile
-                            title="Energy Drinks"
+                            title="Makeup for Everyone"
                             items={[
-                                { label: 'Bloom Energy', image: '/images/ads/bloom-hero.jpg', link: '/categories?brand=Bloom' },
-                                { label: 'Red Bull', image: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Red_Bull_new_logo.svg/1200px-Red_Bull_new_logo.svg.png', link: '/categories?brand=Red Bull' },
-                                { label: 'Celsius Fit', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400', link: '/categories?category=Energy Drinks' },
-                                { label: 'Monster Bulk', image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400', link: '/categories?category=Energy Drinks' },
+                                { label: "Women's Beauty", image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=200&h=200&fit=crop", link: "/categories?category=Makeup" },
+                                { label: "Men's Grooming", image: "https://images.unsplash.com/photo-1590156221122-c748c789d36a?w=200&h=200&fit=crop", link: "/categories?category=Makeup" },
+                                { label: "Skincare", image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
+                                { label: "Bestsellers", image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=200&h=200&fit=crop", link: "/categories?category=Makeup" }
                             ]}
-                            footerLink="/categories?category=Energy Drinks"
-                            footerText="Explore energy products"
+                            footerLink="/categories?category=Makeup"
+                            footerText="Shop all Beauty"
                         />
                         <AmazonCardTile
-                            title="Soft Drinks"
+                            title="Premium Fragrances"
                             items={[
-                                { label: 'Coca-Cola', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/2560px-Coca-Cola_logo.svg.png', link: '/categories?brand=Coca-Cola' },
-                                { label: 'Pepsi Co.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Pepsi_logo_2014.svg/2000px-Pepsi_logo_2014.svg.png', link: '/categories?brand=Pepsi' },
-                                { label: 'Fanta Orange', image: 'https://images.unsplash.com/photo-1624517452488-04869289c4ca?w=400', link: '/categories?brand=Fanta' },
-                                { label: 'Sprite Lemon', image: 'https://images.unsplash.com/photo-1625772290748-39126ddd92bf?w=400', link: '/categories?brand=Sprite' },
+                                { label: "For Men", image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=200&h=200&fit=crop", link: "/categories?category=Perfume" },
+                                { label: "For Women", image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=200&h=200&fit=crop", link: "/categories?category=Perfume" },
+                                { label: "Gift Sets", image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=200&h=200&fit=crop", link: "/categories?category=Perfume" },
+                                { label: "New Arrivals", image: "https://images.unsplash.com/photo-1583467875263-d50dec37a88c?w=200&h=200&fit=crop", link: "/categories?category=Perfume" }
                             ]}
-                            footerLink="/categories?category=Soft Drinks"
-                            footerText="Browse all sodas"
+                            footerLink="/categories?category=Perfume"
+                            footerText="See all Perfumes"
                         />
                         <AmazonCardTile
-                            title="Coffee & Tea"
+                            title="Personal Care"
                             items={[
-                                { label: 'Nescafe Classic', image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400', link: '/categories?brand=Nescafe' },
-                                { label: 'Lavazza Oro', image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400', link: '/categories?brand=Lavazza' },
-                                { label: 'Starbucks Box', image: 'https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=400', link: '/categories?brand=Starbucks' },
-                                { label: 'Davidoff Rich', image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400', link: '/categories?brand=Davidoff' },
+                                { label: "Body Care", image: "https://images.unsplash.com/photo-1612817288484-6f916006741a?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
+                                { label: "Hair Care", image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
+                                { label: "Oral Care", image: "https://images.unsplash.com/photo-1559613122-02ec9d898a00?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
+                                { label: "Shaving", image: "https://images.unsplash.com/photo-1626285492eda-fa605a9a4734?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" }
                             ]}
-                            footerLink="/categories?category=Coffee & Tea"
-                            footerText="View wholesale coffee"
+                            footerLink="/categories?category=Personal Care"
+                            footerText="Essentials"
                         />
                         <AmazonCardTile
-                            title="Snacks & Gums"
+                            title="Home Cleaning"
                             items={[
-                                { label: 'Oreo Original', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400', link: '/categories?brand=Oreo' },
-                                { label: 'KitKat Bars', image: 'https://images.unsplash.com/photo-1511381939415-e44015466834?w=400', link: '/categories?brand=KitKat' },
-                                { label: 'Orbit Gum', image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400', link: '/categories?brand=Orbit' },
-                                { label: 'Trident Pack', image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400', link: '/categories?brand=Trident' },
+                                { label: "Laundry", image: "https://images.unsplash.com/photo-1583947581924-860bda6a26df?w=200&h=200&fit=crop", link: "/categories?category=Home Care" },
+                                { label: "Dishwashing", image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=200&h=200&fit=crop", link: "/categories?category=Home Care" },
+                                { label: "Surface Care", image: "https://images.unsplash.com/photo-1584622781564-1d987f7333c1?w=200&h=200&fit=crop", link: "/categories?category=Home Care" },
+                                { label: "Paper & Plastic", image: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=200&h=200&fit=crop", link: "/categories?category=Home Care" }
                             ]}
-                            footerLink="/categories?category=Snacks & Sweets"
-                            footerText="Treats & Bulk Gums"
+                            footerLink="/categories?category=Home Care"
+                            footerText="Shop Household"
                         />
                     </div>
 
@@ -153,36 +153,42 @@ export default function Home() {
                     {/* Secondary Catalog Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mt-8">
                         <AmazonCardTile
-                            title="Wholesale Case Rates"
-                            singleItem={{
-                                image: "https://images.unsplash.com/photo-1621466561502-0ca08436cd16?w=800",
-                                link: "/categories"
-                            }}
-                            footerLink="/categories"
-                            footerText="Explore wholesale"
+                            title="Bulk Beverages"
+                            items={[
+                                { label: "Energy Drinks", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&h=200&fit=crop", link: "/categories?category=Energy Drinks" },
+                                { label: "Soft Drinks", image: "https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=200&h=200&fit=crop", link: "/categories?category=Soft Drinks" },
+                                { label: "Juices", image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=200&h=200&fit=crop", link: "/categories?category=Soft Drinks" },
+                                { label: "Water", image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=200&h=200&fit=crop", link: "/categories?category=Soft Drinks" }
+                            ]}
+                            footerLink="/categories?category=Soft Drinks"
+                            footerText="Restock drinks"
                         />
                         <AmazonCardTile
-                            title="Refresh Your Inventory"
-                            singleItem={{
-                                image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800",
-                                link: "/categories"
-                            }}
-                            footerLink="/categories"
-                            footerText="Shop business supplies"
+                            title="Snacks & Gums"
+                            items={[
+                                { label: "Biscuits", image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" },
+                                { label: "Chocolates", image: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" },
+                                { label: "Chips", image: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" },
+                                { label: "Gums", image: "https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" }
+                            ]}
+                            footerLink="/categories?category=Snacks & Sweets"
+                            footerText="Treats in bulk"
                         />
                         <AmazonCardTile
-                            title="Global Distribution"
-                            singleItem={{
-                                image: "https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=800",
-                                link: "/categories"
-                            }}
-                            footerLink="/categories"
-                            footerText="Learn about shipping"
+                            title="Coffee & Tea"
+                            items={[
+                                { label: "Instant Coffee", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" },
+                                { label: "Ground Coffee", image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" },
+                                { label: "Tea Bags", image: "https://images.unsplash.com/photo-1594631252845-29fc4586d517?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" },
+                                { label: "Creamers", image: "https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" }
+                            ]}
+                            footerLink="/categories?category=Coffee & Tea"
+                            footerText="Caffeine selection"
                         />
                         <AmazonCardTile
                             title="Net Terms Financing"
                             singleItem={{
-                                image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800",
+                                image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&fit=crop",
                                 link: "/categories"
                             }}
                             footerLink="/categories"

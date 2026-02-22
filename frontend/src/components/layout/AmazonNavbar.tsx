@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useCart } from '@/lib/cart';
-import { Search, ShoppingCart, User, Menu, MapPin, ChevronDown, Coffee, Zap, Droplets, IceCream, ShieldCheck, Home, Grid } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, MapPin, ChevronDown, Coffee, Zap, Droplets, IceCream, ShieldCheck, Home, Grid, Sparkles, Heart } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
@@ -16,6 +16,8 @@ const CATEGORY_ICONS: Record<string, any> = {
     'Snacks & Sweets': IceCream,
     'Personal Care': ShieldCheck,
     'Home Care': Home,
+    'Makeup': Sparkles,
+    'Perfume': Heart,
 };
 
 export default function AmazonNavbar() {
