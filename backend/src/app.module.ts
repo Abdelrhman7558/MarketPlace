@@ -12,12 +12,18 @@ import { UsersModule } from './users/users.module';
 import { OrdersModule } from './orders/orders.module';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
+import { PrismaModule } from './common/prisma.module';
+import { SecurityModule } from './security/security.module';
+import { SecurityInterceptor } from './security/security.interceptor';
+
 @Module({
     imports: [
         ThrottlerModule.forRoot([{
             ttl: 60000,
             limit: 10,
         }]),
+        PrismaModule,
+        SecurityModule,
         PricingModule,
         ProductsModule,
         AdminModule,
@@ -35,6 +41,10 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
         {
             provide: APP_INTERCEPTOR,
             useClass: TransformInterceptor,
+        },
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: SecurityInterceptor,
         },
     ],
 })
