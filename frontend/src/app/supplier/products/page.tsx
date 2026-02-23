@@ -57,7 +57,7 @@ export default function SupplierProductsPage() {
             name: p.name,
             price: p.price,
             category: p.category || 'General',
-            stock: Math.floor(Math.random() * 200),
+            stock: 100 + (idx * 15),
             status: idx === 0 ? 'DRAFT' : 'ACTIVE',
             image: p.image,
             supplierId: user?.id || 'default-supplier'

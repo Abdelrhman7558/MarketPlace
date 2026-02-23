@@ -25,9 +25,11 @@ interface OfferPlacement {
     id: string;
     title: string;
     type: 'Flash Sale' | 'Bundle' | 'Discount';
-    slot: 'HERO' | 'FEATURED' | 'BANNER';
+    slot: 'HERO' | 'FEATURED' | 'BANNER' | 'LISTING';
     price: number;
     status: 'ACTIVE' | 'PENDING' | 'REJECTED' | 'EXPIRED';
+    startDate?: string;
+    startTime?: string;
     expiry: string;
     impressions: number;
 }
@@ -35,7 +37,15 @@ interface OfferPlacement {
 const SLOT_PRICES = {
     'HERO': 500,
     'FEATURED': 300,
-    'BANNER': 200
+    'BANNER': 200,
+    'LISTING': 100
+};
+
+const SLOT_DIMENSIONS = {
+    'HERO': '1920 x 600px',
+    'FEATURED': '800 x 800px',
+    'BANNER': '1200 x 200px',
+    'LISTING': '400 x 400px'
 };
 
 export default function SupplierOffersPage() {
@@ -47,6 +57,8 @@ export default function SupplierOffersPage() {
             slot: 'HERO',
             price: 500,
             status: 'ACTIVE',
+            startDate: '2026-02-23',
+            startTime: '10:00',
             expiry: '2026-03-01',
             impressions: 1240
         },
@@ -57,6 +69,8 @@ export default function SupplierOffersPage() {
             slot: 'FEATURED',
             price: 300,
             status: 'PENDING',
+            startDate: '2026-03-01',
+            startTime: '12:00',
             expiry: '2026-03-15',
             impressions: 0
         },
@@ -67,9 +81,12 @@ export default function SupplierOffersPage() {
     const [formData, setFormData] = React.useState({
         title: '',
         type: 'Discount' as any,
-        slot: 'FEATURED' as 'HERO' | 'FEATURED' | 'BANNER',
+        slot: 'FEATURED' as 'HERO' | 'FEATURED' | 'BANNER' | 'LISTING',
         product: PRODUCTS[0]?.name || '',
-        expiry: ''
+        startDate: '',
+        startTime: '',
+        expiry: '',
+        image: null as File | null
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -84,6 +101,8 @@ export default function SupplierOffersPage() {
                     slot: formData.slot,
                     price: SLOT_PRICES[formData.slot],
                     status: 'PENDING', // Force Pending on Edit
+                    startDate: formData.startDate,
+                    startTime: formData.startTime,
                     expiry: formData.expiry || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
                 } : offer
             ));
@@ -95,6 +114,8 @@ export default function SupplierOffersPage() {
                 slot: formData.slot,
                 price: SLOT_PRICES[formData.slot],
                 status: formData.slot === 'HERO' ? 'PENDING' : 'ACTIVE',
+                startDate: formData.startDate,
+                startTime: formData.startTime,
                 expiry: formData.expiry || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
                 impressions: 0
             };
@@ -115,7 +136,10 @@ export default function SupplierOffersPage() {
             type: offer.type as any,
             slot: offer.slot,
             product: PRODUCTS[0]?.name || '',
-            expiry: offer.expiry
+            startDate: offer.startDate || '',
+            startTime: offer.startTime || '',
+            expiry: offer.expiry,
+            image: null
         });
         setEditingId(offer.id);
         setIsModalOpen(true);
@@ -139,9 +163,12 @@ export default function SupplierOffersPage() {
                         setFormData({
                             title: '',
                             type: 'Discount' as any,
-                            slot: 'FEATURED' as 'HERO' | 'FEATURED' | 'BANNER',
+                            slot: 'FEATURED' as 'HERO' | 'FEATURED' | 'BANNER' | 'LISTING',
                             product: '',
-                            expiry: ''
+                            startDate: '',
+                            startTime: '',
+                            expiry: '',
+                            image: null
                         });
                         setIsModalOpen(true);
                     }}
@@ -171,6 +198,7 @@ export default function SupplierOffersPage() {
                                 {slot === 'HERO' && "Maximum platform visibility. Premium homepage hero section display. (Requires Admin Approval)"}
                                 {slot === 'FEATURED' && "High visibility in search results and category featured sections."}
                                 {slot === 'BANNER' && "Consistent brand awareness via footer and sidebar banner placements."}
+                                {slot === 'LISTING' && "Highlighted standard product listing within specific categories."}
                             </p>
                         </div>
                     </div>
@@ -260,7 +288,7 @@ export default function SupplierOffersPage() {
                             onSubmit={handleSubmit}
                             initial={{ scale: 0.9, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
-                            className="bg-[#131921] w-full max-w-xl rounded-[40px] border border-white/10 overflow-hidden shadow-3xl p-10 space-y-8"
+                            className="bg-[#131921] w-full max-w-xl max-h-[85vh] overflow-y-auto no-scrollbar rounded-[40px] border border-white/10 shadow-3xl p-10 space-y-8"
                         >
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
@@ -308,19 +336,70 @@ export default function SupplierOffersPage() {
                                             <option value="HERO">Hero Slot ($500)</option>
                                             <option value="FEATURED">Featured Slot ($300)</option>
                                             <option value="BANNER">Banner Slot ($200)</option>
+                                            <option value="LISTING">Listing Slot ($100)</option>
                                         </select>
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Expiry Date</label>
-                                    <input
-                                        required
-                                        type="date"
-                                        value={formData.expiry}
-                                        onChange={e => setFormData({ ...formData, expiry: e.target.value })}
-                                        className="w-full h-14 bg-white/5 rounded-2xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium"
-                                    />
+                                <div className="space-y-4">
+                                    <label className="text-[11px] font-black text-white/30 uppercase tracking-widest flex items-center justify-between">
+                                        <span>Ad Creative (Image Upload)</span>
+                                        <span className="text-primary bg-primary/10 px-2 py-0.5 rounded-md">Required Size: {SLOT_DIMENSIONS[formData.slot]}</span>
+                                    </label>
+                                    <div className="border border-dashed border-white/20 rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:bg-white/5 transition-colors cursor-pointer relative overflow-hidden group">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={e => setFormData({ ...formData, image: e.target.files?.[0] || null })}
+                                            className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                        />
+                                        {formData.image ? (
+                                            <div className="text-primary font-bold z-20 flex items-center gap-2">
+                                                <CheckCircle2 size={20} />
+                                                {formData.image.name}
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <ImageIcon size={32} className="text-white/20 mb-3 group-hover:text-primary transition-colors z-20" />
+                                                <p className="text-sm font-medium text-white/80 z-20">Click or drag image to upload</p>
+                                                <p className="text-xs text-white/40 mt-1 z-20">PNG, JPG up to 5MB</p>
+                                                <p className="text-xs font-black text-primary mt-3 uppercase tracking-widest z-20">Optimum Dimensions: {SLOT_DIMENSIONS[formData.slot]}</p>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Start Date</label>
+                                        <input
+                                            required
+                                            type="date"
+                                            value={formData.startDate}
+                                            onChange={e => setFormData({ ...formData, startDate: e.target.value })}
+                                            className="w-full h-14 bg-white/5 rounded-2xl border border-white/5 px-4 outline-none focus:border-primary/50 text-white font-medium"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Start Time</label>
+                                        <input
+                                            required
+                                            type="time"
+                                            value={formData.startTime}
+                                            onChange={e => setFormData({ ...formData, startTime: e.target.value })}
+                                            className="w-full h-14 bg-white/5 rounded-2xl border border-white/5 px-4 outline-none focus:border-primary/50 text-white font-medium"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Expiry Date</label>
+                                        <input
+                                            required
+                                            type="date"
+                                            value={formData.expiry}
+                                            onChange={e => setFormData({ ...formData, expiry: e.target.value })}
+                                            className="w-full h-14 bg-white/5 rounded-2xl border border-white/5 px-4 outline-none focus:border-primary/50 text-white font-medium"
+                                        />
+                                    </div>
                                 </div>
 
                                 {formData.slot === 'HERO' && (

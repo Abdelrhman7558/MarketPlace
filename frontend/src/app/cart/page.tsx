@@ -37,13 +37,15 @@ export default function CartPage() {
         <div className="min-h-screen bg-background py-12">
             <div className="container mx-auto px-6">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                    <div className="space-y-2">
-                        <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-1.5 rounded-full">
+                    <div className="space-y-3">
+                        <div className="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-full">
                             <Package size={14} className="text-primary" />
-                            <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Wholesale Basket</span>
+                            <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em]">Wholesale Basket</span>
                         </div>
-                        <h1 className="text-4xl">Review Your <span className="text-secondary">Order</span></h1>
-                        <p className="text-muted-foreground font-medium">{items.length} unique SKU{items.length > 1 ? 's' : ''} staged for procurement</p>
+                        <h1 className="text-2xl md:text-3xl font-heading font-black text-foreground tracking-tight">
+                            Procurement <span className="text-primary">Review</span>
+                        </h1>
+                        <p className="text-muted-foreground text-sm font-medium">Staging {items.length} unique SKU{items.length !== 1 ? 's' : ''} for bulk distribution</p>
                     </div>
                     <Button
                         variant="ghost"

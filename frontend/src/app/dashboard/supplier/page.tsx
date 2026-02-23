@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';
+import ProductEditorModal from './ProductEditorModal';
 
 const MOCK_PRODUCTS = [
     { id: 'PRD-001', name: 'Coca Cola Classic 330ml', stock: 1200, price: '$0.85', status: 'Active', trend: '+12%' },
@@ -20,6 +21,32 @@ const MOCK_PRODUCTS = [
 
 export default function SupplierDashboard() {
     const [searchTerm, setSearchTerm] = useState('');
+    const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+    const [editingProduct, setEditingProduct] = useState<any>(null);
+
+    const handleNewProduct = () => {
+        setEditingProduct(null);
+        setIsProductModalOpen(true);
+    };
+
+    const handleEditProduct = (product: any) => {
+        setEditingProduct({
+            ...product,
+            price: parseFloat(product.price.replace('$', '')),
+            category: 'Beverages',
+            description: '',
+            unit: 'Case',
+            minOrder: 1,
+            image: ''
+        });
+        setIsProductModalOpen(true);
+    };
+
+    const handleSaveProduct = (data: any) => {
+        console.log("Saving product:", data);
+        // In reality, this would make an API call or update global state.
+        setIsProductModalOpen(false);
+    };
 
     return (
         <div className="space-y-8 animate-fade-in">
@@ -33,7 +60,7 @@ export default function SupplierDashboard() {
                         <Upload className="w-4 h-4" />
                         Bulk Upload
                     </Button>
-                    <Button className="rounded-full gap-2 shadow-xl shadow-primary/20">
+                    <Button onClick={handleNewProduct} className="rounded-full gap-2 shadow-xl shadow-primary/20">
                         <Plus className="w-4 h-4" />
                         New Product
                     </Button>
@@ -148,7 +175,7 @@ export default function SupplierDashboard() {
                                         </div>
                                     </td>
                                     <td className="px-8 py-6 text-right">
-                                        <Button variant="ghost" size="sm" className="rounded-full w-10 h-10 p-0 text-foreground/40 hover:text-foreground">
+                                        <Button onClick={() => handleEditProduct(product)} variant="ghost" size="sm" className="rounded-full w-10 h-10 p-0 text-foreground/40 hover:text-foreground">
                                             <MoreHorizontal className="w-5 h-5" />
                                         </Button>
                                     </td>
@@ -158,6 +185,12 @@ export default function SupplierDashboard() {
                     </table>
                 </div>
             </div>
+            <ProductEditorModal
+                isOpen={isProductModalOpen}
+                onClose={() => setIsProductModalOpen(false)}
+                product={editingProduct}
+                onSave={handleSaveProduct}
+            />
         </div>
     );
 }

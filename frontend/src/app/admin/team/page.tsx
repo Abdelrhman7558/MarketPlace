@@ -32,6 +32,21 @@ export default function AdminTeamPage() {
     const [searchTerm, setSearchTerm] = React.useState('');
     const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
 
+    // Permissions State
+    const [isPermissionsModalOpen, setIsPermissionsModalOpen] = React.useState(false);
+    const [selectedMember, setSelectedMember] = React.useState<TeamMember | null>(null);
+    const [tempPermissions, setTempPermissions] = React.useState<string[]>([]);
+
+    const AVAILABLE_PERMISSIONS = [
+        'ALL_ACCESS',
+        'APPROVE_OFFERS',
+        'MANAGE_USERS',
+        'VIEW_ORDERS',
+        'CHAT_SUPPORT',
+        'MANAGE_PLACEMENTS',
+        'FINANCIAL_REPORTS'
+    ];
+
     const [team, setTeam] = React.useState<TeamMember[]>([
         {
             id: 'TM-01',
@@ -66,6 +81,36 @@ export default function AdminTeamPage() {
         m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         m.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const openPermissionsModal = (member: TeamMember) => {
+        setSelectedMember(member);
+        setTempPermissions([...member.permissions]);
+        setIsPermissionsModalOpen(true);
+    };
+
+    const handleTogglePermission = (perm: string) => {
+        if (perm === 'ALL_ACCESS') {
+            setTempPermissions(tempPermissions.includes('ALL_ACCESS') ? [] : ['ALL_ACCESS']);
+            return;
+        }
+
+        // If they click a specific permission but currently have ALL_ACCESS, clear ALL_ACCESS first
+        let newPerms = tempPermissions.filter(p => p !== 'ALL_ACCESS');
+
+        if (newPerms.includes(perm)) {
+            newPerms = newPerms.filter(p => p !== perm);
+        } else {
+            newPerms.push(perm);
+        }
+        setTempPermissions(newPerms);
+    };
+
+    const handleSavePermissions = () => {
+        if (!selectedMember) return;
+        setTeam(team.map(m => m.id === selectedMember.id ? { ...m, permissions: tempPermissions } : m));
+        setIsPermissionsModalOpen(false);
+        setSelectedMember(null);
+    };
 
     return (
         <div className="space-y-10 max-w-7xl mx-auto pb-20">
@@ -158,7 +203,10 @@ export default function AdminTeamPage() {
                             </div>
 
                             <div className="mt-8 flex gap-3 pt-4">
-                                <button className="flex-1 h-10 bg-white/5 hover:bg-white/10 text-white font-black text-[10px] uppercase rounded-xl transition-all border border-white/5 flex items-center justify-center gap-2">
+                                <button
+                                    onClick={() => openPermissionsModal(member)}
+                                    className="flex-1 h-10 bg-white/5 hover:bg-white/10 text-white font-black text-[10px] uppercase rounded-xl transition-all border border-white/5 flex items-center justify-center gap-2"
+                                >
                                     <Lock size={12} /> Permissions
                                 </button>
                                 <button className="w-10 h-10 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white rounded-xl transition-all border border-white/5 flex items-center justify-center">
@@ -254,6 +302,91 @@ export default function AdminTeamPage() {
                                     </button>
                                 </div>
                             </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Permissions Modal */}
+            <AnimatePresence>
+                {isPermissionsModalOpen && selectedMember && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsPermissionsModalOpen(false)}
+                            className="absolute inset-0 bg-black/60 backdrop-blur-md"
+                        />
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="bg-[#131921] w-full max-w-lg rounded-[32px] border border-white/10 p-10 overflow-hidden shadow-2xl relative"
+                        >
+                            <button
+                                onClick={() => setIsPermissionsModalOpen(false)}
+                                className="absolute top-6 right-6 p-2 text-white/20 hover:text-white transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+
+                            <div className="mb-8">
+                                <h2 className="text-2xl font-black text-white tracking-tight flex items-center gap-3">
+                                    <ShieldCheck className="text-primary" size={28} />
+                                    Access Controls
+                                </h2>
+                                <p className="text-white/40 text-sm mt-1">
+                                    Configuring permissions for <strong className="text-white">{selectedMember.name}</strong> ({selectedMember.role})
+                                </p>
+                            </div>
+
+                            <div className="space-y-4 max-h-[50vh] overflow-y-auto no-scrollbar pr-2 mb-8">
+                                {AVAILABLE_PERMISSIONS.map((perm) => {
+                                    const isAllowed = tempPermissions.includes(perm) || (perm !== 'ALL_ACCESS' && tempPermissions.includes('ALL_ACCESS'));
+
+                                    return (
+                                        <button
+                                            key={perm}
+                                            onClick={() => handleTogglePermission(perm)}
+                                            className={cn(
+                                                "w-full flex items-center justify-between p-4 rounded-2xl border transition-all text-left",
+                                                isAllowed
+                                                    ? "bg-primary/10 border-primary/30 text-primary"
+                                                    : "bg-white/5 border-white/5 text-white/40 hover:bg-white/10"
+                                            )}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className={cn(
+                                                    "w-5 h-5 rounded flex items-center justify-center transition-colors",
+                                                    isAllowed ? "bg-primary text-[#131921]" : "bg-white/10"
+                                                )}>
+                                                    {isAllowed && <CheckCircle2 size={14} strokeWidth={3} />}
+                                                </div>
+                                                <span className="font-black text-sm tracking-wide">{perm.replace('_', ' ')}</span>
+                                            </div>
+                                            {perm === 'ALL_ACCESS' && (
+                                                <span className="text-[10px] font-bold uppercase tracking-widest bg-amber-500/20 text-amber-500 px-2 py-0.5 rounded-full">Dangerous</span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            <div className="pt-4 flex gap-4 border-t border-white/5">
+                                <button
+                                    onClick={() => setIsPermissionsModalOpen(false)}
+                                    className="flex-1 h-12 bg-white/5 text-white/40 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-white/10 transition-all"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleSavePermissions}
+                                    className="flex-[2] h-12 bg-primary text-[#131921] font-black text-xs uppercase tracking-widest rounded-xl hover:scale-105 transition-transform"
+                                >
+                                    Save Controls
+                                </button>
+                            </div>
                         </motion.div>
                     </div>
                 )}

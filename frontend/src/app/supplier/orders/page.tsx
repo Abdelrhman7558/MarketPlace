@@ -23,7 +23,8 @@ interface OrderItem {
     id: string;
     name: string;
     quantity: number;
-    price: number;
+    price: number; // The price the supplier gets
+    buyerPrice?: number; // The price the buyer paid (price * 1.05)
 }
 
 interface SupplierOrder {
@@ -45,7 +46,7 @@ export default function SupplierOrdersPage() {
             id: 'ORD-5501',
             customerName: 'A*** R***',
             customerEmail: 'ab***@gmail.com',
-            items: [{ id: '1', name: 'Coca-Cola 330ml Can', quantity: 5, price: 18.25 }],
+            items: [{ id: '1', name: 'Coca-Cola 330ml Can', quantity: 5, price: 18.25, buyerPrice: 19.16 }],
             total: 91.25,
             status: 'PROCESSING',
             date: '2026-02-21'
@@ -54,13 +55,18 @@ export default function SupplierOrdersPage() {
             id: 'ORD-5502',
             customerName: 'J*** D***',
             customerEmail: 'jo***@hotmail.com',
-            items: [{ id: '105', name: 'Davidoff Rich Aroma', quantity: 2, price: 9.80 }],
+            items: [{ id: '105', name: 'Davidoff Rich Aroma', quantity: 2, price: 9.80, buyerPrice: 10.29 }],
             total: 19.60,
             status: 'SHIPPED',
             date: '2026-02-20',
             trackingNumber: 'TRK-99228-B2B'
         }
     ]);
+    const [expandedOrderId, setExpandedOrderId] = React.useState<string | null>(null);
+
+    const toggleExpand = (id: string) => {
+        setExpandedOrderId(prev => prev === id ? null : id);
+    };
 
     const maskEmail = (email: string) => {
         const [user, domain] = email.split('@');
@@ -153,20 +159,112 @@ export default function SupplierOrdersPage() {
                                 </div>
 
                                 <div className="flex items-center gap-3">
-                                    {order.status === 'PROCESSING' ? (
+                                    {order.status === 'PROCESSING' && (
                                         <button
                                             onClick={() => handleStatusUpdate(order.id, 'SHIPPED')}
                                             className="h-12 px-6 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-black text-xs rounded-xl border border-emerald-500/20 transition-all flex items-center gap-2"
                                         >
                                             <Truck size={16} /> Mark as Shipped
                                         </button>
-                                    ) : (
-                                        <button className="h-12 px-6 bg-white/5 text-white/40 font-black text-xs rounded-xl border border-white/10 flex items-center gap-2">
-                                            <Eye size={16} /> View Details
-                                        </button>
                                     )}
+                                    <button
+                                        onClick={() => toggleExpand(order.id)}
+                                        className={cn(
+                                            "h-12 px-6 text-xs font-black rounded-xl border transition-all flex items-center gap-2",
+                                            expandedOrderId === order.id
+                                                ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                                                : "bg-white/5 text-white/40 border-white/10 hover:text-white"
+                                        )}
+                                    >
+                                        <Eye size={16} /> {expandedOrderId === order.id ? 'Close Details' : 'View Details'}
+                                    </button>
                                 </div>
                             </div>
+
+                            {/* Expanded Details View */}
+                            <AnimatePresence>
+                                {expandedOrderId === order.id && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        className="border-b border-white/5 bg-[#0d1117] overflow-hidden"
+                                    >
+                                        <div className="p-8 space-y-8">
+                                            <div>
+                                                <h4 className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-4">Line Items</h4>
+                                                <div className="space-y-3">
+                                                    {order.items.map(item => (
+                                                        <div key={item.id} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+                                                            <div className="flex items-center gap-4">
+                                                                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                                                                    <Package className="text-white/60 w-5 h-5" />
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-sm font-bold text-white">{item.name}</p>
+                                                                    <p className="text-[10px] text-white/40 uppercase tracking-widest font-black">SKU: {item.id}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex items-center gap-8 text-right">
+                                                                <div>
+                                                                    <p className="text-[9px] font-black text-white/30 uppercase tracking-widest">Quantity</p>
+                                                                    <p className="text-sm font-bold text-white">{item.quantity} Units</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-[9px] font-black text-white/30 uppercase tracking-widest">Unit Revenue</p>
+                                                                    <p className="text-sm font-bold text-emerald-400">${item.price.toFixed(2)}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-[9px] font-black text-white/30 uppercase tracking-widest">Line Total</p>
+                                                                    <p className="text-sm font-black text-white">${(item.price * item.quantity).toFixed(2)}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-6 pt-6 border-t border-white/5">
+                                                <div className="space-y-4">
+                                                    <h4 className="text-[10px] font-black text-white/30 uppercase tracking-widest">Logistics Hub</h4>
+                                                    <div className="p-5 bg-white/5 rounded-2xl border border-white/5">
+                                                        <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest mb-1">Destination Address (Partial)</p>
+                                                        <p className="text-sm font-black text-white mb-4">*** 14th Street, New York, NY 10001</p>
+
+                                                        {order.trackingNumber && (
+                                                            <>
+                                                                <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest mb-1">Tracking Consignment</p>
+                                                                <div className="flex items-center gap-2">
+                                                                    <Truck size={14} className="text-primary" />
+                                                                    <p className="text-xs font-black text-primary tracking-widest">{order.trackingNumber}</p>
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-4">
+                                                    <h4 className="text-[10px] font-black text-white/30 uppercase tracking-widest">Financial Summary</h4>
+                                                    <div className="p-5 bg-emerald-500/5 rounded-2xl border border-emerald-500/20">
+                                                        <div className="flex justify-between items-center mb-2">
+                                                            <p className="text-xs font-bold text-white/60">Gross Order Value</p>
+                                                            <p className="text-xs font-bold text-white">${(order.total * 1.05).toFixed(2)}</p>
+                                                        </div>
+                                                        <div className="flex justify-between items-center mb-4 pb-4 border-b border-emerald-500/20">
+                                                            <p className="text-xs font-bold text-red-400">Platform Margin (5%)</p>
+                                                            <p className="text-xs font-bold text-red-400">-${(order.total * 0.05).toFixed(2)}</p>
+                                                        </div>
+                                                        <div className="flex justify-between items-center">
+                                                            <p className="text-sm font-black text-emerald-400">Your Net Revenue</p>
+                                                            <p className="text-lg font-black text-emerald-400">${order.total.toFixed(2)}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </motion.div>
                     ))}
                 </AnimatePresence>

@@ -84,15 +84,19 @@ function CategoriesContent() {
                             <motion.div
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-xl"
+                                className="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-full"
                             >
-                                <Package className="text-primary" size={20} />
-                                <span className="text-xs font-bold text-primary uppercase tracking-wider">Verified Inventory</span>
+                                <Package className="text-primary" size={14} />
+                                <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em]">Verified Inventory</span>
                             </motion.div>
-                            <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight max-w-xl">
-                                Explore Our Wholesale <span className="text-secondary">Collections</span>
-                            </h1>
-                            <p className="text-muted-foreground text-sm font-bold tracking-tight">{filteredProducts.length} premium products available for bulk order</p>
+                            <div className="flex flex-col">
+                                <h1 className="text-2xl md:text-3xl font-heading font-black text-foreground tracking-tight leading-tight">
+                                    Wholesale <span className="text-primary">Collections</span>
+                                </h1>
+                                <p className="text-muted-foreground text-sm font-medium mt-2 max-w-md leading-relaxed">
+                                    Access {filteredProducts.length} premium B2B products structured for streamlined global distribution and enterprise procurement.
+                                </p>
+                            </div>
                         </div>
 
                         <div className="flex flex-wrap items-center gap-4">

@@ -88,11 +88,13 @@ export default function AmazonNavbar() {
                         )}
                     </div>
 
-                    {/* Orders */}
-                    <Link href="/dashboard" className="hidden md:flex flex-col items-start p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full whitespace-nowrap justify-center">
-                        <span className="text-[11px] leading-tight font-medium text-white/80">Returns</span>
-                        <span className="text-xs md:text-sm font-black leading-tight">& Orders</span>
-                    </Link>
+                    {/* Orders - Customer Only */}
+                    {user?.role === 'customer' && (
+                        <Link href="/dashboard" className="hidden md:flex flex-col items-start p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full whitespace-nowrap justify-center">
+                            <span className="text-[11px] leading-tight font-medium text-white/80">Returns</span>
+                            <span className="text-xs md:text-sm font-black leading-tight">& Orders</span>
+                        </Link>
+                    )}
 
                     {/* Cart */}
                     <Link href="/cart" className="flex items-end p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full relative">
@@ -154,9 +156,9 @@ export default function AmazonNavbar() {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-white/90 h-full">
-                    {["Today's Deals", "Customer Service", "Registry", "Sell"].map((item) => (
-                        <Link key={item} href="#" className="hover:border-white/30 border border-transparent rounded px-2 py-1 transition-all whitespace-nowrap">
+                <div className="flex items-center gap-4 text-[11px] font-bold text-white/90 h-full">
+                    {["Volume Deals", "Supply Partners", "Logistics Help", "Corporate Accounts"].map((item) => (
+                        <Link key={item} href="#" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">
                             {item}
                         </Link>
                     ))}

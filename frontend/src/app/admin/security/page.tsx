@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Shield,
     ShieldAlert,
@@ -14,7 +15,12 @@ import {
     Globe,
     Clock,
     ExternalLink,
-    Search
+    Search,
+    Cpu,
+    Activity,
+    CheckCircle2,
+    Wrench,
+    Check
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -48,12 +54,21 @@ export default function SecurityDashboard() {
     const [status, setStatus] = React.useState<SecurityStatus | null>(null);
     const [loading, setLoading] = React.useState(true);
     const [locking, setLocking] = React.useState(false);
+    const [lastScanSeconds, setLastScanSeconds] = React.useState(0);
+
+    // Auto-Healer Agent State
+    const [agentState, setAgentState] = React.useState<'IDLE' | 'ANALYZING' | 'PATCHING' | 'RESOLVED'>('IDLE');
+    const [mockErrors, setMockErrors] = React.useState([
+        { id: 'ERR-01', msg: 'Hydration Mismatch detected in ProductCard', time: 'Just now' },
+        { id: 'ERR-02', msg: 'Query Latency Spiked > 800ms (Database)', time: '2m ago' },
+    ]);
 
     const fetchStatus = async () => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/admin/security/status`);
             const data = await response.json();
             setStatus(data);
+            setLastScanSeconds(0);
         } catch (error) {
             console.error('Failed to fetch security status', error);
         } finally {
@@ -64,8 +79,25 @@ export default function SecurityDashboard() {
     React.useEffect(() => {
         fetchStatus();
         const interval = setInterval(fetchStatus, 30000); // 30s refresh
-        return () => clearInterval(interval);
+        const ticker = setInterval(() => setLastScanSeconds(s => s + 1), 1000); // 1s tick
+        return () => {
+            clearInterval(interval);
+            clearInterval(ticker);
+        };
     }, []);
+
+    const runAgentFix = () => {
+        if (agentState !== 'IDLE' && agentState !== 'RESOLVED') return;
+        setAgentState('ANALYZING');
+        setTimeout(() => {
+            setAgentState('PATCHING');
+            setTimeout(() => {
+                setAgentState('RESOLVED');
+                setMockErrors([]);
+                setTimeout(() => setAgentState('IDLE'), 3000);
+            }, 2000);
+        }, 1500);
+    };
 
     const toggleLockdown = async () => {
         if (!status) return;
@@ -156,8 +188,8 @@ export default function SecurityDashboard() {
                         <Clock size={80} className="text-amber-500" />
                     </div>
                     <p className="text-white/40 text-xs font-black uppercase tracking-widest">Monitoring Status</p>
-                    <h3 className="text-4xl font-black text-white mt-2">ACTIVE</h3>
-                    <p className="text-amber-400 text-[10px] font-bold mt-2 uppercase underline underline-offset-4 decoration-2">Last Scan: 2m ago</p>
+                    <h3 className="text-4xl font-black text-white mt-2 flex items-center gap-2">ACTIVE <span className="w-3 h-3 rounded-full bg-amber-500 animate-pulse mt-1" /></h3>
+                    <p className="text-amber-400 text-[10px] font-bold mt-2 uppercase underline underline-offset-4 decoration-2">Last Scan: {lastScanSeconds}s ago</p>
                 </div>
             </div>
 
@@ -248,20 +280,76 @@ export default function SecurityDashboard() {
                         </div>
                     </div>
 
-                    <div className="bg-primary/5 border border-primary/20 rounded-3xl p-6">
-                        <h3 className="text-primary font-black mb-2 uppercase tracking-tighter italic text-xl">Agent Intelligence</h3>
+                    <div className="bg-primary/5 border border-primary/20 rounded-3xl p-6 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+
+                        <h3 className="text-primary font-black mb-2 uppercase tracking-tighter italic text-xl flex items-center gap-2">
+                            <Cpu size={20} /> AI Resolution Agent
+                        </h3>
                         <p className="text-white/60 text-xs leading-relaxed mb-6">
-                            The Security Agent is currently monitoring all incoming API traffic using rule-based behavior analysis.
-                            Vulnerability scans are scheduled to run automatically.
+                            Autonomous diagnostic engine. Detects unhandled exceptions, backend lag, and hydration mismatches. Deploys hotfixes instantly without downtime.
                         </p>
-                        <div className="grid grid-cols-2 gap-4">
-                            <button className="p-4 rounded-2xl bg-primary text-[#131921] font-black text-xs uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all">
-                                Run Full Scan
-                            </button>
-                            <button className="p-4 rounded-2xl border border-primary/30 text-primary font-black text-xs uppercase tracking-widest hover:bg-primary/10 active:scale-95 transition-all">
-                                System Audit
-                            </button>
+
+                        <div className="space-y-4 mb-6 relative z-10">
+                            <AnimatePresence mode="popLayout">
+                                {mockErrors.length > 0 ? (
+                                    mockErrors.map(err => (
+                                        <motion.div
+                                            key={err.id}
+                                            initial={{ opacity: 0, x: 20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: -20, scale: 0.9 }}
+                                            className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center justify-between backdrop-blur-sm"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <AlertTriangle size={14} className="text-red-500" />
+                                                <span className="text-xs font-bold text-white/80">{err.msg}</span>
+                                            </div>
+                                            <span className="text-[10px] text-red-400 font-mono tracking-widest uppercase">{err.time}</span>
+                                        </motion.div>
+                                    ))
+                                ) : (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="p-6 text-center border border-dashed border-emerald-500/30 rounded-xl bg-emerald-500/5 backdrop-blur-sm"
+                                    >
+                                        <CheckCircle2 size={32} className="text-emerald-500 mx-auto mb-3" />
+                                        <p className="text-emerald-400 text-sm font-black tracking-widest uppercase">All Systems Optimized</p>
+                                        <p className="text-emerald-400/60 text-[10px] font-bold mt-1">Agent returning to standby mode.</p>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
+
+                        <button
+                            onClick={runAgentFix}
+                            disabled={(agentState !== 'IDLE' && agentState !== 'RESOLVED') || mockErrors.length === 0}
+                            className="w-full relative h-14 bg-primary text-[#131921] font-black text-xs uppercase tracking-widest rounded-xl overflow-hidden hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed group z-10 shadow-lg shadow-primary/20"
+                        >
+                            <AnimatePresence mode="wait">
+                                {agentState === 'IDLE' && (
+                                    <motion.div key="idle" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center justify-center gap-2 h-full absolute inset-0">
+                                        <Activity size={18} /> Deploy Resolution Agent
+                                    </motion.div>
+                                )}
+                                {agentState === 'ANALYZING' && (
+                                    <motion.div key="analyzing" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center justify-center gap-2 h-full absolute inset-0 bg-blue-500 text-white">
+                                        <Search size={18} className="animate-pulse" /> Analyzing Stack Trace...
+                                    </motion.div>
+                                )}
+                                {agentState === 'PATCHING' && (
+                                    <motion.div key="patching" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center justify-center gap-2 h-full absolute inset-0 bg-purple-500 text-white">
+                                        <Wrench size={18} className="animate-spin" /> Compiling & Deploying Hotfix...
+                                    </motion.div>
+                                )}
+                                {agentState === 'RESOLVED' && (
+                                    <motion.div key="resolved" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center justify-center gap-2 h-full absolute inset-0 bg-emerald-500 text-white">
+                                        <Check size={18} /> Automated Resolution Complete
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </button>
                     </div>
                 </div>
             </div>
