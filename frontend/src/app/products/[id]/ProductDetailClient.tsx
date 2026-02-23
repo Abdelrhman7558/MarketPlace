@@ -58,7 +58,7 @@ export default function ProductDetailClient() {
     };
 
     return (
-        <div className="min-h-screen bg-background pb-24 overflow-x-hidden">
+        <div className="min-h-screen bg-slate-50 dark:bg-[#0A0D12] pb-0 overflow-x-hidden pt-20">
             {/* Upper Nav / Breadcrumbs */}
             <div className="bg-card border-b border-border/50">
                 <div className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -102,23 +102,23 @@ export default function ProductDetailClient() {
                             />
 
                             {/* Floating Badges */}
-                            <div className="absolute top-12 left-12 flex flex-col gap-4 z-20">
+                            <div className="absolute top-8 left-8 flex flex-col gap-3 z-20">
                                 {(product as any).isNew && (
-                                    <span className="bg-primary text-primary-foreground text-[10px] font-black px-5 py-2.5 rounded-full shadow-xl flex items-center gap-2 tracking-widest uppercase">
-                                        <Sparkles size={14} className="text-secondary" />
+                                    <span className="bg-primary text-[#131921] text-[10px] font-black px-4 py-2 rounded-xl shadow-lg flex items-center gap-2 tracking-widest uppercase">
+                                        <Sparkles size={14} className="text-[#131921]" />
                                         Batch: New Arrival
                                     </span>
                                 )}
                                 {(product as any).bulkSave && (
-                                    <span className="bg-highlight text-highlight-foreground text-[10px] font-black px-5 py-2.5 rounded-full shadow-xl tracking-widest uppercase flex items-center gap-2">
+                                    <span className="bg-amber-400 text-amber-950 text-[10px] font-black px-4 py-2 rounded-xl shadow-lg tracking-widest uppercase flex items-center gap-2">
                                         <Truck size={14} />
                                         Wholesale Verified
                                     </span>
                                 )}
                             </div>
 
-                            <button className="absolute bottom-12 right-12 w-16 h-16 bg-card border border-border/50 rounded-3xl flex items-center justify-center shadow-xl text-muted-foreground hover:text-highlight hover:scale-110 transition-all z-20 hover:premium-shadow">
-                                <Heart size={24} />
+                            <button className="absolute top-8 right-8 w-12 h-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl flex items-center justify-center shadow-xl text-muted-foreground hover:text-red-500 hover:scale-110 hover:bg-white transition-all z-20">
+                                <Heart size={20} />
                             </button>
                         </motion.div>
 
@@ -144,31 +144,40 @@ export default function ProductDetailClient() {
                             {/* Brand & Title */}
                             <div className="space-y-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="bg-primary/10 px-4 py-1.5 rounded-full flex items-center gap-2">
-                                        <span className="text-primary font-black text-[10px] uppercase tracking-widest">Global Sourcing</span>
-                                        <ShieldCheck size={14} className="text-accent" />
+                                    <div className="bg-primary/10 px-3 py-1 rounded-xl flex items-center gap-2 border border-primary/20">
+                                        <span className="text-primary font-black text-[9px] uppercase tracking-widest">Global Sourcing</span>
+                                        <ShieldCheck size={12} className="text-primary" />
                                     </div>
                                 </div>
-                                <h1 className="text-5xl md:text-6xl font-heading font-black text-foreground leading-[1.05] tracking-tight">{product.name}</h1>
-                                <div className="flex items-center gap-6 text-[11px] font-bold text-muted-foreground tracking-widest uppercase">
-                                    <span className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-lg border border-border/50 text-foreground">
+
+                                <h1 className="text-3xl lg:text-4xl font-heading font-black text-foreground leading-tight tracking-tight">
+                                    {product.name}
+                                </h1>
+
+                                <div className="flex flex-wrap items-center gap-4 text-[11px] font-bold text-muted-foreground tracking-widest uppercase">
+                                    <span className="flex items-center gap-2 text-primary">
                                         {product.brand} • Authorized Partner
                                     </span>
-                                    <span className="flex items-center gap-1.5"><Star size={16} className="fill-secondary text-secondary" /> <span className="text-foreground">4.9</span> (5k+ Total Volume)</span>
+                                    <span className="w-1 h-1 rounded-full bg-border" />
+                                    <span className="flex items-center gap-1.5"><Star size={14} className="fill-amber-400 text-amber-400" /> <span className="text-foreground">4.9</span> (5k+ Rated)</span>
                                 </div>
                             </div>
 
-                            {/* Pricing Card */}
-                            <div className="bg-card rounded-[40px] p-10 border border-border/50 premium-shadow relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-bl-[100px] transition-all group-hover:w-full group-hover:h-full group-hover:rounded-none duration-700 pointer-events-none" />
+                            <div className="text-sm text-muted-foreground leading-relaxed">
+                                High-grade wholesale variant of {product.name} natively optimized for B2B procurement pipelines. Features an extended shelf-life, bulk-ready packaging, and full compliance documentation required for enterprise distribution.
+                            </div>
 
-                                <div className="relative z-10 space-y-10">
+                            {/* Pricing Card */}
+                            <div className="bg-white dark:bg-[#131921] rounded-3xl p-8 border border-border shadow-2xl relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl transition-all duration-700 pointer-events-none -mr-32 -mt-32" />
+
+                                <div className="relative z-10 space-y-8">
                                     <div className="flex items-end gap-3">
-                                        <div className="flex items-baseline gap-1.5">
-                                            <span className="text-2xl font-black text-primary">$</span>
-                                            <span className="text-6xl font-black text-primary font-heading tracking-tight">{product.price.toFixed(2)}</span>
+                                        <div className="flex items-baseline gap-1">
+                                            <span className="text-2xl font-black text-foreground">$</span>
+                                            <span className="text-5xl font-black text-foreground font-heading tracking-tight">{product.price.toFixed(2)}</span>
                                         </div>
-                                        <span className="text-muted-foreground font-bold mb-3 uppercase text-[10px] tracking-[0.2em]">/ {product.unit} (Excl. VAT)</span>
+                                        <span className="text-muted-foreground font-bold mb-2 uppercase text-[10px] tracking-[0.2em]">/ {product.unit}</span>
                                     </div>
 
                                     <div className="flex items-center gap-10 py-6 border-y border-border/50">
@@ -224,32 +233,30 @@ export default function ProductDetailClient() {
                                 </div>
                             </div>
 
-                            {/* Logistics Metadata */}
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="p-6 bg-card rounded-[32px] border border-border/50 flex items-start gap-5 premium-shadow-sm">
-                                    <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center flex-shrink-0">
-                                        <Truck size={24} />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 bg-white dark:bg-[#131921] rounded-2xl border border-border shadow-sm flex flex-col gap-3 group hover:border-primary/50 transition-colors">
+                                    <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center transition-transform group-hover:scale-110">
+                                        <Truck size={20} />
                                     </div>
                                     <div className="space-y-1">
                                         <h4 className="text-[10px] font-black text-foreground uppercase tracking-widest">Express Transit</h4>
-                                        <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">Distribution center arrival in 48-72h via cold chain.</p>
+                                        <p className="text-[10px] text-muted-foreground font-medium leading-relaxed max-w-[120px]">Distribution center arrival in 48-72h via cold chain.</p>
                                     </div>
                                 </div>
-                                <div className="p-6 bg-card rounded-[32px] border border-border/50 flex items-start gap-5 premium-shadow-sm">
-                                    <div className="w-12 h-12 bg-accent/10 text-accent rounded-2xl flex items-center justify-center flex-shrink-0">
-                                        <RotateCcw size={24} />
+                                <div className="p-4 bg-white dark:bg-[#131921] rounded-2xl border border-border shadow-sm flex flex-col gap-3 group hover:border-amber-400/50 transition-colors">
+                                    <div className="w-10 h-10 bg-amber-400/10 text-amber-500 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110">
+                                        <RotateCcw size={20} />
                                     </div>
                                     <div className="space-y-1">
                                         <h4 className="text-[10px] font-black text-foreground uppercase tracking-widest">Returns Audit</h4>
-                                        <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">30-day corporate return policy for damaged SKUs.</p>
+                                        <p className="text-[10px] text-muted-foreground font-medium leading-relaxed max-w-[120px]">30-day corporate return policy for damaged SKUs.</p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* About Product */}
-                            <div className="space-y-8 pt-6">
-                                <h3 className="text-2xl font-black text-foreground font-heading flex items-center gap-3">
-                                    <div className="w-1.5 h-8 bg-secondary rounded-full" />
+                            <div className="space-y-6 pt-6 border-t border-border">
+                                <h3 className="text-xl font-black text-foreground font-heading">
                                     SKU Optimization Details
                                 </h3>
                                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-y-5 gap-x-10">
@@ -262,7 +269,7 @@ export default function ProductDetailClient() {
                                         'Cold Chain Storage Compliant'
                                     ].map((li, i) => (
                                         <li key={i} className="flex items-start gap-3 text-xs text-muted-foreground font-medium leading-tight">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-secondary mt-1 flex-shrink-0" />
+                                            <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1 flex-shrink-0" />
                                             {li}
                                         </li>
                                     ))}
@@ -273,25 +280,23 @@ export default function ProductDetailClient() {
                 </div>
 
                 {/* Related Products */}
-                <div className="mt-40 pt-24 border-t border-border/50">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
-                        <div className="space-y-3">
-                            <div className="w-16 h-1 bg-primary rounded-full" />
-                            <h2 className="text-5xl font-heading font-black text-foreground tracking-tight">Expand Your Batch</h2>
-                            <p className="text-muted-foreground font-medium text-lg italic">Compatible inventory from the same logistics hub</p>
-                        </div>
-                        <Link href="/categories">
-                            <Button variant="outline" size="lg" className="rounded-2xl gap-2 font-black border-primary text-primary hover:bg-primary hover:text-white transition-all">
-                                View Full Inventory
-                                <ChevronRight size={18} />
-                            </Button>
-                        </Link>
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 px-6">
+                    <div className="space-y-2">
+                        <h2 className="text-3xl lg:text-4xl font-heading font-black text-foreground tracking-tight">Expand Your Batch</h2>
+                        <p className="text-muted-foreground font-medium text-sm">Compatible inventory from the same logistics hub</p>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-                        {relatedProducts.map((p, i) => (
-                            <ProductCard key={p.id} product={p} index={i} />
-                        ))}
-                    </div>
+                    <Link href="/categories">
+                        <Button variant="outline" className="rounded-xl gap-2 font-black border-border shadow-sm bg-white dark:bg-[#131921] hover:bg-primary hover:text-white hover:border-primary transition-all">
+                            View Full Inventory
+                            <ChevronRight size={16} />
+                        </Button>
+                    </Link>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-6">
+                    {relatedProducts.map((p, i) => (
+                        <ProductCard key={p.id} product={p} index={i} />
+                    ))}
                 </div>
             </main>
         </div>

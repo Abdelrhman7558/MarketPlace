@@ -132,67 +132,163 @@ export default function AdminOrdersPage() {
                                             </div>
                                         </td>
                                     </tr>
-                                    {expandedOrder === order.id && (
-                                        <tr className="bg-white/[0.01]">
-                                            <td colSpan={5} className="p-8 border-b border-white/5">
-                                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                                    <div className="space-y-4">
-                                                        <h4 className="text-white font-black uppercase tracking-widest text-xs">Order Items</h4>
-                                                        <div className="bg-[#131921] rounded-2xl border border-white/5 overflow-hidden">
-                                                            <table className="w-full text-left">
-                                                                <thead className="bg-white/5">
-                                                                    <tr>
-                                                                        <th className="px-4 py-2 text-[10px] font-bold text-white/40 uppercase tracking-widest">Product</th>
-                                                                        <th className="px-4 py-2 text-[10px] font-bold text-white/40 uppercase tracking-widest text-right">Qty</th>
-                                                                        <th className="px-4 py-2 text-[10px] font-bold text-white/40 uppercase tracking-widest text-right">Price</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody className="divide-y divide-white/5">
-                                                                    {order.items.map((item, i) => (
-                                                                        <tr key={i} className="text-sm">
-                                                                            <td className="px-4 py-3 text-white font-medium">{item.product}</td>
-                                                                            <td className="px-4 py-3 text-white/60 text-right">{item.quantity}</td>
-                                                                            <td className="px-4 py-3 text-white/60 text-right">${item.price.toFixed(2)}</td>
-                                                                        </tr>
-                                                                    ))}
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="space-y-4">
-                                                        <h4 className="text-white font-black uppercase tracking-widest text-xs">Financial Breakdown</h4>
-                                                        <div className="bg-[#131921] rounded-2xl border border-white/5 p-6 space-y-4">
-                                                            <div className="flex items-center justify-between pb-4 border-b border-white/5">
-                                                                <span className="text-sm font-bold text-white/40">Total Sales Value</span>
-                                                                <span className="text-lg font-black text-white">${order.total.toLocaleString()}</span>
-                                                            </div>
-                                                            <div className="flex items-center justify-between pb-4 border-b border-white/5">
-                                                                <div>
-                                                                    <span className="block text-sm font-bold text-white/40">Supplier Revenue</span>
-                                                                    <span className="text-[10px] text-emerald-500 font-bold">Base Price (Cost)</span>
-                                                                </div>
-                                                                <span className="text-lg font-black text-emerald-400">${order.supplierProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                                                            </div>
-                                                            <div className="flex items-center justify-between bg-primary/10 -mx-6 -mb-6 p-6 rounded-b-2xl border-t border-primary/20">
-                                                                <div>
-                                                                    <span className="block text-sm font-black text-primary uppercase tracking-widest">Admin Profit</span>
-                                                                    <span className="text-[10px] text-primary/60 font-bold">+5% Marketplace Markup</span>
-                                                                </div>
-                                                                <span className="text-2xl font-black text-primary">${order.adminProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )}
                                 </React.Fragment>
                             ))}
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            {/* Order Detail Modal */}
+            <AnimatePresence>
+                {expandedOrder && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm" onClick={() => setExpandedOrder(null)}>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            onClick={e => e.stopPropagation()}
+                            className="bg-[#131921] w-full max-w-4xl rounded-3xl border border-white/10 shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]"
+                        >
+                            {(() => {
+                                const order = orders.find(o => o.id === expandedOrder);
+                                if (!order) return null;
+
+                                return (
+                                    <>
+                                        {/* Modal Header */}
+                                        <div className="bg-[#1A222C] border-b border-white/5 p-8 flex items-start justify-between">
+                                            <div>
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary border border-primary/20">
+                                                        <ShoppingCart size={18} />
+                                                    </div>
+                                                    <div>
+                                                        <h2 className="text-2xl font-black text-white tracking-tight">Order <span className="text-primary">{order.id}</span></h2>
+                                                        <p className="text-xs text-white/40 font-bold uppercase tracking-widest mt-1">Date: {order.date}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-4">
+                                                <div className={cn(
+                                                    "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border",
+                                                    order.status === 'PAID' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                                                        order.status === 'SHIPPED' ? "bg-primary/10 text-primary border-primary/20" :
+                                                            order.status === 'PENDING' ? "bg-amber-400/10 text-amber-400 border-amber-400/20" :
+                                                                "bg-red-500/10 text-red-500 border-red-500/20"
+                                                )}>
+                                                    Status: {order.status}
+                                                </div>
+                                                <button onClick={() => setExpandedOrder(null)} className="p-2 text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl transition-all">
+                                                    <XCircle size={20} />
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Modal Body */}
+                                        <div className="p-8 overflow-y-auto w-full no-scrollbar">
+                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+
+                                                {/* Actors / Stakeholders */}
+                                                <div className="space-y-6">
+                                                    <div>
+                                                        <h4 className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Buyer (Customer)</h4>
+                                                        <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col justify-center h-[80px]">
+                                                            <p className="text-lg font-bold text-white">{order.customer}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Vendor (Supplier)</h4>
+                                                        <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col justify-center h-[80px]">
+                                                            <p className="text-lg font-bold text-white">{order.supplier}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="pt-4 space-y-3">
+                                                        <h4 className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-2">Order Line Items</h4>
+                                                        <div className="bg-black/20 rounded-2xl border border-white/5 overflow-hidden">
+                                                            <table className="w-full text-left">
+                                                                <thead className="bg-white/5 border-b border-white/5">
+                                                                    <tr>
+                                                                        <th className="px-5 py-3 text-[9px] font-bold text-white/50 uppercase tracking-widest">SKU</th>
+                                                                        <th className="px-5 py-3 text-[9px] font-bold text-white/50 uppercase tracking-widest text-right">Qty</th>
+                                                                        <th className="px-5 py-3 text-[9px] font-bold text-white/50 uppercase tracking-widest text-right">Unit Price</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody className="divide-y divide-white/5">
+                                                                    {order.items.map((item, i) => (
+                                                                        <tr key={i}>
+                                                                            <td className="px-5 py-4 text-xs font-bold text-white">{item.product}</td>
+                                                                            <td className="px-5 py-4 text-xs font-bold text-white/60 text-right">{item.quantity}</td>
+                                                                            <td className="px-5 py-4 text-xs font-bold text-white/60 text-right">${item.price.toFixed(2)}</td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Financial Breakdown */}
+                                                <div className="space-y-4">
+                                                    <h4 className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Financial Settlement Breakdown</h4>
+                                                    <div className="bg-[#1A222C] rounded-3xl border border-white/5 p-8 relative overflow-hidden group">
+                                                        {/* Decorative Background */}
+                                                        <div className="absolute right-0 top-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+
+                                                        <div className="relative z-10 space-y-6">
+
+                                                            {/* Total Revenue */}
+                                                            <div className="flex items-center justify-between pb-6 border-b border-white/5">
+                                                                <div>
+                                                                    <span className="block text-sm font-black text-white">Gross Transaction Value</span>
+                                                                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Total Paid by Buyer</span>
+                                                                </div>
+                                                                <span className="text-3xl font-black text-white">${order.total.toLocaleString()}</span>
+                                                            </div>
+
+                                                            {/* Supplier Payout */}
+                                                            <div className="flex items-center justify-between pb-6 border-b border-white/5">
+                                                                <div>
+                                                                    <span className="block text-sm font-black text-white/60">Supplier Revenue</span>
+                                                                    <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-500">Net Cost basis</span>
+                                                                </div>
+                                                                <span className="text-xl font-black text-emerald-400">${order.supplierProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                            </div>
+
+                                                            {/* Admin Profit */}
+                                                            <div className="flex items-center justify-between bg-primary/10 -mx-8 -mb-8 p-8 border-t border-primary/20">
+                                                                <div>
+                                                                    <span className="block text-lg font-black text-primary uppercase tracking-widest">Platform Fee</span>
+                                                                    <span className="text-[10px] text-primary/60 font-bold uppercase tracking-widest mt-1">Marketplace Admin Profit</span>
+                                                                </div>
+                                                                <span className="text-4xl font-black text-primary">${order.adminProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Settlement Status Footer */}
+                                                    <div className="mt-6 flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+                                                        <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                                                            <CheckCircle2 size={14} />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs font-bold text-white">Funds Secured in Escrow</p>
+                                                            <p className="text-[10px] text-white/40 font-medium leading-relaxed mt-1">Admin profit is instantly allocated. Supplier revenue is held in escrow until buyer confirms delivery of goods.</p>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                );
+                            })()}
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

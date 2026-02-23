@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { useTheme } from 'next-themes';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Locale } from '@/locales';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
     const { items } = useCart();
@@ -19,7 +20,10 @@ export default function Navbar() {
     const [searchTerm, setSearchTerm] = React.useState('');
     const [scrolled, setScrolled] = React.useState(false);
     const router = useRouter();
+    const pathname = usePathname();
     const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
+    const isWhiteBackgroundPage = pathname.startsWith('/categories') || pathname.startsWith('/products');
 
     React.useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -37,7 +41,7 @@ export default function Navbar() {
     return (
         <header className={cn(
             "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-            scrolled ? "glass py-2" : "bg-transparent py-4 text-white"
+            scrolled ? "glass py-2 text-foreground" : (isWhiteBackgroundPage ? "bg-card border-b border-border/50 py-4 text-foreground shadow-sm" : "bg-transparent py-4 text-white")
         )}>
             <div className="container mx-auto px-6 flex items-center justify-between gap-8">
                 {/* Logo & Categories */}
@@ -80,7 +84,10 @@ export default function Navbar() {
                         <select
                             value={locale}
                             onChange={(e) => setLocale(e.target.value as Locale)}
-                            className="bg-transparent text-white text-xs font-bold outline-none cursor-pointer uppercase"
+                            className={cn(
+                                "bg-transparent text-xs font-bold outline-none cursor-pointer uppercase",
+                                (scrolled || isWhiteBackgroundPage) ? "text-foreground" : "text-white"
+                            )}
                         >
                             <option value="en" className="text-black">EN</option>
                             <option value="ar" className="text-black">عربي</option>
@@ -92,13 +99,15 @@ export default function Navbar() {
                         </select>
                     </div>
 
-                    {/* Help & Support (Desktop Only) */}
-                    <div className="hidden xl:flex flex-col items-end text-[10px] font-bold uppercase tracking-widest text-white/50">
+                    <div className={cn(
+                        "hidden xl:flex flex-col items-end text-[10px] font-bold uppercase tracking-widest",
+                        (scrolled || isWhiteBackgroundPage) ? "text-muted-foreground" : "text-white/50"
+                    )}>
                         <span>Help Center</span>
-                        <span className="text-white">Become a Supplier</span>
+                        <span className={(scrolled || isWhiteBackgroundPage) ? "text-foreground" : "text-white"}>Become a Supplier</span>
                     </div>
 
-                    <div className="w-px h-8 bg-white/10 mx-2 hidden lg:block" />
+                    <div className={cn("w-px h-8 mx-2 hidden lg:block", (scrolled || isWhiteBackgroundPage) ? "bg-border" : "bg-white/10")} />
 
                     {/* Account */}
                     <Link

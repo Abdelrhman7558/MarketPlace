@@ -25,6 +25,7 @@ import { UserMenu } from '@/components/dashboard/UserMenu';
 const ADMIN_LINKS = [
     { label: 'Overview', href: '/admin', icon: LayoutDashboard },
     { label: 'Users & Approvals', href: '/admin/users', icon: Users },
+    { label: 'Buyers', href: '/admin/buyers', icon: Users },
     { label: 'Suppliers', href: '/admin/suppliers', icon: Package },
     { label: 'Security', href: '/admin/security', icon: Shield },
     { label: 'Offer Approvals', href: '/admin/offers', icon: Tag },
