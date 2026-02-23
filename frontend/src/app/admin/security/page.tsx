@@ -147,7 +147,7 @@ export default function SecurityDashboard() {
                         <UserX size={80} className="text-red-500" />
                     </div>
                     <p className="text-white/40 text-xs font-black uppercase tracking-widest">Blocked Threats</p>
-                    <h3 className="text-4xl font-black text-white mt-2">{status?.blockedIps.length || 0}</h3>
+                    <h3 className="text-4xl font-black text-white mt-2">{status?.blockedIps?.length || 0}</h3>
                     <p className="text-red-400 text-[10px] font-bold mt-2 uppercase">Active IP Blocks</p>
                 </div>
 
@@ -174,13 +174,13 @@ export default function SecurityDashboard() {
                         </button>
                     </div>
                     <div className="flex-1 overflow-y-auto max-h-[500px] no-scrollbar">
-                        {status?.recentLogs.length === 0 ? (
+                        {!status?.recentLogs || status?.recentLogs?.length === 0 ? (
                             <div className="h-full flex items-center justify-center p-12 text-white/20 italic">
                                 No threats detected in the last session.
                             </div>
                         ) : (
                             <div className="divide-y divide-white/5">
-                                {status?.recentLogs.map((log) => (
+                                {status?.recentLogs?.map((log) => (
                                     <div key={log.id} className="p-4 hover:bg-white/5 transition-colors group">
                                         <div className="flex items-start gap-4">
                                             <div className={cn(
@@ -223,7 +223,7 @@ export default function SecurityDashboard() {
                             Active IP Embargo
                         </h3>
                         <div className="space-y-3">
-                            {status?.blockedIps.map((block) => (
+                            {status?.blockedIps?.map((block) => (
                                 <div key={block.ip} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 group">
                                     <div className="flex items-center gap-4">
                                         <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
@@ -242,7 +242,7 @@ export default function SecurityDashboard() {
                                     </button>
                                 </div>
                             ))}
-                            {status?.blockedIps.length === 0 && (
+                            {(!status?.blockedIps || status?.blockedIps?.length === 0) && (
                                 <div className="text-center py-8 text-white/20 italic text-sm">No active embargoes.</div>
                             )}
                         </div>
