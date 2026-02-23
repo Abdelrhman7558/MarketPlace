@@ -50,6 +50,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                     alt={product.name}
                     className="max-h-[160px] max-w-full object-contain mix-blend-multiply"
                     loading="lazy"
+                    decoding="async"
                 />
 
                 {/* Floating Badges */}

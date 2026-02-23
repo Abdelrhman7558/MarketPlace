@@ -23,7 +23,13 @@ export default function ProductDetailClient() {
     const router = useRouter();
 
     const product = PRODUCTS.find(p => p.id === id);
-    const relatedProducts = PRODUCTS.filter(p => p.id !== id && p.category === product?.category).slice(0, 4);
+    let relatedProducts = PRODUCTS.filter(p => p.id !== id && p.category === product?.category);
+    if (relatedProducts.length < 4) {
+        const padding = PRODUCTS.filter(p => p.id !== id && !relatedProducts.includes(p));
+        relatedProducts = [...relatedProducts, ...padding].slice(0, 4);
+    } else {
+        relatedProducts = relatedProducts.slice(0, 4);
+    }
 
     if (!product) {
         return (

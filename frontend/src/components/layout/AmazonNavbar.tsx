@@ -9,6 +9,7 @@ import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { CATEGORIES_LIST } from '@/lib/products';
 import { UserMenu } from '@/components/dashboard/UserMenu';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const CATEGORY_ICONS: Record<string, any> = {
     'Soft Drinks': Droplets,
@@ -24,6 +25,7 @@ const CATEGORY_ICONS: Record<string, any> = {
 export default function AmazonNavbar() {
     const { items } = useCart();
     const { user } = useAuth();
+    const { t } = useLanguage();
     const [searchTerm, setSearchTerm] = React.useState('');
     const [searchCategory, setSearchCategory] = React.useState('All');
     const [isCategoriesOpen, setIsCategoriesOpen] = React.useState(false);
@@ -57,7 +59,7 @@ export default function AmazonNavbar() {
                             onChange={(e) => setSearchCategory(e.target.value)}
                             className="appearance-none bg-transparent h-full pl-3 pr-8 outline-none cursor-pointer"
                         >
-                            <option value="All">All Categories</option>
+                            <option value="All">{t('navbar', 'allCategories')}</option>
                             {CATEGORIES_LIST.map((cat) => (
                                 <option key={cat} value={cat}>{cat}</option>
                             ))}
@@ -68,7 +70,7 @@ export default function AmazonNavbar() {
                         type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search MarketPlace"
+                        placeholder={t('navbar', 'searchPlaceholder')}
                         className="flex-1 h-full px-3 text-sm text-[#111] outline-none font-normal"
                     />
                     <button
@@ -90,9 +92,9 @@ export default function AmazonNavbar() {
                                 href="/auth/login"
                                 className="flex flex-col items-start p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full whitespace-nowrap min-w-max justify-center"
                             >
-                                <span className="text-[11px] leading-tight font-medium text-white/80">Hello, Sign in</span>
+                                <span className="text-[11px] leading-tight font-medium text-white/80">{t('navbar', 'helloSignIn')}</span>
                                 <div className="flex items-center gap-0.5">
-                                    <span className="text-xs md:text-sm font-black leading-tight">Account</span>
+                                    <span className="text-xs md:text-sm font-black leading-tight">{t('navbar', 'account')}</span>
                                     <ChevronDown size={10} className="text-white/60" />
                                 </div>
                             </Link>
@@ -102,8 +104,8 @@ export default function AmazonNavbar() {
                     {/* Orders - Customer Only */}
                     {user?.role === 'customer' && (
                         <Link href="/dashboard" className="hidden md:flex flex-col items-start p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full whitespace-nowrap justify-center">
-                            <span className="text-[11px] leading-tight font-medium text-white/80">Returns</span>
-                            <span className="text-xs md:text-sm font-black leading-tight">& Orders</span>
+                            <span className="text-[11px] leading-tight font-medium text-white/80">{t('navbar', 'returns')}</span>
+                            <span className="text-xs md:text-sm font-black leading-tight">{t('navbar', 'orders')}</span>
                         </Link>
                     )}
 
@@ -115,7 +117,7 @@ export default function AmazonNavbar() {
                                 {cartCount}
                             </span>
                         </div>
-                        <span className="hidden sm:block text-sm font-black mb-0.5 ml-1">Cart</span>
+                        <span className="hidden sm:block text-sm font-black mb-0.5 ml-1">{t('navbar', 'cart')}</span>
                     </Link>
                 </div>
             </div>
@@ -135,7 +137,7 @@ export default function AmazonNavbar() {
                             setIsCategoriesOpen(!isCategoriesOpen);
                         }}
                     >
-                        <Menu size={18} /> Categories
+                        <Menu size={18} /> {t('navbar', 'categories')}
                     </button>
 
                     {/* Dropdown Menu */}
@@ -166,7 +168,7 @@ export default function AmazonNavbar() {
                                     className="flex items-center justify-center py-3 text-xs font-black text-primary uppercase tracking-widest hover:bg-primary/5 transition-colors"
                                     onClick={() => setIsCategoriesOpen(false)}
                                 >
-                                    Browse All Catalog
+                                    {t('navbar', 'browseCatalog')}
                                 </Link>
                             </div>
                         </div>
@@ -174,10 +176,10 @@ export default function AmazonNavbar() {
                 </div>
 
                 <div className="flex items-center gap-4 text-[11px] font-bold text-white/90 h-full overflow-x-auto no-scrollbar">
-                    <Link href="/deals" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">Volume Deals</Link>
-                    <Link href="/suppliers" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">Supply Partners</Link>
-                    <Link href="/help" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">Logistics Help</Link>
-                    <Link href="/corporate" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">Corporate Accounts</Link>
+                    <Link href="/deals" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">{t('navbar', 'volumeDeals')}</Link>
+                    <Link href="/suppliers" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">{t('navbar', 'supplyPartners')}</Link>
+                    <Link href="/help" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">{t('navbar', 'logisticsHelp')}</Link>
+                    <Link href="/corporate" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">{t('navbar', 'corporateAccounts')}</Link>
                 </div>
             </div>
         </header>

@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useState, useMemo } from 'react';
 import { AdPlacements } from '@/components/marketplace/AdPlacements';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 function CatalogSection({ title, children }: { title: string; children: React.ReactNode }) {
     return (
@@ -23,6 +24,7 @@ function CatalogSection({ title, children }: { title: string; children: React.Re
 }
 
 export default function Home() {
+    const { t } = useLanguage();
     const [selectedPopularBrand, setSelectedPopularBrand] = useState<string | null>(null);
 
     const popularProducts = useMemo(() => {
@@ -55,7 +57,7 @@ export default function Home() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
                         <AmazonCardTile
-                            title="Makeup for Everyone"
+                            title={t('home', 'makeup')}
                             items={[
                                 { label: "Women's Beauty", image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=200&h=200&fit=crop", link: "/categories?category=Makeup" },
                                 { label: "Men's Grooming", image: "https://images.unsplash.com/photo-1590156221122-c748c789d36a?w=200&h=200&fit=crop", link: "/categories?category=Makeup" },
@@ -63,10 +65,10 @@ export default function Home() {
                                 { label: "Bestsellers", image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=200&h=200&fit=crop", link: "/categories?category=Makeup" }
                             ]}
                             footerLink="/categories?category=Makeup"
-                            footerText="Shop all Beauty"
+                            footerText={t('home', 'shopAllBeauty')}
                         />
                         <AmazonCardTile
-                            title="Premium Fragrances"
+                            title={t('home', 'fragrances')}
                             items={[
                                 { label: "For Men", image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=200&h=200&fit=crop", link: "/categories?category=Perfume" },
                                 { label: "For Women", image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=200&h=200&fit=crop", link: "/categories?category=Perfume" },
@@ -74,10 +76,10 @@ export default function Home() {
                                 { label: "New Arrivals", image: "https://images.unsplash.com/photo-1583467875263-d50dec37a88c?w=200&h=200&fit=crop", link: "/categories?category=Perfume" }
                             ]}
                             footerLink="/categories?category=Perfume"
-                            footerText="See all Perfumes"
+                            footerText={t('home', 'seeAllPerfumes')}
                         />
                         <AmazonCardTile
-                            title="Personal Care"
+                            title={t('home', 'personalCare')}
                             items={[
                                 { label: "Body Care", image: "https://images.unsplash.com/photo-1612817288484-6f916006741a?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
                                 { label: "Hair Care", image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
@@ -85,10 +87,10 @@ export default function Home() {
                                 { label: "Shaving", image: "https://images.unsplash.com/photo-1626285492eda-fa605a9a4734?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" }
                             ]}
                             footerLink="/categories?category=Personal Care"
-                            footerText="Essentials"
+                            footerText={t('home', 'essentials')}
                         />
                         <AmazonCardTile
-                            title="Home Cleaning"
+                            title={t('home', 'homeCleaning')}
                             items={[
                                 { label: "Laundry", image: "https://images.unsplash.com/photo-1583947581924-860bda6a26df?w=200&h=200&fit=crop", link: "/categories?category=Home Care" },
                                 { label: "Dishwashing", image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=200&h=200&fit=crop", link: "/categories?category=Home Care" },
@@ -96,12 +98,12 @@ export default function Home() {
                                 { label: "Paper & Plastic", image: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=200&h=200&fit=crop", link: "/categories?category=Home Care" }
                             ]}
                             footerLink="/categories?category=Home Care"
-                            footerText="Shop Household"
+                            footerText={t('home', 'shopHousehold')}
                         />
                     </div>
 
                     {/* Best Sellers Scroller */}
-                    <CatalogSection title="Trending Global Beverages">
+                    <CatalogSection title={t('home', 'trendingBevs')}>
                         <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 pt-2 -mx-2 px-2">
                             {PRODUCTS.slice(0, 10).map((product, i) => (
                                 <div key={product.id} className="min-w-[180px] md:min-w-[220px] max-w-[220px]">
@@ -112,7 +114,7 @@ export default function Home() {
                     </CatalogSection>
 
                     {/* Popular Products with Filter */}
-                    <CatalogSection title="Popular Wholesale Picks">
+                    <CatalogSection title={t('home', 'popularPicks')}>
                         <div className="flex flex-col gap-8">
                             {/* Simple Brand Filter */}
                             <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
@@ -125,7 +127,7 @@ export default function Home() {
                                             : "bg-white dark:bg-white/5 text-foreground border-border hover:border-primary/50"
                                     )}
                                 >
-                                    All Brands
+                                    {t('home', 'allBrands')}
                                 </button>
                                 {['Coca-Cola', 'Pepsi', 'Red Bull', 'Oreo', 'KitKat', 'Doritos', 'Pringles'].map(brand => (
                                     <button
@@ -160,7 +162,7 @@ export default function Home() {
                     {/* Secondary Catalog Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mt-8">
                         <AmazonCardTile
-                            title="Bulk Beverages"
+                            title={t('home', 'bulkBevs')}
                             items={[
                                 { label: "Energy Drinks", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&h=200&fit=crop", link: "/categories?category=Energy Drinks" },
                                 { label: "Soft Drinks", image: "https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=200&h=200&fit=crop", link: "/categories?category=Soft Drinks" },
@@ -168,10 +170,10 @@ export default function Home() {
                                 { label: "Water", image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=200&h=200&fit=crop", link: "/categories?category=Soft Drinks" }
                             ]}
                             footerLink="/categories?category=Soft Drinks"
-                            footerText="Restock drinks"
+                            footerText={t('home', 'restockDrinks')}
                         />
                         <AmazonCardTile
-                            title="Snacks & Gums"
+                            title={t('home', 'snacks')}
                             items={[
                                 { label: "Biscuits", image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" },
                                 { label: "Chocolates", image: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" },
@@ -179,10 +181,10 @@ export default function Home() {
                                 { label: "Gums", image: "https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" }
                             ]}
                             footerLink="/categories?category=Snacks & Sweets"
-                            footerText="Treats in bulk"
+                            footerText={t('home', 'treatsInBulk')}
                         />
                         <AmazonCardTile
-                            title="Coffee & Tea"
+                            title={t('home', 'coffeeTea')}
                             items={[
                                 { label: "Instant Coffee", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" },
                                 { label: "Ground Coffee", image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" },
@@ -190,7 +192,7 @@ export default function Home() {
                                 { label: "Creamers", image: "https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" }
                             ]}
                             footerLink="/categories?category=Coffee & Tea"
-                            footerText="Caffeine selection"
+                            footerText={t('home', 'caffeineSelection')}
                         />
                     </div>
                 </div>
