@@ -16,7 +16,7 @@ interface AuthContextType {
     user: User | null;
     isLoggedIn: boolean;
     login: (email: string, password: string) => Promise<{ success: boolean; user?: User; message?: string }>;
-    register: (data: { name: string; email: string; phone?: string; password: string; role: string }) => Promise<boolean | string>;
+    register: (data: { name: string; email: string; phone?: string; companyName?: string; website?: string; socialLinks?: string; password: string; role: string }) => Promise<boolean | string>;
     updateUser: (data: Partial<User>) => void;
     logout: () => void;
 }
@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
-    const register = async (data: { name: string; email: string; phone?: string; password: string; role: string }): Promise<boolean | string> => {
+    const register = async (data: { name: string; email: string; phone?: string; companyName?: string; website?: string; socialLinks?: string; password: string; role: string }): Promise<boolean | string> => {
         try {
             const res = await fetch('http://localhost:3005/auth/register', {
                 method: 'POST',

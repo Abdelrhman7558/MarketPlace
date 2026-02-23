@@ -41,6 +41,9 @@ export class AuthService {
                 password: hashedPassword,
                 name: data.name,
                 phone: data.phone,
+                companyName: data.companyName,
+                website: data.website,
+                socialLinks: data.socialLinks,
                 role: data.role.toUpperCase(),
                 status: 'PENDING_APPROVAL'
             },

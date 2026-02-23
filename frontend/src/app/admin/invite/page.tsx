@@ -53,7 +53,7 @@ export default function AdminInvitePage() {
         localStorage.setItem('marketplace-invites', JSON.stringify(updated));
 
         // Redirect to register with strictly locked role in query (Normally this would be verified server-side via token)
-        const link = `${window.location.origin}/auth/register?invite=${token}&role=${role}`;
+        const link = `${window.location.origin}/auth/register?invite=${token}&role=${role}${email ? `&email=${encodeURIComponent(email)}` : ''}`;
         setGeneratedLink(link);
     };
 

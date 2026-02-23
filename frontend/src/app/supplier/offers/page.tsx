@@ -14,7 +14,9 @@ import {
     CheckCircle2,
     XCircle,
     LayoutList,
-    Image as ImageIcon
+    Image as ImageIcon,
+    Edit2,
+    Trash
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PRODUCTS } from '@/lib/products';
@@ -61,6 +63,7 @@ export default function SupplierOffersPage() {
     ]);
 
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [editingId, setEditingId] = React.useState<string | null>(null);
     const [formData, setFormData] = React.useState({
         title: '',
         type: 'Discount' as any,
@@ -71,18 +74,51 @@ export default function SupplierOffersPage() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const newOffer: OfferPlacement = {
-            id: `OFF-${Math.floor(Math.random() * 1000)}`,
-            title: formData.title,
-            type: formData.type,
-            slot: formData.slot,
-            price: SLOT_PRICES[formData.slot],
-            status: formData.slot === 'HERO' ? 'PENDING' : 'ACTIVE', // Hero always needs approval
-            expiry: formData.expiry || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            impressions: 0
-        };
-        setOffers([newOffer, ...offers]);
+
+        if (editingId) {
+            setOffers(offers.map(offer =>
+                offer.id === editingId ? {
+                    ...offer,
+                    title: formData.title,
+                    type: formData.type,
+                    slot: formData.slot,
+                    price: SLOT_PRICES[formData.slot],
+                    status: 'PENDING', // Force Pending on Edit
+                    expiry: formData.expiry || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                } : offer
+            ));
+        } else {
+            const newOffer: OfferPlacement = {
+                id: `OFF-${Math.floor(Math.random() * 1000)}`,
+                title: formData.title,
+                type: formData.type,
+                slot: formData.slot,
+                price: SLOT_PRICES[formData.slot],
+                status: formData.slot === 'HERO' ? 'PENDING' : 'ACTIVE',
+                expiry: formData.expiry || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                impressions: 0
+            };
+            setOffers([newOffer, ...offers]);
+        }
+
         setIsModalOpen(false);
+        setEditingId(null);
+    };
+
+    const handleDelete = (id: string) => {
+        setOffers(offers.filter(o => o.id !== id));
+    };
+
+    const openEditModal = (offer: OfferPlacement) => {
+        setFormData({
+            title: offer.title,
+            type: offer.type as any,
+            slot: offer.slot,
+            product: PRODUCTS[0]?.name || '',
+            expiry: offer.expiry
+        });
+        setEditingId(offer.id);
+        setIsModalOpen(true);
     };
 
     return (
@@ -98,7 +134,17 @@ export default function SupplierOffersPage() {
                 </div>
 
                 <button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => {
+                        setEditingId(null);
+                        setFormData({
+                            title: '',
+                            type: 'Discount' as any,
+                            slot: 'FEATURED' as 'HERO' | 'FEATURED' | 'BANNER',
+                            product: '',
+                            expiry: ''
+                        });
+                        setIsModalOpen(true);
+                    }}
                     className="h-12 px-6 bg-primary text-[#131921] font-black text-sm rounded-xl hover:scale-105 transition-transform shadow-lg shadow-primary/20 flex items-center gap-2"
                 >
                     <Plus size={18} strokeWidth={3} /> Create New Offer
@@ -180,14 +226,22 @@ export default function SupplierOffersPage() {
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between text-white/40">
-                            <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/5">
+                            <div className="flex items-center gap-2 text-white/40">
                                 <Clock size={12} />
                                 <span className="text-[10px] font-bold">Last updated 2h ago</span>
                             </div>
-                            <button className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">
-                                View Analytics
-                            </button>
+                            <div className="flex items-center gap-3">
+                                <button onClick={() => openEditModal(offer)} className="p-2 text-white/40 hover:text-primary transition-colors hover:bg-white/5 rounded-lg border border-transparent hover:border-white/10">
+                                    <Edit2 size={16} />
+                                </button>
+                                <button onClick={() => handleDelete(offer.id)} className="p-2 text-white/40 hover:text-red-400 transition-colors hover:bg-white/5 rounded-lg border border-transparent hover:border-white/10">
+                                    <Trash size={16} />
+                                </button>
+                                <button className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors ml-2">
+                                    Analytics
+                                </button>
+                            </div>
                         </div>
                     </motion.div>
                 ))}
@@ -210,7 +264,7 @@ export default function SupplierOffersPage() {
                         >
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <h2 className="text-2xl font-black text-white tracking-tight">Create New Offer</h2>
+                                    <h2 className="text-2xl font-black text-white tracking-tight">{editingId ? 'Edit Offer' : 'Create New Offer'}</h2>
                                     <p className="text-white/40 text-xs font-medium">Configure your promotion and ad placement.</p>
                                 </div>
                                 <button type="button" onClick={() => setIsModalOpen(false)} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white/40 hover:text-white transition-colors">
@@ -285,7 +339,7 @@ export default function SupplierOffersPage() {
                                 className="w-full h-16 bg-primary text-[#131921] font-black rounded-2xl shadow-xl shadow-primary/10 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group"
                             >
                                 <CircleDollarSign size={20} className="group-hover:rotate-12 transition-transform" />
-                                Pay & Launch Offer
+                                {editingId ? 'Update & Re-submit Offer' : 'Pay & Launch Offer'}
                             </button>
                         </motion.form>
                     </motion.div>

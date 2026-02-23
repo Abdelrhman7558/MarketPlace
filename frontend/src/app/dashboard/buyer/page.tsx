@@ -29,10 +29,15 @@ export default function BuyerDashboard() {
                     <p className="text-foreground/60">Manage your wholesale orders and business account.</p>
                 </div>
                 <div className="flex gap-3">
-                    <Button variant="outline" className="rounded-full gap-2">
-                        <ReceiptText className="w-4 h-4" />
-                        Billing History
-                    </Button>
+                    <div className="relative group/billing">
+                        <Button variant="outline" className="rounded-full gap-2 opacity-50 cursor-not-allowed">
+                            <ReceiptText className="w-4 h-4" />
+                            Billing History
+                        </Button>
+                        <div className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center cursor-not-allowed z-10 backdrop-blur-[1px]">
+                            <span className="text-[9px] font-black text-white uppercase tracking-widest bg-white/20 px-2 py-0.5 rounded-md">SOON</span>
+                        </div>
+                    </div>
                     <Button className="rounded-full gap-2 shadow-lg shadow-primary/20">
                         <ShoppingBag className="w-4 h-4" />
                         New Bulk Order

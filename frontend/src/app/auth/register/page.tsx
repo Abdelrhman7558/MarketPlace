@@ -1,18 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
     Mail, Lock, User, Phone, ShieldCheck,
     ArrowRight, CheckCircle2, Sparkles, Building2,
-    Eye, EyeOff
+    Eye, EyeOff, Globe, Link as LinkIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
 
 export default function RegisterPage() {
-    const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '', role: 'customer' });
+    const searchParams = useSearchParams();
+    const inviteEmail = searchParams.get('email') || '';
+    const [form, setForm] = useState({ name: '', email: inviteEmail, phone: '', companyName: '', website: '', socialLinks: '', password: '', confirmPassword: '', role: 'customer' });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showPass, setShowPass] = useState(false);
@@ -34,6 +36,9 @@ export default function RegisterPage() {
                 name: form.name,
                 email: form.email,
                 phone: form.phone,
+                companyName: form.companyName,
+                website: form.website,
+                socialLinks: form.socialLinks,
                 password: form.password,
                 role: form.role,
             });
@@ -151,10 +156,50 @@ export default function RegisterPage() {
                             <div className="relative">
                                 <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
                                 <input
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                                     placeholder="name@company.com"
                                     value={form.email}
+                                    disabled={!!inviteEmail}
                                     onChange={e => update('email', e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2 md:col-span-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Company Name (Optional)</label>
+                            <div className="relative">
+                                <Building2 className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+                                <input
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
+                                    placeholder="e.g. Acme Corp"
+                                    value={form.companyName}
+                                    onChange={e => update('companyName', e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Website (Optional)</label>
+                            <div className="relative">
+                                <Globe className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+                                <input
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
+                                    placeholder="https://example.com"
+                                    value={form.website}
+                                    onChange={e => update('website', e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Social Links (Optional)</label>
+                            <div className="relative">
+                                <LinkIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+                                <input
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
+                                    placeholder="LinkedIn, Facebook, etc."
+                                    value={form.socialLinks}
+                                    onChange={e => update('socialLinks', e.target.value)}
                                 />
                             </div>
                         </div>

@@ -27,4 +27,16 @@ export class RegisterDto {
     @IsString()
     @IsOptional()
     phone?: string;
+
+    @IsString()
+    @IsOptional()
+    companyName?: string;
+
+    @IsString()
+    @IsOptional()
+    website?: string;
+
+    @IsString()
+    @IsOptional()
+    socialLinks?: string;
 }

@@ -153,13 +153,18 @@ export default function SupplierSettingsPage() {
                             Billing & Payouts
                         </h3>
 
-                        <div className="p-4 bg-white/5 rounded-2xl border border-white/5 space-y-2">
-                            <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Bank IBAN</p>
-                            <p className="text-xs font-black text-white tracking-[0.2em]">•••• •••• •••• 9012</p>
+                        <div className="relative group/payouts">
+                            <div className="p-4 bg-white/5 rounded-2xl border border-white/5 space-y-2 opacity-50">
+                                <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Bank IBAN</p>
+                                <p className="text-xs font-black text-white tracking-[0.2em]">•••• •••• •••• 9012</p>
+                            </div>
+                            <button className="w-full h-12 mt-4 bg-white/5 text-white/60 font-black text-[10px] uppercase tracking-widest rounded-xl border border-white/5 transition-all opacity-50 cursor-not-allowed">
+                                Manage Payout Details
+                            </button>
+                            <div className="absolute inset-0 bg-black/60 rounded-3xl flex items-center justify-center cursor-not-allowed z-10 backdrop-blur-[2px] -m-2">
+                                <span className="text-[10px] font-black text-white uppercase tracking-widest bg-white/20 px-3 py-1 rounded-md">SOON</span>
+                            </div>
                         </div>
-                        <button className="w-full h-12 bg-white/5 text-white/60 font-black text-[10px] uppercase tracking-widest rounded-xl border border-white/5 hover:bg-white/10 transition-all">
-                            Manage Payout Details
-                        </button>
                     </div>
 
                     <div className="bg-[#131921] border border-white/5 rounded-[32px] p-8 space-y-6">
