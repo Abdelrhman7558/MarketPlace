@@ -8,11 +8,14 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { useTheme } from 'next-themes';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { Locale } from '@/locales';
 
 export default function Navbar() {
     const { items } = useCart();
     const { user, logout } = useAuth();
     const { theme, setTheme } = useTheme();
+    const { locale, setLocale, t } = useLanguage();
     const [searchTerm, setSearchTerm] = React.useState('');
     const [scrolled, setScrolled] = React.useState(false);
     const router = useRouter();
@@ -72,6 +75,23 @@ export default function Navbar() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-6">
+                    {/* Language Switcher */}
+                    <div className="hidden lg:flex items-center gap-2">
+                        <select
+                            value={locale}
+                            onChange={(e) => setLocale(e.target.value as Locale)}
+                            className="bg-transparent text-white text-xs font-bold outline-none cursor-pointer uppercase"
+                        >
+                            <option value="en" className="text-black">EN</option>
+                            <option value="ar" className="text-black">عربي</option>
+                            <option value="fr" className="text-black">FR</option>
+                            <option value="de" className="text-black">DE</option>
+                            <option value="es" className="text-black">ES</option>
+                            <option value="pt" className="text-black">PT</option>
+                            <option value="ro" className="text-black">RO</option>
+                        </select>
+                    </div>
+
                     {/* Help & Support (Desktop Only) */}
                     <div className="hidden xl:flex flex-col items-end text-[10px] font-bold uppercase tracking-widest text-white/50">
                         <span>Help Center</span>

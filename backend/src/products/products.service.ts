@@ -10,6 +10,7 @@ export class ProductsService {
         return this.prisma.product.create({
             data: {
                 ...createProductDto,
+                price: createProductDto.price * 1.05, // 5% Admin Markup
                 images: createProductDto.images || [],
             },
         });

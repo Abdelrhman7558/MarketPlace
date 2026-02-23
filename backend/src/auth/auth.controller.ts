@@ -2,17 +2,23 @@ import { Controller, Post, Body, UseInterceptors, ClassSerializerInterceptor } f
 import { AuthService } from './auth.service';
 import { UserDto } from '../common/dtos/base.dto';
 import { plainToInstance } from 'class-transformer';
+import { RegisterDto } from './dto/register.dto';
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) { }
 
     @Post('register')
-    async register(@Body() createUserDto: any) {
+    async register(@Body() createUserDto: RegisterDto) {
         const { password, ...userData } = createUserDto;
-        // The service already handles hashing and duplicate checks
+        // The service already handles hashing, duplicate checks, and setting status to PENDING_APPROVAL
         const user = await this.authService.register(createUserDto);
-        return this.authService.login(user);
+
+        // Do not log in the user immediately, tell them to wait for approval.
+        return {
+            message: 'تم التسجيل بنجاح. حسابك الآن قيد المراجعة بواسطة الإدارة، ستتمكن من تسجيل الدخول فور الموافقة عليه.',
+            userId: user.id
+        };
     }
 
     @Post('login')

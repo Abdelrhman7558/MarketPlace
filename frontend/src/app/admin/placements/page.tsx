@@ -157,12 +157,19 @@ export default function AdminPlacementsPage() {
                                                 <XCircle size={16} /> Reject
                                             </button>
                                         </>
+                                    ) : p.status === 'APPROVED' ? (
+                                        <button
+                                            onClick={() => handleAction(p.id, 'REJECTED')}
+                                            className="h-12 px-6 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-black text-xs rounded-xl border border-red-500/20 transition-all flex items-center justify-center gap-2"
+                                        >
+                                            <XCircle size={16} /> Revoke Offer
+                                        </button>
                                     ) : (
                                         <button
                                             disabled
                                             className="h-12 px-6 bg-white/5 text-white/40 font-black text-xs rounded-xl border border-white/10 opacity-50 flex items-center gap-2"
                                         >
-                                            Action Processed
+                                            Rejected
                                         </button>
                                     )}
                                 </div>

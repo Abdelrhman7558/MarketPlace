@@ -16,8 +16,11 @@ export class AuthService {
         // Check password
         if (await bcrypt.compare(pass, user.password)) {
             // Check status
+            if (user.status === 'PENDING_APPROVAL') {
+                throw new UnauthorizedException('حسابك قيد المراجعة في انتظار موافقة الإدارة');
+            }
             if (user.status === 'REJECTED' || user.status === 'BLOCKED') {
-                throw new UnauthorizedException(`Account ${user.status.toLowerCase()}`);
+                throw new UnauthorizedException(`حسابك موقوف أو مرفوض: ${user.status}`);
             }
             const { password, ...result } = user;
             return result;
