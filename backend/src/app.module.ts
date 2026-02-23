@@ -10,6 +10,7 @@ import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { OrdersModule } from './orders/orders.module';
+import { CouponsModule } from './coupons/coupons.module';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 import { PrismaModule } from './common/prisma.module';
@@ -29,7 +30,8 @@ import { SecurityInterceptor } from './security/security.interceptor';
         AdminModule,
         AuthModule,
         UsersModule,
-        OrdersModule
+        OrdersModule,
+        CouponsModule
     ],
     controllers: [AppController],
     providers: [

@@ -97,6 +97,7 @@ model ProductPlacement {
   product        Product         @relation(fields: [productId], references: [id])
 
   history        ProductPlacementHistory[]
+  coupons        Coupon[]
 
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -200,3 +201,18 @@ model SecurityConfig {
   description     String?
   updatedAt       DateTime @updatedAt
 }
+
+model Coupon {
+  id             String   @id @default(uuid())
+  code           String   @unique
+  discountPercent Float
+  expirationDate DateTime
+  
+  placementId    String
+  placement      ProductPlacement @relation(fields: [placementId], references: [id])
+  
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+

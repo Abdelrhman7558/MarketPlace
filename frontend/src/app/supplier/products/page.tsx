@@ -38,6 +38,7 @@ export default function SupplierProductsPage() {
     const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [imagePreview, setImagePreview] = React.useState<string>('https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400');
+    const [previewProduct, setPreviewProduct] = React.useState<SupplierProduct | null>(null);
 
     // Form State
     const [formData, setFormData] = React.useState({
@@ -196,7 +197,10 @@ export default function SupplierProductsPage() {
                                     >
                                         <Trash2 size={16} />
                                     </button>
-                                    <button className="h-10 w-10 bg-white/5 hover:bg-primary hover:text-[#131921] text-white rounded-lg border border-white/5 flex items-center justify-center transition-all">
+                                    <button
+                                        onClick={() => setPreviewProduct(product)}
+                                        className="h-10 w-10 bg-white/5 hover:bg-primary hover:text-[#131921] text-white rounded-lg border border-white/5 flex items-center justify-center transition-all"
+                                    >
                                         <ExternalLink size={16} />
                                     </button>
                                 </div>
@@ -233,91 +237,189 @@ export default function SupplierProductsPage() {
                             onSubmit={handleAddProduct}
                             initial={{ scale: 0.9, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
-                            className="bg-[#131921] w-full max-w-2xl rounded-3xl border border-white/10 overflow-hidden shadow-3xl"
+                            className="bg-[#131921] w-full max-w-5xl rounded-[40px] border border-white/10 overflow-hidden shadow-3xl flex flex-col md:flex-row"
                         >
-                            <div className="p-8 border-b border-white/5 flex items-center justify-between">
-                                <h2 className="text-2xl font-black text-white tracking-tight">New Wholesale Listing</h2>
-                                <button type="button" onClick={() => setIsAddModalOpen(false)} className="text-white/40 hover:text-white transition-colors">
-                                    <X size={24} />
-                                </button>
+                            {/* Left Side: Image Upload */}
+                            <div className="w-full md:w-1/2 p-8 border-b md:border-b-0 md:border-r border-white/5 bg-black/20 flex flex-col items-center justify-center relative group cursor-pointer hover:bg-white/5 transition-colors min-h-[400px]">
+                                {imagePreview ? (
+                                    <img src={imagePreview} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" alt="Preview" />
+                                ) : (
+                                    <Camera size={48} className="text-white/10 group-hover:text-primary transition-colors mb-4" />
+                                )}
+                                <div className="z-10 bg-black/50 backdrop-blur-sm px-6 py-3 rounded-full border border-white/10 flex items-center gap-2">
+                                    <Camera size={16} className="text-primary" />
+                                    <span className="text-xs font-black text-white uppercase tracking-widest">Upload Product Image</span>
+                                </div>
+                                <input
+                                    type="file"
+                                    className="absolute inset-0 opacity-0 cursor-pointer z-20"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) setImagePreview(URL.createObjectURL(file));
+                                    }}
+                                />
                             </div>
 
-                            <div className="p-8 grid grid-cols-2 gap-6">
-                                <div className="col-span-2 space-y-2">
-                                    <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Product Name</label>
-                                    <input
-                                        required
-                                        value={formData.name}
-                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full h-14 bg-white/5 rounded-xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium"
-                                        placeholder="e.g. Premium Mineral Water Case"
-                                    />
+                            {/* Right Side: Form Details */}
+                            <div className="w-full md:w-1/2 flex flex-col">
+                                <div className="p-8 border-b border-white/5 flex items-center justify-between">
+                                    <div>
+                                        <h2 className="text-2xl font-black text-white tracking-tight">New Listing</h2>
+                                        <p className="text-xs text-white/40 font-bold uppercase tracking-widest mt-1">Product Details</p>
+                                    </div>
+                                    <button type="button" onClick={() => setIsAddModalOpen(false)} className="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-white transition-colors">
+                                        <X size={20} />
+                                    </button>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Base Price ($)</label>
-                                    <input
-                                        required
-                                        type="number"
-                                        step="0.01"
-                                        value={formData.price}
-                                        onChange={e => setFormData({ ...formData, price: e.target.value })}
-                                        className="w-full h-14 bg-white/5 rounded-xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium"
-                                        placeholder="19.99"
-                                    />
+
+                                <div className="p-8 space-y-6 flex-1 overflow-y-auto no-scrollbar">
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Product Name</label>
+                                        <input
+                                            required
+                                            value={formData.name}
+                                            onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                            className="w-full h-14 bg-white/5 rounded-xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium"
+                                            placeholder="e.g. Premium Mineral Water Case"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Base Price ($)</label>
+                                            <input
+                                                required
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.price}
+                                                onChange={e => setFormData({ ...formData, price: e.target.value })}
+                                                className="w-full h-14 bg-white/5 rounded-xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium"
+                                                placeholder="19.99"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Initial Stock</label>
+                                            <input
+                                                required
+                                                type="number"
+                                                value={formData.stock}
+                                                onChange={e => setFormData({ ...formData, stock: e.target.value })}
+                                                className="w-full h-14 bg-white/5 rounded-xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium"
+                                                placeholder="100"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Pricing Model</label>
+                                        <select
+                                            value={formData.status}
+                                            onChange={e => setFormData({ ...formData, status: e.target.value as any })}
+                                            className="w-full h-14 bg-white/5 rounded-xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium appearance-none cursor-pointer"
+                                        >
+                                            <option value="ACTIVE" className="bg-[#1A222C]">Market Ready (Active)</option>
+                                            <option value="DRAFT" className="bg-[#1A222C]">Draft Mode (Hidden)</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Initial Stock</label>
-                                    <input
-                                        required
-                                        type="number"
-                                        value={formData.stock}
-                                        onChange={e => setFormData({ ...formData, stock: e.target.value })}
-                                        className="w-full h-14 bg-white/5 rounded-xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium"
-                                        placeholder="100"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-white/30 uppercase tracking-widest">Pricing Model</label>
-                                    <select
-                                        value={formData.status}
-                                        onChange={e => setFormData({ ...formData, status: e.target.value as any })}
-                                        className="w-full h-14 bg-white/5 rounded-xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium appearance-none"
+
+                                <div className="p-8 border-t border-white/5 bg-white/[0.02] flex gap-4">
+                                    <button type="button" onClick={() => setIsAddModalOpen(false)} className="flex-1 h-14 bg-white/5 text-white font-bold rounded-xl border border-white/5 hover:bg-white/10 transition-colors">Cancel</button>
+                                    <button
+                                        disabled={isSubmitting}
+                                        className="flex-[2] h-14 bg-primary text-[#131921] font-black rounded-xl px-8 shadow-xl shadow-primary/10 hover:scale-105 transition-all disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-2"
                                     >
-                                        <option value="ACTIVE">Market Ready (Active)</option>
-                                        <option value="DRAFT">Draft Mode (Hidden)</option>
-                                    </select>
+                                        {isSubmitting ? 'Publishing...' : <><CheckCircle2 size={18} /> Publish Listing</>}
+                                    </button>
                                 </div>
-                                <div className="col-span-2 p-10 bg-white/5 rounded-2xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-3 group relative cursor-pointer hover:bg-white/10 transition-colors overflow-hidden">
-                                    {imagePreview ? (
-                                        <img src={imagePreview} className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-opacity" alt="Preview" />
-                                    ) : (
-                                        <Camera size={40} className="text-white/10 group-hover:text-primary transition-colors" />
-                                    )}
-                                    <p className="text-[11px] font-black text-white/20 uppercase tracking-widest z-10">Upload High-Res Product Image</p>
-                                    <input
-                                        type="file"
-                                        className="absolute inset-0 opacity-0 cursor-pointer z-20"
-                                        onChange={(e) => {
-                                            const file = e.target.files?.[0];
-                                            if (file) setImagePreview(URL.createObjectURL(file));
-                                        }}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="p-8 bg-black/20 flex gap-4">
-                                <button type="button" onClick={() => setIsAddModalOpen(false)} className="flex-1 h-14 bg-white/5 text-white font-bold rounded-xl border border-white/5 hover:bg-white/10 transition-colors">Cancel</button>
-                                <button
-                                    disabled={isSubmitting}
-                                    className="flex-2 h-14 bg-primary text-[#131921] font-black rounded-xl px-12 shadow-xl shadow-primary/10 hover:scale-105 transition-all disabled:opacity-50 disabled:scale-100"
-                                >
-                                    {isSubmitting ? 'Publishing...' : 'Publish Listing'}
-                                </button>
                             </div>
                         </motion.form>
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div>
+
+            {/* Preview Modal */}
+            <AnimatePresence>
+                {previewProduct && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-xl flex items-center justify-center p-6"
+                        onClick={() => setPreviewProduct(null)}
+                    >
+                        <motion.div
+                            onClick={e => e.stopPropagation()}
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            className="bg-[#131921] w-full max-w-5xl rounded-[40px] border border-white/10 overflow-hidden shadow-3xl flex flex-col md:flex-row relative"
+                        >
+                            {/* Close Button placed absolutely */}
+                            <button
+                                onClick={() => setPreviewProduct(null)}
+                                className="absolute top-6 right-6 z-50 w-12 h-12 bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors border border-white/10"
+                            >
+                                <X size={24} />
+                            </button>
+
+                            {/* Left Side: Product Image View */}
+                            <div className="w-full md:w-1/2 p-12 border-b md:border-b-0 md:border-r border-white/5 bg-white/5 flex items-center justify-center relative min-h-[400px]">
+                                <img src={previewProduct.image} className="w-full h-full object-contain filter drop-shadow-2xl mix-blend-normal" alt={previewProduct.name} />
+                                <div className="absolute bottom-8 left-8">
+                                    <div className={cn(
+                                        "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border backdrop-blur-md shadow-xl",
+                                        previewProduct.status === 'ACTIVE' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                                            previewProduct.status === 'DRAFT' ? "bg-white/5 text-white/60 border-white/10" :
+                                                previewProduct.status === 'OUT_OF_STOCK' ? "bg-red-500/10 text-red-400 border-red-500/20" :
+                                                    "bg-white/5 text-white/40 border-white/10"
+                                    )}>
+                                        STATUS: {previewProduct.status.replace(/_/g, ' ')}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right Side: Buyer View Details */}
+                            <div className="w-full md:w-1/2 flex flex-col justify-center p-10 lg:p-14 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] pointer-events-none -mr-20 -mt-20" />
+
+                                <div className="relative z-10 space-y-8">
+                                    <div className="space-y-4">
+                                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
+                                            <Tag size={12} /> {previewProduct.category}
+                                        </div>
+                                        <h2 className="text-4xl lg:text-5xl font-black text-white tracking-tight leading-none">{previewProduct.name}</h2>
+                                    </div>
+
+                                    <div className="py-6 border-y border-white/10 flex items-center gap-8">
+                                        <div>
+                                            <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest mb-1 pb-1 border-b border-primary/20 inline-block">Wholesale Price</p>
+                                            <p className="text-4xl font-black text-primary flex items-start gap-1">
+                                                <span className="text-xl mt-1">$</span>
+                                                {previewProduct.price.toFixed(2)}
+                                            </p>
+                                        </div>
+                                        <div className="w-[1px] h-12 bg-white/10" />
+                                        <div>
+                                            <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest mb-1 pb-1">Available Stock</p>
+                                            <div className="flex items-center gap-2 text-2xl font-black text-white">
+                                                <Box size={24} className="text-white/40" />
+                                                {previewProduct.stock} Units
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4 pt-4">
+                                        <button className="w-full h-16 bg-white border border-white/20 text-black font-black text-lg rounded-2xl flex items-center justify-center gap-3 opacity-50 cursor-not-allowed">
+                                            <DollarSign size={20} /> Preview Buy Button
+                                        </button>
+                                        <p className="text-center text-xs text-white/30 font-bold uppercase tracking-widest">
+                                            This is exactly how buyers view your listing.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div >
     );
 }

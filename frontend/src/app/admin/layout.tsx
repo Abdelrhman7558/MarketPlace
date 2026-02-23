@@ -16,7 +16,8 @@ import {
     UserPlus,
     LayoutList,
     Tag,
-    Shield
+    Shield,
+    Ticket
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
@@ -31,6 +32,7 @@ const ADMIN_LINKS = [
     { label: 'Security', href: '/admin/security', icon: Shield },
     { label: 'Offer Approvals', href: '/admin/offers', icon: Tag },
     { label: 'Add Promotion', href: '/admin/offers/new', icon: Tag },
+    { label: 'Coupons Management', href: '/admin/coupons', icon: Ticket },
     { label: 'Placements', href: '/admin/placements', icon: LayoutList },
     { label: 'Orders', href: '/admin/orders', icon: ShoppingCart },
     { label: 'Team', href: '/admin/team', icon: Users },
