@@ -25,6 +25,7 @@ export default function AmazonNavbar() {
     const { items } = useCart();
     const { user } = useAuth();
     const [searchTerm, setSearchTerm] = React.useState('');
+    const [searchCategory, setSearchCategory] = React.useState('All');
     const [isCategoriesOpen, setIsCategoriesOpen] = React.useState(false);
     const router = useRouter();
     const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -50,8 +51,18 @@ export default function AmazonNavbar() {
 
                 {/* Search Bar - Center Aligned */}
                 <form onSubmit={handleSearch} className="flex-1 max-w-3xl flex items-center h-9 md:h-10 group bg-white rounded overflow-hidden focus-within:ring-2 focus-within:ring-primary/50 transition-all">
-                    <div className="hidden sm:flex h-full px-3 bg-[#f3f3f3] text-[#555] text-xs items-center gap-1 border-r border-[#ccc] cursor-pointer hover:bg-[#e3e3e3] font-medium">
-                        All <ChevronDown size={14} />
+                    <div className="hidden sm:flex h-full bg-[#f3f3f3] text-[#555] text-xs items-center border-r border-[#ccc] cursor-pointer hover:bg-[#e3e3e3] font-medium relative focus-within:ring-2 focus-within:ring-primary/50 rounded-l">
+                        <select
+                            value={searchCategory}
+                            onChange={(e) => setSearchCategory(e.target.value)}
+                            className="appearance-none bg-transparent h-full pl-3 pr-8 outline-none cursor-pointer"
+                        >
+                            <option value="All">All Categories</option>
+                            {CATEGORIES_LIST.map((cat) => (
+                                <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                        </select>
+                        <ChevronDown size={14} className="absolute right-2 pointer-events-none" />
                     </div>
                     <input
                         type="text"
@@ -117,7 +128,13 @@ export default function AmazonNavbar() {
                     onMouseEnter={() => setIsCategoriesOpen(true)}
                     onMouseLeave={() => setIsCategoriesOpen(false)}
                 >
-                    <button className="flex items-center gap-1 font-black text-xs hover:border-white/30 border border-transparent rounded px-2 py-1 transition-all whitespace-nowrap h-8 uppercase tracking-widest">
+                    <button
+                        className="flex items-center gap-1 font-black text-xs hover:border-white/30 border border-transparent rounded px-2 py-1 transition-all whitespace-nowrap h-8 uppercase tracking-widest"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setIsCategoriesOpen(!isCategoriesOpen);
+                        }}
+                    >
                         <Menu size={18} /> Categories
                     </button>
 
@@ -156,12 +173,11 @@ export default function AmazonNavbar() {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-[11px] font-bold text-white/90 h-full">
-                    {["Volume Deals", "Supply Partners", "Logistics Help", "Corporate Accounts"].map((item) => (
-                        <Link key={item} href="#" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">
-                            {item}
-                        </Link>
-                    ))}
+                <div className="flex items-center gap-4 text-[11px] font-bold text-white/90 h-full overflow-x-auto no-scrollbar">
+                    <Link href="/deals" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">Volume Deals</Link>
+                    <Link href="/suppliers" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">Supply Partners</Link>
+                    <Link href="/help" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">Logistics Help</Link>
+                    <Link href="/corporate" className="hover:border-white/30 border border-transparent rounded px-2 py-1.5 transition-all whitespace-nowrap tracking-wide">Corporate Accounts</Link>
                 </div>
             </div>
         </header>

@@ -58,16 +58,28 @@ export default function SecurityDashboard() {
 
     // Auto-Healer Agent State
     const [agentState, setAgentState] = React.useState<'IDLE' | 'ANALYZING' | 'PATCHING' | 'RESOLVED'>('IDLE');
-    const [mockErrors, setMockErrors] = React.useState([
-        { id: 'ERR-01', msg: 'Hydration Mismatch detected in ProductCard', time: 'Just now' },
-        { id: 'ERR-02', msg: 'Query Latency Spiked > 800ms (Database)', time: '2m ago' },
-    ]);
+    const [mockErrors, setMockErrors] = React.useState<any[]>([]);
 
     const fetchStatus = async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/admin/security/status`);
-            const data = await response.json();
-            setStatus(data);
+            const token = localStorage.getItem('token');
+            const headers: Record<string, string> = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+            const [statusRes, agentRes] = await Promise.all([
+                fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/admin/security/status`, { headers }),
+                fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/admin/security/agent-status`, { headers })
+            ]);
+
+            if (statusRes.ok) {
+                const data = await statusRes.json();
+                setStatus(data);
+            }
+            if (agentRes.ok) {
+                const agentData = await agentRes.json();
+                setAgentState(agentData.state);
+                setMockErrors(agentData.errors || []);
+            }
+
             setLastScanSeconds(0);
         } catch (error) {
             console.error('Failed to fetch security status', error);
@@ -78,7 +90,7 @@ export default function SecurityDashboard() {
 
     React.useEffect(() => {
         fetchStatus();
-        const interval = setInterval(fetchStatus, 30000); // 30s refresh
+        const interval = setInterval(fetchStatus, 3000); // Poll agents every 3s
         const ticker = setInterval(() => setLastScanSeconds(s => s + 1), 1000); // 1s tick
         return () => {
             clearInterval(interval);
@@ -86,26 +98,32 @@ export default function SecurityDashboard() {
         };
     }, []);
 
-    const runAgentFix = () => {
+    const runAgentFix = async () => {
         if (agentState !== 'IDLE' && agentState !== 'RESOLVED') return;
         setAgentState('ANALYZING');
-        setTimeout(() => {
-            setAgentState('PATCHING');
-            setTimeout(() => {
-                setAgentState('RESOLVED');
-                setMockErrors([]);
-                setTimeout(() => setAgentState('IDLE'), 3000);
-            }, 2000);
-        }, 1500);
+        try {
+            const token = localStorage.getItem('token');
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/admin/security/agent-fix`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            fetchStatus();
+        } catch (error) {
+            console.error('Failed to force agent fix', error);
+        }
     };
 
     const toggleLockdown = async () => {
         if (!status) return;
         setLocking(true);
         try {
+            const token = localStorage.getItem('token');
             await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/admin/security/lockdown`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify({ enabled: !status.isLockedDown }),
             });
             await fetchStatus();
@@ -118,9 +136,13 @@ export default function SecurityDashboard() {
 
     const unblockIp = async (ip: string) => {
         try {
+            const token = localStorage.getItem('token');
             await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/admin/security/unblock`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify({ ip }),
             });
             await fetchStatus();

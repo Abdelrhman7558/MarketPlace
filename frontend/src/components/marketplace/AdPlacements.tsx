@@ -51,10 +51,12 @@ export function AdPlacements() {
         <section className="py-12 px-4 container mx-auto">
             <div className="flex items-center justify-between mb-8 px-2">
                 <div className="space-y-1">
-                    <h2 className="text-2xl font-black text-[#111] dark:text-white tracking-tight flex items-center gap-2">
-                        <Zap className="text-primary fill-primary" size={24} />
-                        Sponsored Highlights
-                    </h2>
+                    <Link href="/sponsored-highlights">
+                        <h2 className="text-2xl font-black text-[#111] dark:text-white tracking-tight flex items-center gap-2 hover:text-primary transition-colors cursor-pointer">
+                            <Zap className="text-primary fill-primary" size={24} />
+                            Sponsored Highlights
+                        </h2>
+                    </Link>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Premium Vendor Placements</p>
                 </div>
                 <Link href="/categories" className="text-sm font-black text-primary hover:underline flex items-center gap-1">

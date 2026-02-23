@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import '../globals.css';
 import { usePathname } from 'next/navigation';
 import {
     LayoutDashboard,
@@ -43,6 +44,7 @@ const ADMIN_LINKS = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = React.useState(true);
+    const [isNotificationsOpen, setIsNotificationsOpen] = React.useState(false);
     const pathname = usePathname();
     const { user, logout } = useAuth();
 
@@ -118,25 +120,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
                     <div className="flex items-center gap-6">
                         {/* Notification Bell */}
-                        <button className="relative group p-2 rounded-xl hover:bg-white/5 transition-all">
-                            <Bell size={20} className="text-white/60 group-hover:text-primary group-hover:rotate-12 transition-all" />
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-[#131921] animate-pulse" />
+                        <div className="relative group">
+                            <button
+                                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                                className="p-2 rounded-xl hover:bg-white/5 transition-all outline-none"
+                            >
+                                <Bell size={20} className="text-white/60 group-hover:text-primary group-hover:rotate-12 transition-all" />
+                                <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-[#131921] animate-pulse" />
+                            </button>
 
-                            {/* Hover Notification Preview */}
-                            <div className="absolute top-full right-0 mt-4 w-80 bg-[#131921] border border-white/10 rounded-2xl shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none translate-y-2 group-hover:translate-y-0 transition-all p-4 z-[100]">
+                            {/* Dropdown Notification Preview */}
+                            <div className={cn(
+                                "absolute top-full right-0 mt-4 w-80 bg-[#131921] border border-white/10 rounded-2xl shadow-2xl transition-all p-4 z-[100] origin-top-right",
+                                isNotificationsOpen ? "scale-100 opacity-100 visible" : "scale-95 opacity-0 invisible"
+                            )}>
                                 <h4 className="text-xs font-black text-white uppercase tracking-widest mb-4">Urgent Actions</h4>
                                 <div className="space-y-3">
-                                    <div className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5">
+                                    <Link href="/admin/users" onClick={() => setIsNotificationsOpen(false)} className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5 hover:border-primary/50 transition-colors">
                                         <div className="w-2 h-2 rounded-full bg-amber-400" />
-                                        <p className="text-[10px] text-white/80 font-medium">3 new supplier approvals pending</p>
-                                    </div>
-                                    <div className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5">
+                                        <p className="text-[10px] text-white/80 font-medium group-hover:text-primary">3 new supplier approvals pending</p>
+                                    </Link>
+                                    <Link href="/admin/placements" onClick={() => setIsNotificationsOpen(false)} className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5 hover:border-primary/50 transition-colors">
                                         <div className="w-2 h-2 rounded-full bg-primary" />
-                                        <p className="text-[10px] text-white/80 font-medium">New placement request for Hero Slot</p>
-                                    </div>
+                                        <p className="text-[10px] text-white/80 font-medium group-hover:text-primary">New placement request for Hero Slot</p>
+                                    </Link>
                                 </div>
                             </div>
-                        </button>
+                        </div>
 
                         <div className="h-8 w-[1px] bg-white/10 mx-2" />
 

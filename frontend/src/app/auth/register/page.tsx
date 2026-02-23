@@ -10,8 +10,9 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
+import { Suspense } from 'react';
 
-export default function RegisterPage() {
+function RegisterForm() {
     const searchParams = useSearchParams();
     const inviteEmail = searchParams.get('email') || '';
     const [form, setForm] = useState({ name: '', email: inviteEmail, phone: '', companyName: '', website: '', socialLinks: '', password: '', confirmPassword: '', role: 'customer' });
@@ -294,5 +295,13 @@ export default function RegisterPage() {
                 </motion.div>
             </div>
         </div>
+    );
+}
+
+export default function RegisterPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-[#0A0D14] flex justify-center items-center text-primary">Loading...</div>}>
+            <RegisterForm />
+        </Suspense>
     );
 }

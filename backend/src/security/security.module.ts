@@ -4,6 +4,7 @@ import { SecurityController } from './security.controller';
 import { ThreatDetectionService } from './threat-detection.service';
 import { ReactionService } from './reaction.service';
 import { VulnerabilityScannerService } from './vulnerability-scanner.service';
+import { AutoHealerService } from './auto-healer.service';
 
 @Global()
 @Module({
@@ -12,8 +13,9 @@ import { VulnerabilityScannerService } from './vulnerability-scanner.service';
         ThreatDetectionService,
         ReactionService,
         VulnerabilityScannerService,
+        AutoHealerService,
     ],
     controllers: [SecurityController],
-    exports: [SecurityService, ThreatDetectionService, ReactionService],
+    exports: [SecurityService, ThreatDetectionService, ReactionService, AutoHealerService],
 })
 export class SecurityModule { }

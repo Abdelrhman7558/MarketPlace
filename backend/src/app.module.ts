@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -23,6 +24,7 @@ import { SecurityInterceptor } from './security/security.interceptor';
             ttl: 60000,
             limit: 10,
         }]),
+        ScheduleModule.forRoot(),
         PrismaModule,
         SecurityModule,
         PricingModule,

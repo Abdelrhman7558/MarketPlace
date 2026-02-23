@@ -6,6 +6,7 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '@prisma/client';
 import { PrismaService } from '../common/prisma.service';
+import { AutoHealerService } from './auto-healer.service';
 
 @Controller('admin/security')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -14,6 +15,7 @@ export class SecurityController {
     constructor(
         private securityService: SecurityService,
         private threatDetection: ThreatDetectionService,
+        private autoHealer: AutoHealerService,
         private prisma: PrismaService,
     ) { }
 
@@ -52,5 +54,16 @@ export class SecurityController {
     async unblockIp(@Body('ip') ip: string) {
         await this.prisma.blockedIp.delete({ where: { ip } });
         return { success: true };
+    }
+
+    @Get('agent-status')
+    getAgentStatus() {
+        return this.autoHealer.getAgentState();
+    }
+
+    @Post('agent-fix')
+    async forceAgentFix() {
+        const started = await this.autoHealer.forceScanAndFix();
+        return { success: started };
     }
 }

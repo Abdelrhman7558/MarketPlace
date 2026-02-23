@@ -31,6 +31,7 @@ const SUPPLIER_LINKS = [
 
 export default function SupplierLayout({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = React.useState(true);
+    const [isNotificationsOpen, setIsNotificationsOpen] = React.useState(false);
     const pathname = usePathname();
     const { user, logout } = useAuth();
 
@@ -117,10 +118,33 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
                     </div>
 
                     <div className="flex items-center gap-6">
-                        <button className="relative group p-2 rounded-xl hover:bg-white/5 transition-all">
-                            <Bell size={20} className="text-white/60 group-hover:text-emerald-400 transition-colors" />
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full border-2 border-[#131921]" />
-                        </button>
+                        <div className="relative group">
+                            <button
+                                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                                className="p-2 rounded-xl hover:bg-white/5 transition-all outline-none"
+                            >
+                                <Bell size={20} className="text-white/60 group-hover:text-emerald-400 transition-colors" />
+                                <span className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full border-2 border-[#131921]" />
+                            </button>
+
+                            {/* Dropdown Notification Preview */}
+                            <div className={cn(
+                                "absolute top-full right-0 mt-4 w-80 bg-[#131921] border border-white/10 rounded-2xl shadow-2xl transition-all p-4 z-[100] origin-top-right",
+                                isNotificationsOpen ? "scale-100 opacity-100 visible" : "scale-95 opacity-0 invisible"
+                            )}>
+                                <h4 className="text-xs font-black text-white uppercase tracking-widest mb-4">Urgent Actions</h4>
+                                <div className="space-y-3">
+                                    <Link href="/supplier/orders" onClick={() => setIsNotificationsOpen(false)} className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5 hover:border-emerald-500/50 transition-colors">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                        <p className="text-[10px] text-white/80 font-medium group-hover:text-emerald-400">New wholesale order received</p>
+                                    </Link>
+                                    <Link href="/supplier/messages" onClick={() => setIsNotificationsOpen(false)} className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5 hover:border-emerald-500/50 transition-colors">
+                                        <div className="w-2 h-2 rounded-full bg-blue-500" />
+                                        <p className="text-[10px] text-white/80 font-medium group-hover:text-emerald-400">New message from buyer</p>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
 
                         <div className="h-8 w-[1px] bg-white/10 mx-2" />
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Package, ArrowLeft, Save, Sparkles, Image as ImageIcon, LinkIcon } from 'lucide-react';
+import { Package, ArrowLeft, Save, Sparkles, Image as ImageIcon, LinkIcon, Upload } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
@@ -28,6 +28,17 @@ export default function AdminNewProductPage() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFormData(prev => ({ ...prev, image: reader.result as string }));
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -165,11 +176,35 @@ export default function AdminNewProductPage() {
                             </div>
                         </div>
 
-                        <div className="space-y-2 pb-6">
+                        <div className="space-y-4 pb-6">
                             <label className="text-xs font-bold text-white/60 uppercase tracking-widest ml-1 flex items-center gap-2">
-                                Image URL <LinkIcon size={12} />
+                                Product Image <ImageIcon size={12} />
                             </label>
-                            <Input name="image" value={formData.image} onChange={handleChange} placeholder="https://example.com/image.png" required />
+
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <div className="flex-[2] relative group">
+                                    <Input name="image" value={formData.image} onChange={handleChange} placeholder="https://example.com/image.png" className="pl-10" required={!formData.image} />
+                                    <LinkIcon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-primary transition-colors" />
+                                </div>
+
+                                <div className="flex items-center justify-center font-black text-white/20 uppercase text-xs">OR</div>
+
+                                <div className="flex-1">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className="hidden"
+                                        id="image-upload"
+                                    />
+                                    <label
+                                        htmlFor="image-upload"
+                                        className="flex items-center justify-center gap-2 w-full h-[52px] bg-white/5 border border-white/10 rounded-xl px-4 text-white text-sm hover:bg-white/10 transition-colors cursor-pointer font-bold"
+                                    >
+                                        <Upload size={16} /> Upload Image File
+                                    </label>
+                                </div>
+                            </div>
                             {formData.image && (
                                 <div className="mt-4 w-32 h-32 bg-[#0A0D14] rounded-xl border border-white/10 p-2 flex items-center justify-center overflow-hidden">
                                     <img src={formData.image} alt="Preview" className="max-w-full max-h-full object-contain" />

@@ -33,7 +33,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         const dict = translations[locale] || translations['en'];
         const sectionDict = dict[section] as any;
         if (!key) return sectionDict || '';
-        return sectionDict?.[key] || translations['en'][section]?.[key as any] || key;
+        return sectionDict?.[key] || (translations['en'][section] as any)?.[key] || key;
     };
 
     const dir = locale === 'ar' ? 'rtl' : 'ltr';

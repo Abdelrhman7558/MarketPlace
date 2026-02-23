@@ -35,7 +35,7 @@ const FOOTER_COLUMNS = [
 
 export default function Footer() {
     return (
-        <footer className="bg-background border-t border-border mt-auto">
+        <footer className="bg-[#232F3E] text-white border-t border-white/10 mt-auto">
             <div className="container mx-auto px-6 py-16">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {/* Brand Info */}
@@ -48,12 +48,12 @@ export default function Footer() {
                                 Bev<span className="text-secondary">Market</span>
                             </span>
                         </Link>
-                        <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
+                        <p className="text-white/70 text-sm leading-relaxed max-w-xs">
                             The premier B2B wholesale marketplace for beverages, connecting global brands with local distributors since 2026.
                         </p>
                         <div className="flex gap-3">
                             {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
-                                <a key={i} href="#" className="w-10 h-10 rounded-xl bg-muted/50 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+                                <a key={i} href="#" className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-300">
                                     <Icon size={18} />
                                 </a>
                             ))}
@@ -69,7 +69,7 @@ export default function Footer() {
                                     <li key={link.name}>
                                         <Link
                                             href={link.href}
-                                            className="text-muted-foreground text-sm hover:text-primary hover:translate-x-1 transition-all flex items-center group"
+                                            className="text-white/70 text-sm hover:text-primary hover:translate-x-1 transition-all flex items-center group"
                                         >
                                             {link.name}
                                         </Link>
@@ -82,12 +82,12 @@ export default function Footer() {
             </div>
 
             {/* Bottom Bar */}
-            <div className="border-t border-border py-8 bg-muted/30">
+            <div className="border-t border-white/10 py-8 bg-[#131921]">
                 <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <p className="text-muted-foreground text-xs font-medium">
+                    <p className="text-white/60 text-xs font-medium">
                         © 2026 BevMarket. Built for Performance & Security.
                     </p>
-                    <div className="flex items-center gap-6 text-xs font-semibold text-muted-foreground">
+                    <div className="flex items-center gap-6 text-xs font-semibold text-white/60">
                         <Link href="#" className="hover:text-foreground transition-colors">Privacy</Link>
                         <Link href="#" className="hover:text-foreground transition-colors">Terms</Link>
                         <Link href="#" className="hover:text-foreground transition-colors">Cookies</Link>
