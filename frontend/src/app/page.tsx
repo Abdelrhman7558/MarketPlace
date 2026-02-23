@@ -196,58 +196,7 @@ export default function Home() {
                 </div>
             </main>
 
-            <footer className="mt-12">
-                <div
-                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    className="bg-[#37475A] hover:bg-[#485769] transition-colors py-4 text-center text-white text-sm cursor-pointer"
-                >
-                    Back to top
-                </div>
-                <div className="bg-[#232F3E] py-16 px-6 border-b border-white/10">
-                    <div className="container mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 text-white">
-                        <div className="space-y-6">
-                            <h4 className="font-bold text-lg tracking-wide">Get to Know Us</h4>
-                            <ul className="text-sm text-gray-300 space-y-4">
-                                <li><Link href="#" className="hover:underline hover:text-white transition-colors">About MarketPlace</Link></li>
-                                <li><Link href="#" className="hover:underline hover:text-white transition-colors">Careers</Link></li>
-                                <li><Link href="#" className="hover:underline hover:text-white transition-colors">Press Releases</Link></li>
-                            </ul>
-                        </div>
-                        <div className="space-y-6">
-                            <h4 className="font-bold text-lg tracking-wide">Volume Procurement</h4>
-                            <ul className="text-sm text-gray-300 space-y-4">
-                                <li><Link href="/auth/register" className="hover:underline hover:text-white transition-colors">Register as Supplier</Link></li>
-                                <li><Link href="/dashboard/supplier" className="hover:underline hover:text-white transition-colors">Supplier Central</Link></li>
-                                <li><Link href="/wholesale" className="hover:underline hover:text-white transition-colors">Bulk Logistics</Link></li>
-                            </ul>
-                        </div>
-                        <div className="space-y-6">
-                            <h4 className="font-bold text-lg tracking-wide">Corporate Solutions</h4>
-                            <ul className="text-sm text-gray-300 space-y-4">
-                                <li><Link href="#" className="hover:underline hover:text-white transition-colors">Corporate Accounts</Link></li>
-                                <li><Link href="#" className="hover:underline hover:text-white transition-colors">Credit Lines</Link></li>
-                                <li><Link href="#" className="hover:underline hover:text-white transition-colors">Tax Exemptions</Link></li>
-                            </ul>
-                        </div>
-                        <div className="space-y-6">
-                            <h4 className="font-bold text-lg tracking-wide">Let Us Help You</h4>
-                            <ul className="text-sm text-gray-300 space-y-4">
-                                <li><Link href="/dashboard" className="hover:underline hover:text-white transition-colors">Your Account</Link></li>
-                                <li><Link href="/dashboard" className="hover:underline hover:text-white transition-colors">Track Orders</Link></li>
-                                <li><Link href="/shipping" className="hover:underline hover:text-white transition-colors">Shipping Rates</Link></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-[#131921] py-8 text-center text-xs text-gray-400 space-y-4">
-                    <div className="flex justify-center gap-8">
-                        <Link href="#" className="hover:underline">Conditions of Use</Link>
-                        <Link href="#" className="hover:underline">Privacy Notice</Link>
-                        <Link href="#" className="hover:underline">Business Ethics</Link>
-                    </div>
-                    <p>© 2026, MarketPlace, Inc. or its affiliates</p>
-                </div>
-            </footer>
+
         </div>
     );
 }

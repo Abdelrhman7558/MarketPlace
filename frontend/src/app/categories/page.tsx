@@ -69,73 +69,57 @@ function CategoriesContent() {
     const activeFilters = [...selectedBrands, ...selectedCategories];
 
     return (
-        <div className="min-h-screen bg-background pb-20 overflow-x-hidden">
+        <div className="min-h-screen bg-muted/10 pb-20 overflow-x-hidden">
             {/* Header / Breadcrumbs */}
-            <div className="bg-muted/30 border-b border-border">
-                <div className="container mx-auto px-6 py-12">
-                    <nav className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground mb-6 uppercase tracking-[0.2em]">
-                        <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-                        <ChevronRight className="w-3 h-3" />
-                        <span className="text-foreground">Wholesale Catalog</span>
-                    </nav>
-
-                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-                        <div className="space-y-4">
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-full"
-                            >
-                                <Package className="text-primary" size={14} />
-                                <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em]">Verified Inventory</span>
-                            </motion.div>
-                            <div className="flex flex-col">
-                                <h1 className="text-2xl md:text-3xl font-heading font-black text-foreground tracking-tight leading-tight">
-                                    Wholesale <span className="text-primary">Collections</span>
-                                </h1>
-                                <p className="text-muted-foreground text-sm font-medium mt-2 max-w-md leading-relaxed">
-                                    Access {filteredProducts.length} premium B2B products structured for streamlined global distribution and enterprise procurement.
-                                </p>
-                            </div>
+            <div className="bg-background border-b border-border shadow-sm">
+                <div className="container mx-auto px-4 lg:px-6 py-4">
+                    {/* Top Row: Breadcrumb & Title */}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+                            <ChevronRight className="w-3 h-3" />
+                            <span className="text-foreground font-medium">B2B Catalog</span>
+                            <span className="text-muted-foreground ml-2">({filteredProducts.length} results)</span>
                         </div>
+                    </div>
 
-                        <div className="flex flex-wrap items-center gap-4">
-                            <div className="relative flex-1 min-w-[300px]">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                                <input
-                                    type="text"
-                                    placeholder="Search brands, SKU, or category..."
-                                    value={localQuery}
-                                    onChange={(e) => setLocalQuery(e.target.value)}
-                                    className="w-full h-14 bg-card border border-border rounded-2xl pl-12 pr-4 text-sm font-medium focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all shadow-sm"
-                                />
-                            </div>
-                            <select
-                                value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
-                                className="h-14 bg-card border border-border rounded-2xl px-6 text-sm font-bold text-foreground outline-none hover:border-primary transition-all cursor-pointer shadow-sm appearance-none min-w-[180px]"
-                            >
-                                <option value="featured">Featured First</option>
-                                <option value="price-low">Price: Low to High</option>
-                                <option value="price-high">Price: High to Low</option>
-                                <option value="name">Brand Name A-Z</option>
-                            </select>
-                            <Button
-                                variant="outline"
-                                className="lg:hidden h-14 px-6 rounded-2xl border-border hover:bg-muted"
-                                onClick={() => setShowFilters(true)}
-                            >
-                                <SlidersHorizontal size={18} className="mr-2" /> Filters
-                            </Button>
+                    {/* Bottom Row: Search & Sort */}
+                    <div className="flex flex-wrap items-center gap-3">
+                        <div className="relative flex-1 min-w-[280px] max-w-lg">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                            <input
+                                type="text"
+                                placeholder="Search by brand, SKU, product..."
+                                value={localQuery}
+                                onChange={(e) => setLocalQuery(e.target.value)}
+                                className="w-full h-10 bg-background border border-border/80 rounded-md pl-10 pr-4 text-sm focus:border-primary outline-none transition-colors"
+                            />
                         </div>
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className="h-10 bg-background border border-border/80 rounded-md px-4 text-sm text-foreground outline-none focus:border-primary cursor-pointer min-w-[160px]"
+                        >
+                            <option value="featured">Featured</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="name">Alphabetical A-Z</option>
+                        </select>
+                        <Button
+                            variant="outline"
+                            className="lg:hidden h-10 px-4 rounded-md border-border"
+                            onClick={() => setShowFilters(true)}
+                        >
+                            <SlidersHorizontal size={14} className="mr-2" /> Filter
+                        </Button>
                     </div>
                 </div>
             </div>
 
-            <main className="container mx-auto px-6 py-12">
-                <div className="flex flex-col lg:flex-row gap-12">
+            <main className="container mx-auto px-4 lg:px-6 py-6">
+                <div className="flex flex-col lg:flex-row gap-6">
                     {/* PC Filters */}
-                    <aside className="hidden lg:block w-80 flex-shrink-0 space-y-10">
+                    <aside className="hidden lg:block w-64 flex-shrink-0 space-y-6 shrink-0">
                         <ProductFilters
                             brands={BRANDS}
                             categories={CATEGORIES_LIST}
@@ -148,64 +132,58 @@ function CategoriesContent() {
                             onApplyPrice={() => setAppliedPrice(priceRange)}
                         />
 
-                        {/* Premium Sidebar Banner */}
-                        <div className="relative bg-primary rounded-[40px] p-8 text-white overflow-hidden group premium-shadow">
-                            <div className="relative z-10 space-y-4">
-                                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
-                                    <Users className="text-white" size={24} />
-                                </div>
-                                <h4 className="font-heading font-bold text-2xl leading-tight">Need Custom Sourcing?</h4>
-                                <p className="text-white/60 text-sm leading-relaxed">Our logistics experts can help you source rare SKUs and manage complex multi-brand logistics.</p>
-                                <button className="w-full bg-secondary text-secondary-foreground py-4 rounded-2xl font-black text-sm btn-hover transition-all">
-                                    Talk to an Expert
-                                </button>
-                            </div>
-                            <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+                        {/* Text Banner */}
+                        <div className="border border-border/80 rounded-md p-4 bg-background">
+                            <h4 className="font-bold text-sm mb-2 text-foreground">Need Bulk Pricing?</h4>
+                            <p className="text-muted-foreground text-xs leading-relaxed mb-3">Our agents negotiate custom palettes and enterprise orders directly with manufacturers.</p>
+                            <button className="w-full bg-foreground text-background py-2 rounded-md font-bold text-xs hover:bg-foreground/90 transition-colors">
+                                Contact Logistics
+                            </button>
                         </div>
                     </aside>
 
                     {/* Products Area */}
-                    <div className="flex-1 space-y-8">
+                    <div className="flex-1 space-y-4">
                         {activeFilters.length > 0 && (
-                            <div className="flex flex-wrap gap-2 items-center">
-                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mr-2">Active Filters:</span>
+                            <div className="flex flex-wrap gap-2 items-center bg-background p-3 rounded-md border border-border/80">
+                                <span className="text-xs font-bold text-muted-foreground mr-1">Active:</span>
                                 {selectedBrands.map((brand) => (
                                     <button
                                         key={brand}
                                         onClick={() => handleBrandChange(brand)}
-                                        className="inline-flex items-center gap-2 bg-primary/5 text-primary px-3 py-1.5 rounded-lg text-[10px] font-black uppercase border border-primary/20 hover:bg-primary/10 transition-colors"
+                                        className="inline-flex items-center gap-1.5 bg-muted text-foreground px-2.5 py-1 rounded-[4px] text-[11px] font-medium border border-border hover:bg-muted/80 transition-colors"
                                     >
-                                        {brand} <X size={10} />
+                                        {brand} <X size={12} />
                                     </button>
                                 ))}
                                 {selectedCategories.map((category) => (
                                     <button
                                         key={category}
                                         onClick={() => handleCategoryChange(category)}
-                                        className="inline-flex items-center gap-2 bg-secondary/10 text-secondary-foreground px-3 py-1.5 rounded-lg text-[10px] font-black uppercase border border-secondary/20 hover:bg-secondary/20 transition-colors"
+                                        className="inline-flex items-center gap-1.5 bg-muted text-foreground px-2.5 py-1 rounded-[4px] text-[11px] font-medium border border-border hover:bg-muted/80 transition-colors"
                                     >
-                                        {category} <X size={10} />
+                                        {category} <X size={12} />
                                     </button>
                                 ))}
                                 <button
                                     onClick={() => { setSelectedBrands([]); setSelectedCategories([]); setLocalQuery(''); }}
-                                    className="text-[10px] font-bold text-muted-foreground hover:text-foreground transition-colors ml-2 underline underline-offset-4"
+                                    className="text-[11px] text-primary hover:underline ml-2 font-medium"
                                 >
                                     Clear all
                                 </button>
                             </div>
                         )}
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
                             <AnimatePresence mode="popLayout">
                                 {filteredProducts.map((product, i) => (
                                     <motion.div
                                         layout
                                         key={product.id}
-                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        initial={{ opacity: 0, scale: 0.98 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ duration: 0.2, delay: i * 0.05 }}
+                                        exit={{ opacity: 0, scale: 0.98 }}
+                                        transition={{ duration: 0.2 }}
                                     >
                                         <ProductCard product={product} index={i} />
                                     </motion.div>
@@ -214,25 +192,17 @@ function CategoriesContent() {
                         </div>
 
                         {filteredProducts.length === 0 && (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="flex flex-col items-center justify-center py-24 text-center space-y-6 bg-muted/20 rounded-[40px] border border-dashed border-border"
-                            >
-                                <div className="w-20 h-20 bg-muted rounded-3xl flex items-center justify-center text-muted-foreground">
-                                    <Search size={32} />
-                                </div>
-                                <div className="space-y-2">
-                                    <h3 className="text-xl font-bold">No products found</h3>
-                                    <p className="text-muted-foreground text-sm max-w-xs">We couldn't find any products matching your specific filters. Try broadening your search.</p>
-                                </div>
+                            <div className="flex flex-col items-center justify-center py-20 text-center bg-background border border-border/80 rounded-md mt-4">
+                                <Search size={32} className="text-muted-foreground mb-4" />
+                                <h3 className="text-lg font-bold">No products found</h3>
+                                <p className="text-muted-foreground text-sm max-w-xs mt-1 mb-6">We couldn't find any products matching your specific filters. Try broadening your search.</p>
                                 <Button
                                     onClick={() => { setSelectedBrands([]); setSelectedCategories([]); setLocalQuery(''); }}
-                                    className="h-14 px-10 rounded-2xl bg-primary text-primary-foreground font-black btn-hover"
+                                    className="h-10 px-6 rounded-md font-bold"
                                 >
-                                    Reset Selection
+                                    Clear Filters
                                 </Button>
-                            </motion.div>
+                            </div>
                         )}
                     </div>
                 </div>

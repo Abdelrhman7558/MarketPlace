@@ -16,13 +16,14 @@ export default function LoginPage() {
     const router = useRouter();
     const { login } = useAuth();
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         if (!email || !password) { setError('Please fill in all fields'); return; }
+
         setLoading(true);
-        setTimeout(() => {
-            const result = login(email, password);
+        try {
+            const result = await login(email, password);
             if (!result.success) {
                 setError(result.message || 'Invalid email or password. Please try again.');
                 setLoading(false);
@@ -30,19 +31,19 @@ export default function LoginPage() {
             }
 
             const user = result.user;
-            if (user?.role === 'admin') {
+            if (user?.role === 'admin' || user?.role === 'ADMIN') {
                 router.push('/dashboard/super-admin-7bd0');
-            } else if (user?.role === 'supplier') {
+            } else if (user?.role === 'supplier' || user?.role === 'SUPPLIER') {
                 router.push('/dashboard/supplier');
-            } else if (user?.role === 'buyer') {
+            } else if (user?.role === 'buyer' || user?.role === 'CUSTOMER') {
                 router.push('/dashboard/buyer');
-            } else if (user?.role === 'customer') {
-                router.push('/dashboard/customer');
             } else {
                 router.push('/');
             }
+        } catch (err: any) {
+            setError(err.message || 'An error occurred during login.');
             setLoading(false);
-        }, 1200);
+        }
     };
 
     return (
@@ -111,7 +112,7 @@ export default function LoginPage() {
                         <div className="space-y-2">
                             <div className="flex items-center justify-between ml-1">
                                 <label className="text-sm font-black text-gray-300 uppercase tracking-widest">Password</label>
-                                <button type="button" className="text-xs font-bold text-[#FF7A1A] hover:underline">Forgot?</button>
+                                <Link href="/auth/forgot-password" className="text-xs font-bold text-[#FF7A1A] hover:underline">Forgot?</Link>
                             </div>
                             <div className="relative">
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />

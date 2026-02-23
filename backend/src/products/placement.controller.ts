@@ -20,7 +20,7 @@ export class PlacementController {
     constructor(private readonly placementService: PlacementService) { }
 
     @Post('request')
-    @Roles(Role.SUPPLIER)
+    @Roles(Role.SUPPLIER, Role.ADMIN)
     async requestPlacement(
         @Body('productId') productId: string,
         @Body('type') type: PlacementType,

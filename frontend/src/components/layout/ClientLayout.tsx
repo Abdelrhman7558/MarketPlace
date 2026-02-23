@@ -31,7 +31,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             <main className={`flex-grow ${(!isDashboard && !isHome) ? 'pt-20' : ''}`}>
                 {children}
             </main>
-            {(!isDashboard && !isHome) && <Footer />}
+            {(!isDashboard) && <Footer />}
         </div>
     );
 }

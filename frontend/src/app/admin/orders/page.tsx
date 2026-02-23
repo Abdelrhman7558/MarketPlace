@@ -19,19 +19,60 @@ interface AdminOrder {
 
 export default function AdminOrdersPage() {
     const [searchTerm, setSearchTerm] = React.useState('');
-    const [orders, setOrders] = React.useState<AdminOrder[]>([
-        { id: 'ORD-7721', customer: 'Global Foods Ltd', supplier: 'Coca-Cola Hellenic', total: 4250.00, supplierProfit: 4047.62, adminProfit: 202.38, status: 'PAID', date: '2026-02-21', items: [{ product: "Coke 330ml 24-pk", quantity: 50, price: 85 }] },
-        { id: 'ORD-7722', customer: 'Beach Resort X', supplier: 'Nestlé Prime', total: 1200.50, supplierProfit: 1143.33, adminProfit: 57.17, status: 'SHIPPED', date: '2026-02-20', items: [{ product: "Water 1.5L 12-pk", quantity: 100, price: 12.005 }] },
-        { id: 'ORD-7723', customer: 'Tech City Office', supplier: 'Red Bull GmbH', total: 850.00, supplierProfit: 809.52, adminProfit: 40.48, status: 'PENDING', date: '2026-02-21', items: [{ product: "Red Bull 250ml 24-pk", quantity: 10, price: 85 }] },
-    ]);
+    const [orders, setOrders] = React.useState<AdminOrder[]>([]);
+    const [loading, ReactSetLoading] = React.useState(true);
     const [expandedOrder, setExpandedOrder] = React.useState<string | null>(null);
 
-    const handleApprove = (id: string) => {
-        setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'PAID' } : o));
+    React.useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+                const res = await fetch('http://localhost:3005/orders', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Failed to fetch');
+                const data = await res.json();
+                setOrders(data);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                ReactSetLoading(false);
+            }
+        };
+        fetchOrders();
+    }, []);
+
+    const handleApprove = async (id: string) => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`http://localhost:3005/orders/${id}/status`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ status: 'PAID' })
+            });
+            if (res.ok) {
+                setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'PAID' } : o));
+            }
+        } catch (err) {
+            console.error(err);
+        }
     };
 
-    const handleReject = (id: string) => {
-        setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'CANCELLED' } : o));
+    const handleReject = async (id: string) => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`http://localhost:3005/orders/${id}/status`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ status: 'CANCELLED' })
+            });
+            if (res.ok) {
+                setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'CANCELLED' } : o));
+            }
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (
@@ -69,7 +110,21 @@ export default function AdminOrdersPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
-                            {orders.map((order) => (
+                            {loading && (
+                                <tr>
+                                    <td colSpan={5} className="px-8 py-10 text-center text-white/50 text-sm font-bold">
+                                        Loading enterprise orders...
+                                    </td>
+                                </tr>
+                            )}
+                            {!loading && orders.length === 0 && (
+                                <tr>
+                                    <td colSpan={5} className="px-8 py-10 text-center text-white/50 text-sm font-bold">
+                                        No recent orders found.
+                                    </td>
+                                </tr>
+                            )}
+                            {!loading && orders.map((order) => (
                                 <React.Fragment key={order.id}>
                                     <tr
                                         onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}

@@ -42,68 +42,64 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.05 }}
-            className="group bg-card text-card-foreground rounded-[32px] border border-border/50 hover:border-primary/20 hover:premium-shadow transition-all duration-300 flex flex-col h-full overflow-hidden"
+            className="group bg-card text-card-foreground rounded-lg border border-border/60 hover:shadow-lg transition-shadow duration-300 flex flex-col h-full overflow-hidden"
         >
-            <div className="relative p-2">
-                {/* Image Container */}
-                <div className="relative aspect-square rounded-[24px] bg-muted/30 overflow-hidden flex items-center justify-center p-6 transition-colors group-hover:bg-muted/50">
-                    <img
-                        src={product.image}
-                        alt={product.name}
-                        className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-110"
-                        loading="lazy"
-                    />
+            <div className="relative p-4 flex justify-center items-center h-[200px] border-b border-border/30 bg-white">
+                <img
+                    src={product.image}
+                    alt={product.name}
+                    className="max-h-[160px] max-w-full object-contain mix-blend-multiply"
+                    loading="lazy"
+                />
 
-                    {/* Floating Badges */}
-                    <div className="absolute top-3 left-3 flex flex-col gap-2">
-                        {isBestSeller && (
-                            <div className="glass px-3 py-1.5 rounded-xl flex items-center gap-1.5 premium-shadow">
-                                <span className="w-2 h-2 bg-secondary rounded-full animate-pulse" />
-                                <span className="text-[10px] font-bold uppercase tracking-wider">Top Rated</span>
-                            </div>
-                        )}
-                        {product.bulkSave && (
-                            <div className="bg-highlight/10 text-highlight backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border border-highlight/20">
-                                Bulk Save
-                            </div>
-                        )}
-                    </div>
-
-                    {!product.inStock && (
-                        <div className="absolute inset-0 bg-background/60 backdrop-blur-[2px] flex items-center justify-center">
-                            <span className="glass px-4 py-2 rounded-2xl text-xs font-bold uppercase tracking-widest text-foreground">Out of Stock</span>
+                {/* Floating Badges */}
+                <div className="absolute top-2 left-2 flex flex-col gap-1.5">
+                    {isBestSeller && (
+                        <div className="bg-[#E47911] text-white px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wider">
+                            Top Rated
+                        </div>
+                    )}
+                    {product.bulkSave && (
+                        <div className="bg-emerald-600 text-white px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wider">
+                            Bulk Save
                         </div>
                     )}
                 </div>
+
+                {!product.inStock && (
+                    <div className="absolute inset-0 bg-white/70 backdrop-blur-[1px] flex items-center justify-center">
+                        <span className="bg-foreground text-background px-3 py-1.5 rounded-sm text-xs font-bold uppercase tracking-widest">Out of Stock</span>
+                    </div>
+                )}
             </div>
 
-            <div className="flex flex-col flex-1 p-5 pt-2">
+            <div className="flex flex-col flex-1 p-4">
                 {/* Brand & Stats */}
-                <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary/60">{product.brand}</span>
+                <div className="flex items-center justify-between mb-2">
+                    <span className="text-[11px] font-bold uppercase tracking-widest text-primary/80">{product.brand}</span>
                     <div className="flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-secondary text-secondary" />
-                        <span className="text-xs font-bold">{rating.toFixed(1)}</span>
+                        <Star className="w-3 h-3 fill-[#FFA41C] text-[#FFA41C]" />
+                        <span className="text-xs text-[#007185] cursor-pointer hover:underline hover:text-[#C45500]">{reviews}</span>
                     </div>
                 </div>
 
                 {/* Title */}
                 <Link href={`/products/${product.id}`} className="group/title">
-                    <h3 className="font-heading font-bold text-base leading-snug line-clamp-2 mb-4 group-hover/title:text-primary transition-colors">
+                    <h3 className="text-sm font-medium leading-snug line-clamp-2 mb-3 text-foreground hover:text-[#C45500] transition-colors">
                         {product.name}
                     </h3>
                 </Link>
 
                 {/* Price & Min Order */}
-                <div className="mt-auto space-y-4">
+                <div className="mt-auto space-y-3">
                     <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-heading font-black">${product.price.toFixed(2)}</span>
+                        <span className="text-xl font-bold">${product.price.toFixed(2)}</span>
                         <span className="text-muted-foreground text-xs font-medium">/ {product.unit}</span>
                     </div>
 
                     <div className="flex items-center justify-between gap-3">
                         <div className="flex flex-col">
-                            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Min Order</span>
+                            <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Min Order</span>
                             <span className="text-xs font-bold">{product.minOrder} units</span>
                         </div>
 
@@ -111,19 +107,16 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                             onClick={handleAddToCart}
                             disabled={!product.inStock || isAdded}
                             className={cn(
-                                "flex-1 h-12 rounded-2xl flex items-center justify-center gap-2 transition-all duration-300 premium-shadow",
+                                "h-9 px-4 rounded-full flex items-center justify-center gap-2 transition-all duration-300 text-xs font-bold w-1/2",
                                 isAdded
                                     ? "bg-accent text-accent-foreground"
-                                    : "bg-primary text-primary-foreground hover:bg-primary/90 btn-hover"
+                                    : "bg-[#FFD814] text-black hover:bg-[#F7CA00] border border-[#FCD200]"
                             )}
                         >
                             {isAdded ? (
-                                <Check size={18} className="animate-in zoom-in duration-300" />
+                                <Check size={14} className="animate-in zoom-in duration-300" />
                             ) : (
-                                <>
-                                    <ShoppingCart size={18} />
-                                    <span className="text-sm font-bold">Add</span>
-                                </>
+                                "Add to Cart"
                             )}
                         </button>
                     </div>
