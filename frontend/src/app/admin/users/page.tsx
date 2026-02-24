@@ -10,7 +10,11 @@ import {
     ShieldCheck,
     Phone,
     Activity,
-    ShieldAlert
+    ShieldAlert,
+    Building2,
+    Globe,
+    Link as LinkIcon,
+    X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -23,12 +27,16 @@ interface ManagedUser {
     role: string;
     status: UserStatus;
     createdAt?: string;
+    companyName?: string;
+    website?: string;
+    socialLinks?: string;
 }
 
 export default function AdminUsersPage() {
     const [activeTab, setActiveTab] = React.useState<UserStatus>('PENDING_APPROVAL');
     const [users, setUsers] = React.useState<ManagedUser[]>([]);
     const [searchTerm, setSearchTerm] = React.useState('');
+    const [selectedUser, setSelectedUser] = React.useState<ManagedUser | null>(null);
 
     React.useEffect(() => {
         const loadUsers = async () => {
@@ -45,7 +53,11 @@ export default function AdminUsersPage() {
                 console.error("Failed to load users:", err);
             }
         };
+
         loadUsers();
+        // Poll for new users every 15 seconds
+        const interval = setInterval(loadUsers, 15000);
+        return () => clearInterval(interval);
     }, []);
 
     const updateStatus = async (email: string, status: UserStatus) => {
@@ -65,6 +77,9 @@ export default function AdminUsersPage() {
 
             if (res.ok) {
                 setUsers(users.map(u => u.email === email ? { ...u, status } : u));
+                if (selectedUser?.email === email) {
+                    setSelectedUser(null);
+                }
             }
         } catch (err) {
             console.error("Failed to update status:", err);
@@ -146,7 +161,8 @@ export default function AdminUsersPage() {
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 exit={{ opacity: 0, x: -20 }}
-                                                className="group hover:bg-white/[0.02] transition-colors"
+                                                className="group hover:bg-white/[0.02] transition-colors cursor-pointer"
+                                                onClick={() => setSelectedUser(user)}
                                             >
                                                 <td className="px-8 py-6">
                                                     <div className="flex items-center gap-4">
@@ -249,6 +265,103 @@ export default function AdminUsersPage() {
                     </div>
                 </div>
             </div>
+
+            {/* User Details Modal */}
+            <AnimatePresence>
+                {selectedUser && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedUser(null)}
+                            className="absolute inset-0 bg-black/60 backdrop-blur-md"
+                        />
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="bg-[#131921] w-full max-w-2xl rounded-3xl border border-white/10 overflow-hidden shadow-2xl relative z-10 flex flex-col max-h-[90vh]"
+                        >
+                            <div className="flex items-center justify-between p-6 border-b border-white/5">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center font-black text-xl text-primary border border-white/10">
+                                        {selectedUser.name[0]}
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-black text-white">{selectedUser.name}</h2>
+                                        <p className="text-sm font-bold text-white/40">{selectedUser.email}</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setSelectedUser(null)} className="p-2 text-white/40 hover:text-white bg-white/5 rounded-full hover:bg-white/10 transition-colors">
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div className="p-6 overflow-y-auto space-y-8 flex-1">
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Role</p>
+                                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
+                                            <ShieldCheck size={14} className="text-primary" />
+                                            <span className="text-xs text-white font-black uppercase tracking-widest">{selectedUser.role}</span>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Status</p>
+                                        <p className="text-sm font-black text-white">{selectedUser.status === 'PENDING_APPROVAL' ? 'Pending Approval' : selectedUser.status}</p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h3 className="text-sm font-black text-white flex items-center gap-2 border-b border-white/5 pb-2">
+                                        <Building2 size={16} className="text-white/40" /> Business Information
+                                    </h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-1">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Company Name</p>
+                                            <p className="text-sm font-bold text-white">{selectedUser.companyName || 'Not Provided'}</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-white/30 flex items-center gap-1"><Phone size={10} /> Phone</p>
+                                            <p className="text-sm font-bold text-white">{selectedUser.phone || 'Not Provided'}</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-white/30 flex items-center gap-1"><Globe size={10} /> Website</p>
+                                            {selectedUser.website ? (
+                                                <a href={selectedUser.website} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-primary hover:underline">{selectedUser.website}</a>
+                                            ) : (
+                                                <p className="text-sm font-bold text-white/50">Not Provided</p>
+                                            )}
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-white/30 flex items-center gap-1"><LinkIcon size={10} /> Social Links</p>
+                                            <p className="text-sm font-bold text-white break-words">{selectedUser.socialLinks || 'Not Provided'}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="p-6 bg-[#0a0d14] border-t border-white/5 flex gap-4 justify-end">
+                                {selectedUser.status === 'PENDING_APPROVAL' ? (
+                                    <>
+                                        <button onClick={() => updateStatus(selectedUser.email, 'REJECTED')} className="px-6 py-3 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-500 rounded-xl font-black text-xs uppercase tracking-widest transition-colors flex items-center gap-2 border border-red-500/20">
+                                            <XCircle size={16} /> Reject
+                                        </button>
+                                        <button onClick={() => updateStatus(selectedUser.email, 'ACTIVE')} className="px-6 py-3 bg-emerald-500 text-[#131921] hover:bg-emerald-400 rounded-xl font-black text-xs uppercase tracking-widest transition-colors flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+                                            <CheckCircle size={16} /> Approve Access
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button onClick={() => setSelectedUser(null)} className="px-6 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl font-black text-xs uppercase tracking-widest transition-colors">
+                                        Close Details
+                                    </button>
+                                )}
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

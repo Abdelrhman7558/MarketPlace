@@ -25,6 +25,11 @@ export default function Navbar() {
 
     const isWhiteBackgroundPage = pathname.startsWith('/categories') || pathname.startsWith('/products');
 
+    // Hide Navbar completely on auth pages, as they have their own integrated clean layout.
+    if (pathname.startsWith('/auth')) {
+        return null;
+    }
+
     React.useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);

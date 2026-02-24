@@ -16,6 +16,18 @@ export class UserDto {
     @Expose()
     status: string;
 
+    @Expose()
+    phone?: string;
+
+    @Expose()
+    companyName?: string;
+
+    @Expose()
+    website?: string;
+
+    @Expose()
+    socialLinks?: string;
+
     @Exclude()
     password?: string;
 

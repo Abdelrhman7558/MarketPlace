@@ -32,11 +32,9 @@ export default function LoginPage() {
 
             const user = result.user;
             if (user?.role === 'admin' || user?.role === 'ADMIN') {
-                router.push('/dashboard/super-admin-7bd0');
+                router.push('/admin');
             } else if (user?.role === 'supplier' || user?.role === 'SUPPLIER') {
-                router.push('/dashboard/supplier');
-            } else if (user?.role === 'buyer' || user?.role === 'CUSTOMER') {
-                router.push('/dashboard/buyer');
+                router.push('/supplier');
             } else {
                 router.push('/');
             }

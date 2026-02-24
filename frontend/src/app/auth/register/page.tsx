@@ -19,6 +19,7 @@ function RegisterForm() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showPass, setShowPass] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
     const router = useRouter();
     const { register } = useAuth();
 
@@ -30,6 +31,9 @@ function RegisterForm() {
         if (!form.name || !form.email || !form.password) { setError('Please fill in all required fields'); return; }
         if (form.password.length < 6) { setError('Passwords must be at least 6 characters.'); return; }
         if (form.password !== form.confirmPassword) { setError('Passwords must match.'); return; }
+
+        const isStrong = form.password.length >= 8 && /[A-Z]/.test(form.password) && /[a-z]/.test(form.password) && /[0-9]/.test(form.password) && /[^A-Za-z0-9]/.test(form.password);
+        if (!isStrong) { setError('Please meet all password requirements before submitting.'); return; }
 
         setLoading(true);
         const submitRegister = async () => {
@@ -54,7 +58,7 @@ function RegisterForm() {
                 setLoading(false);
                 return;
             }
-            router.push('/');
+            setIsSuccess(true);
             setLoading(false);
         };
         submitRegister();
@@ -118,180 +122,221 @@ function RegisterForm() {
                 >
                     <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
 
-                    <div className="mb-10 lg:hidden">
-                        <Link href="/" className="font-black text-3xl tracking-tighter text-white">
-                            Market<span className="text-[#FF7A1A]">Place</span>
-                        </Link>
-                    </div>
-
-                    <h1 className="text-3xl font-black text-white mb-2">Create Account</h1>
-                    <p className="text-gray-400 font-medium mb-10">Join the world's most trusted B2B network.</p>
-
-                    {error && (
-                        <motion.div
-                            initial={{ x: -10, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 mb-8 flex items-center gap-3"
-                        >
-                            <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white font-black text-xs">!</div>
-                            <p className="text-red-400 text-sm font-bold">{error}</p>
-                        </motion.div>
-                    )}
-
-                    <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2 md:col-span-2">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Full Legal Name</label>
-                            <div className="relative">
-                                <User className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                <input
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                    placeholder="e.g. John Smith"
-                                    value={form.name}
-                                    onChange={e => update('name', e.target.value)}
-                                />
+                    {isSuccess ? (
+                        <div className="flex flex-col items-center justify-center text-center h-full space-y-6 animate-in fade-in zoom-in duration-500">
+                            <div className="w-24 h-24 rounded-full bg-emerald-500/10 border-4 border-emerald-500/20 flex items-center justify-center mb-4 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
+                                <CheckCircle2 size={48} className="text-emerald-500" />
                             </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Work Email</label>
-                            <div className="relative">
-                                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                <input
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    placeholder="name@company.com"
-                                    value={form.email}
-                                    disabled={!!inviteEmail}
-                                    onChange={e => update('email', e.target.value)}
-                                />
+                            <h2 className="text-3xl font-black text-white tracking-tight">Application Submitted</h2>
+                            <p className="text-gray-400 font-medium max-w-sm mx-auto leading-relaxed">
+                                Thank you for registering with MarketPlace. Your account is currently <strong className="text-white">pending admin review.</strong>
+                            </p>
+                            <div className="p-6 bg-[#131921]/50 rounded-2xl border border-white/5 w-full mt-4 text-left space-y-3">
+                                <p className="text-sm text-gray-400 flex items-center gap-3">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-400" /> We will verify your business details.
+                                </p>
+                                <p className="text-sm text-gray-400 flex items-center gap-3">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-400" /> You will receive an email upon approval.
+                                </p>
                             </div>
-                        </div>
-
-                        <div className="space-y-2 md:col-span-2">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Company Name (Optional)</label>
-                            <div className="relative">
-                                <Building2 className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                <input
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                    placeholder="e.g. Acme Corp"
-                                    value={form.companyName}
-                                    onChange={e => update('companyName', e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Website (Optional)</label>
-                            <div className="relative">
-                                <Globe className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                <input
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                    placeholder="https://example.com"
-                                    value={form.website}
-                                    onChange={e => update('website', e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Social Links (Optional)</label>
-                            <div className="relative">
-                                <LinkIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                <input
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                    placeholder="LinkedIn, Facebook, etc."
-                                    value={form.socialLinks}
-                                    onChange={e => update('socialLinks', e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Phone Number</label>
-                            <div className="relative">
-                                <Phone className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                <input
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                    placeholder="+1 234 567 890"
-                                    value={form.phone}
-                                    onChange={e => update('phone', e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Password</label>
-                            <div className="relative">
-                                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                <input
-                                    type={showPass ? 'text' : 'password'}
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-12 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                    placeholder="••••••••"
-                                    value={form.password}
-                                    onChange={e => update('password', e.target.value)}
-                                />
-                                <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-white transition-colors">
-                                    {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Confirm Password</label>
-                            <div className="relative">
-                                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                <input
-                                    type={showPass ? 'text' : 'password'}
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                    placeholder="••••••••"
-                                    value={form.confirmPassword}
-                                    onChange={e => update('confirmPassword', e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2 md:col-span-2">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Business Role</label>
-                            <div className="grid grid-cols-2 gap-4">
-                                <button
-                                    type="button"
-                                    onClick={() => update('role', 'customer')}
-                                    className={`py-4 rounded-2xl font-black text-sm border transition-all ${form.role === 'customer' ? 'bg-[#FF7A1A] border-[#FF7A1A] text-white shadow-lg' : 'bg-white/5 border-white/10 text-gray-500 hover:border-white/20'}`}
-                                >
-                                    Retail Buyer
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => update('role', 'supplier')}
-                                    className={`py-4 rounded-2xl font-black text-sm border transition-all ${form.role === 'supplier' ? 'bg-[#FF7A1A] border-[#FF7A1A] text-white shadow-lg' : 'bg-white/5 border-white/10 text-gray-500 hover:border-white/20'}`}
-                                >
-                                    Wholesale Supplier
-                                </button>
-                            </div>
-                        </div>
-
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            type="submit"
-                            disabled={loading}
-                            className="md:col-span-2 bg-[#FF7A1A] hover:bg-[#e66c17] text-white py-5 rounded-2xl font-black text-lg shadow-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 mt-4"
-                        >
-                            {loading ? (
-                                <div className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin" />
-                            ) : (
-                                <>Create Professional Account <ArrowRight size={22} /></>
-                            )}
-                        </motion.button>
-                    </form>
-
-                    <div className="mt-10 pt-8 border-t border-white/10 text-center">
-                        <p className="text-gray-500 font-medium">
-                            Already part of our network? {' '}
-                            <Link href="/auth/login" className="text-white font-black hover:text-[#FF7A1A] underline-offset-8 hover:underline transition-all">
-                                Sign In
+                            <Link href="/" className="mt-8 px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all border border-white/5 inline-block">
+                                Return to Home
                             </Link>
-                        </p>
-                    </div>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="mb-10 lg:hidden">
+                                <Link href="/" className="font-black text-3xl tracking-tighter text-white">
+                                    Market<span className="text-[#FF7A1A]">Place</span>
+                                </Link>
+                            </div>
+
+                            <h1 className="text-3xl font-black text-white mb-2">Create Account</h1>
+                            <p className="text-gray-400 font-medium mb-10">Join the world's most trusted B2B network.</p>
+
+                            {error && (
+                                <motion.div
+                                    initial={{ x: -10, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 mb-8 flex items-center gap-3"
+                                >
+                                    <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white font-black text-xs">!</div>
+                                    <p className="text-red-400 text-sm font-bold">{error}</p>
+                                </motion.div>
+                            )}
+
+                            <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2 md:col-span-2">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Full Legal Name</label>
+                                    <div className="relative">
+                                        <User className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+                                        <input
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
+                                            placeholder="e.g. John Smith"
+                                            value={form.name}
+                                            onChange={e => update('name', e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Work Email</label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+                                        <input
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            placeholder="name@company.com"
+                                            value={form.email}
+                                            disabled={!!inviteEmail}
+                                            onChange={e => update('email', e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2 md:col-span-2">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Company Name (Optional)</label>
+                                    <div className="relative">
+                                        <Building2 className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+                                        <input
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
+                                            placeholder="e.g. Acme Corp"
+                                            value={form.companyName}
+                                            onChange={e => update('companyName', e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Website (Optional)</label>
+                                    <div className="relative">
+                                        <Globe className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+                                        <input
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
+                                            placeholder="https://example.com"
+                                            value={form.website}
+                                            onChange={e => update('website', e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Social Links (Optional)</label>
+                                    <div className="relative">
+                                        <LinkIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+                                        <input
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
+                                            placeholder="LinkedIn, Facebook, etc."
+                                            value={form.socialLinks}
+                                            onChange={e => update('socialLinks', e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Phone Number</label>
+                                    <div className="relative">
+                                        <Phone className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+                                        <input
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
+                                            placeholder="+1 234 567 890"
+                                            value={form.phone}
+                                            onChange={e => update('phone', e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Password</label>
+                                    <div className="relative">
+                                        <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+                                        <input
+                                            type={showPass ? 'text' : 'password'}
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-12 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
+                                            placeholder="••••••••"
+                                            value={form.password}
+                                            onChange={e => update('password', e.target.value)}
+                                        />
+                                        <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-white transition-colors">
+                                            {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                                        </button>
+                                    </div>
+
+                                    {/* Password Strength Indicator */}
+                                    <div className="pt-2 flex flex-wrap gap-2">
+                                        {[
+                                            { label: '8+ chars', met: form.password.length >= 8 },
+                                            { label: 'Uppercase', met: /[A-Z]/.test(form.password) },
+                                            { label: 'Lowercase', met: /[a-z]/.test(form.password) },
+                                            { label: 'Number', met: /[0-9]/.test(form.password) },
+                                            { label: 'Symbol', met: /[^A-Za-z0-9]/.test(form.password) }
+                                        ].map((req, idx) => (
+                                            <div key={idx} className={`text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-1 transition-all ${req.met ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-white/5 text-gray-500 border border-white/5'}`}>
+                                                {req.met && <CheckCircle2 size={10} />}
+                                                {req.label}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Confirm Password</label>
+                                    <div className="relative">
+                                        <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+                                        <input
+                                            type={showPass ? 'text' : 'password'}
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
+                                            placeholder="••••••••"
+                                            value={form.confirmPassword}
+                                            onChange={e => update('confirmPassword', e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2 md:col-span-2">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Business Role</label>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => update('role', 'customer')}
+                                            className={`py-4 rounded-2xl font-black text-sm border transition-all ${form.role === 'customer' ? 'bg-[#FF7A1A] border-[#FF7A1A] text-white shadow-lg' : 'bg-white/5 border-white/10 text-gray-500 hover:border-white/20'}`}
+                                        >
+                                            Retail Buyer
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => update('role', 'supplier')}
+                                            className={`py-4 rounded-2xl font-black text-sm border transition-all ${form.role === 'supplier' ? 'bg-[#FF7A1A] border-[#FF7A1A] text-white shadow-lg' : 'bg-white/5 border-white/10 text-gray-500 hover:border-white/20'}`}
+                                        >
+                                            Wholesale Supplier
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <motion.button
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    type="submit"
+                                    disabled={loading}
+                                    className="md:col-span-2 bg-[#FF7A1A] hover:bg-[#e66c17] text-white py-5 rounded-2xl font-black text-lg shadow-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 mt-4"
+                                >
+                                    {loading ? (
+                                        <div className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+                                    ) : (
+                                        <>Create Professional Account <ArrowRight size={22} /></>
+                                    )}
+                                </motion.button>
+                            </form>
+
+                            <div className="mt-10 pt-8 border-t border-white/10 text-center">
+                                <p className="text-gray-500 font-medium">
+                                    Already part of our network? {' '}
+                                    <Link href="/auth/login" className="text-white font-black hover:text-[#FF7A1A] underline-offset-8 hover:underline transition-all">
+                                        Sign In
+                                    </Link>
+                                </p>
+                            </div>
+                        </>
+                    )}
                 </motion.div>
             </div>
         </div>

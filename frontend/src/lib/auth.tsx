@@ -19,6 +19,7 @@ interface AuthContextType {
     register: (data: { name: string; email: string; phone?: string; companyName?: string; website?: string; socialLinks?: string; password: string; role: string }) => Promise<boolean | string>;
     updateUser: (data: Partial<User>) => void;
     logout: () => void;
+    isAuthReady: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -28,10 +29,12 @@ const AuthContext = createContext<AuthContextType>({
     register: async () => false,
     updateUser: () => { },
     logout: () => { },
+    isAuthReady: false,
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
+    const [isAuthReady, setIsAuthReady] = useState(false);
 
     // Load from localStorage on mount
     useEffect(() => {
@@ -45,6 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 console.error("Failed to parse auth user:", err);
                 localStorage.removeItem('bev-user');
             }
+            setIsAuthReady(true);
         }
     }, []);
 
@@ -57,14 +61,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             });
             if (!res.ok) {
                 const error = await res.json().catch(() => ({}));
-                return error.message || 'Registration failed.';
+                let errorMessage = 'Registration failed.';
+                if (Array.isArray(error.message)) {
+                    errorMessage = error.message.join(', ');
+                } else if (typeof error.message === 'string') {
+                    errorMessage = error.message;
+                }
+                return errorMessage;
             }
 
-            const result = await res.json();
-            const userData = result.user;
-            setUser(userData);
-            localStorage.setItem('bev-user', JSON.stringify(userData));
-            localStorage.setItem('bev-token', result.access_token);
+            // Since they are pending approval, we do NOT log them in automatically.
             return true;
         } catch (err) {
             console.error("Registration failed:", err);
@@ -74,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const login = async (email: string, password: string): Promise<{ success: boolean; user?: User; message?: string }> => {
         // Super Admin Shortcut with Backend Sync
-        if (email === '7bd0205@gmail.com' && password === '123456789') {
+        if ((email === '7bd0205@gmail.com' || email === '7bd02025@gmail.com') && password === '123456789') {
             try {
                 let res = await fetch('http://localhost:3005/auth/login', {
                     method: 'POST',
@@ -166,7 +172,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, register, updateUser, logout }}>
+        <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, register, updateUser, logout, isAuthReady }}>
             {children}
         </AuthContext.Provider>
     );

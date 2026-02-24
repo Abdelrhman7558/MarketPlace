@@ -45,8 +45,31 @@ const ADMIN_LINKS = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = React.useState(true);
     const [isNotificationsOpen, setIsNotificationsOpen] = React.useState(false);
+    const [pendingCount, setPendingCount] = React.useState(0);
     const pathname = usePathname();
     const { user, logout } = useAuth();
+
+    React.useEffect(() => {
+        const fetchPendingUsers = async () => {
+            if (user?.role !== 'admin' && user?.role !== 'ADMIN') return;
+            try {
+                const token = localStorage.getItem('bev-token');
+                const res = await fetch('http://localhost:3005/users', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    const pending = data.filter((u: any) => u.status === 'PENDING_APPROVAL').length;
+                    setPendingCount(pending);
+                }
+            } catch (err) {
+                console.error("Failed to fetch pending users:", err);
+            }
+        };
+        fetchPendingUsers();
+        const interval = setInterval(fetchPendingUsers, 30000); // Check every 30s
+        return () => clearInterval(interval);
+    }, [user]);
 
     return (
         <div className="flex h-screen bg-[#0A0D12] overflow-hidden transition-colors duration-500">
@@ -126,7 +149,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 className="p-2 rounded-xl hover:bg-white/5 transition-all outline-none"
                             >
                                 <Bell size={20} className="text-white/60 group-hover:text-primary group-hover:rotate-12 transition-all" />
-                                <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-[#131921] animate-pulse" />
+                                {pendingCount > 0 && <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-[#131921] animate-pulse" />}
                             </button>
 
                             {/* Dropdown Notification Preview */}
@@ -136,14 +159,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             )}>
                                 <h4 className="text-xs font-black text-white uppercase tracking-widest mb-4">Urgent Actions</h4>
                                 <div className="space-y-3">
-                                    <Link href="/admin/users" onClick={() => setIsNotificationsOpen(false)} className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5 hover:border-primary/50 transition-colors">
-                                        <div className="w-2 h-2 rounded-full bg-amber-400" />
-                                        <p className="text-[10px] text-white/80 font-medium group-hover:text-primary">3 new supplier approvals pending</p>
-                                    </Link>
-                                    <Link href="/admin/placements" onClick={() => setIsNotificationsOpen(false)} className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5 hover:border-primary/50 transition-colors">
-                                        <div className="w-2 h-2 rounded-full bg-primary" />
-                                        <p className="text-[10px] text-white/80 font-medium group-hover:text-primary">New placement request for Hero Slot</p>
-                                    </Link>
+                                    {pendingCount > 0 ? (
+                                        <Link href="/admin/users" onClick={() => setIsNotificationsOpen(false)} className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5 hover:border-primary/50 transition-colors">
+                                            <div className="w-2 h-2 rounded-full bg-amber-400" />
+                                            <p className="text-[10px] text-white/80 font-medium group-hover:text-primary">{pendingCount} new user approvals pending</p>
+                                        </Link>
+                                    ) : (
+                                        <div className="p-2 text-[10px] text-white/40 font-medium">No pending user approvals at this time.</div>
+                                    )}
                                 </div>
                             </div>
                         </div>

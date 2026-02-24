@@ -8,7 +8,7 @@ import { useEffect } from "react";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const { user, isLoggedIn } = useAuth();
+    const { user, isLoggedIn, isAuthReady } = useAuth();
     const router = useRouter();
 
     const isAuthPage = pathname?.startsWith('/auth');
@@ -18,6 +18,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
     // Enforcement logic: Make the entire marketplace private
     useEffect(() => {
+        // 0. Wait for auth to hydrate from localStorage
+        if (!isAuthReady) return;
+
         // 1. If hitting any auth page (login/register/pending), allow it structurally, but
         // if they are logged in, we might want to let them be. For now, just allow auth pages without redirect loops.
         if (isAuthPage && !isPendingPage) {
@@ -35,17 +38,17 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         }
 
         // 3. Logged in, but not active (pending, rejected, blocked)? Redirect to pending page
-        if (user?.status !== 'ACTIVE' && user?.role !== 'admin') {
+        if (user?.status !== 'ACTIVE' && user?.role !== 'admin' && user?.role !== 'ADMIN') {
             if (!isPendingPage) {
                 router.push('/auth/pending');
             }
         }
-    }, [user, isLoggedIn, pathname, isAuthPage, isPendingPage, router]);
+    }, [user, isLoggedIn, isAuthReady, pathname, isAuthPage, isPendingPage, router]);
 
     return (
         <div className="flex flex-col min-h-screen">
-            {(!isDashboard && !isHome) && <Navbar />}
-            <main className={`flex-grow ${(!isDashboard && !isHome) ? 'pt-20' : ''}`}>
+            {(!isDashboard && !isHome && !isAuthPage) && <Navbar />}
+            <main className={`flex-grow ${(!isDashboard && !isHome && !isAuthPage) ? 'pt-20' : ''}`}>
                 {children}
             </main>
             {(!isDashboard) && <Footer />}

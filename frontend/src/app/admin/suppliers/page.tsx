@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Package, Search, Plus, MapPin, Star, Building2, ShieldCheck, ExternalLink, X, Trash2, DollarSign, Tag, ShoppingBag } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -245,7 +246,9 @@ export default function AdminSuppliersPage() {
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <button className="p-2 text-white/20 hover:text-white transition-colors"><ExternalLink size={14} /></button>
+                                                        <Link href={`/products/${product.id}`} className="p-2 text-white/20 hover:text-white transition-colors">
+                                                            <ExternalLink size={14} />
+                                                        </Link>
                                                         <button
                                                             onClick={() => deleteProduct(product.id)}
                                                             className="p-2 text-red-500/40 hover:text-red-500 transition-colors"
@@ -291,9 +294,9 @@ export default function AdminSuppliersPage() {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <button className="opacity-0 group-hover:opacity-100 p-2 text-white/20 hover:text-white transition-all">
+                                                    <Link href="/admin/offers" className="opacity-0 group-hover:opacity-100 p-2 text-white/20 hover:text-white transition-all">
                                                         <ExternalLink size={14} />
-                                                    </button>
+                                                    </Link>
                                                 </div>
                                             ))}
                                         </div>

@@ -11,7 +11,10 @@ import {
     Timer,
     ShieldCheck,
     ChevronRight,
-    Search
+    Search,
+    Trash2,
+    PauseCircle,
+    PlayCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -21,6 +24,7 @@ interface InviteToken {
     email?: string;
     expiresAt: string;
     used: boolean;
+    paused?: boolean;
 }
 
 export default function AdminInvitePage() {
@@ -61,6 +65,18 @@ export default function AdminInvitePage() {
         navigator.clipboard.writeText(generatedLink);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+    };
+
+    const deleteInvite = (token: string) => {
+        const updated = invites.filter(inv => inv.token !== token);
+        setInvites(updated);
+        localStorage.setItem('marketplace-invites', JSON.stringify(updated));
+    };
+
+    const togglePause = (token: string) => {
+        const updated = invites.map(inv => inv.token === token ? { ...inv, paused: !inv.paused } : inv);
+        setInvites(updated);
+        localStorage.setItem('marketplace-invites', JSON.stringify(updated));
     };
 
     return (
@@ -172,10 +188,29 @@ export default function AdminInvitePage() {
                                         </div>
                                     ) : (
                                         <div className="px-3 py-1 bg-amber-500/10 rounded-full border border-amber-500/20">
-                                            <span className="text-[9px] font-black text-amber-400 uppercase italic">Pending</span>
+                                            <span className="text-[9px] font-black text-amber-400 uppercase italic">
+                                                {invite.paused ? 'Paused' : 'Pending'}
+                                            </span>
                                         </div>
                                     )}
-                                    <ChevronRight size={16} className="text-white/20 group-hover:text-primary transition-colors" />
+                                    <div className="flex items-center gap-2 border-l border-white/5 pl-3 ml-1">
+                                        {!invite.used && (
+                                            <button
+                                                onClick={() => togglePause(invite.token)}
+                                                className="p-1.5 text-white/40 hover:text-white transition-colors rounded-lg hover:bg-white/5"
+                                                title={invite.paused ? "Resume Invite" : "Pause Invite"}
+                                            >
+                                                {invite.paused ? <PlayCircle size={16} /> : <PauseCircle size={16} />}
+                                            </button>
+                                        )}
+                                        <button
+                                            onClick={() => deleteInvite(invite.token)}
+                                            className="p-1.5 text-red-500/40 hover:text-red-500 transition-colors rounded-lg hover:bg-red-500/10 group/btn"
+                                            title="Delete Invite"
+                                        >
+                                            <Trash2 size={16} className="group-hover/btn:scale-110 transition-transform" />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         )) : (

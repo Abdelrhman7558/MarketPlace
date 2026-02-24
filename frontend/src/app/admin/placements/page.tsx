@@ -95,8 +95,8 @@ export default function AdminPlacementsPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-black text-white tracking-tight">Ad Placements</h1>
-                    <p className="text-white/40 font-medium">Manage Amazon-style sponsored listings and banner approvals.</p>
+                    <h1 className="text-2xl font-black text-white tracking-tight">Ad Placements</h1>
+                    <p className="text-white/40 font-medium text-sm">Manage Amazon-style sponsored listings and banner approvals.</p>
                 </div>
 
                 <div className="flex items-center gap-2 p-1 bg-[#131921] rounded-xl border border-white/5">
@@ -150,8 +150,8 @@ export default function AdminPlacementsPage() {
                             </div>
 
                             <div className="relative z-10">
-                                <h3 className={cn("font-black mb-1", isActive ? "text-primary" : "text-white")}>{info.label}</h3>
-                                <p className="text-xs font-medium text-white/40">{info.desc}</p>
+                                <h3 className={cn("text-lg font-black mb-1 leading-tight", isActive ? "text-primary" : "text-white")}>{info.label}</h3>
+                                <p className="text-[10px] md:text-xs font-medium text-white/40">{info.desc}</p>
                             </div>
                         </button>
                     );
@@ -161,8 +161,8 @@ export default function AdminPlacementsPage() {
             {/* Request List */}
             <div className="bg-[#131921] rounded-3xl border border-white/5 overflow-hidden">
                 <div className="p-6 border-b border-white/5 bg-white/[0.02]">
-                    <h2 className="font-black text-white flex items-center gap-2">
-                        {CATEGORY_MAP[activeCategory].icon({ size: 18, className: "text-primary" })}
+                    <h2 className="text-xl font-black text-white flex items-center gap-2">
+                        {React.createElement(CATEGORY_MAP[activeCategory].icon, { size: 18, className: "text-primary" })}
                         {CATEGORY_MAP[activeCategory].label} Pipeline
                     </h2>
                 </div>
