@@ -57,4 +57,26 @@ export class AppConfigService {
             }
         });
     }
+
+    async getHomepageCategories() {
+        const config = await this.prisma.appConfig.findUnique({
+            where: { key: 'HOMEPAGE_CATEGORIES' }
+        });
+        if (!config || !config.value) {
+            return null;
+        }
+        try {
+            return JSON.parse(config.value);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    async setHomepageCategories(data: any): Promise<any> {
+        return this.prisma.appConfig.upsert({
+            where: { key: 'HOMEPAGE_CATEGORIES' },
+            create: { key: 'HOMEPAGE_CATEGORIES', value: JSON.stringify(data) },
+            update: { value: JSON.stringify(data) }
+        });
+    }
 }

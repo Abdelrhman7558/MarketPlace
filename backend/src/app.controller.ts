@@ -9,4 +9,9 @@ export class AppController {
     getHello(): string {
         return this.appService.getHello();
     }
+
+    @Get('config/homepage-categories')
+    async getHomepageCategories() {
+        return this.appService.getHomepageCategories();
+    }
 }

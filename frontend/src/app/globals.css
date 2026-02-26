@@ -14,10 +14,10 @@
         --card-foreground: 222.2 84% 4.9%;
         --popover: 0 0% 100%;
         --popover-foreground: 222.2 84% 4.9%;
-        --primary: 24.6 100% 50%;
-        /* MarketPlace Orange #FF6B00 */
+        --primary: 36 100% 50%;
+        /* MarketPlace Orange #FF9900 */
         --primary-foreground: 210 40% 98%;
-        --secondary: 24.6 100% 50%;
+        --secondary: 36 100% 50%;
         --secondary-foreground: 222.2 47.4% 11.2%;
         --accent: 210 40% 96.1%;
         --accent-foreground: 222.2 47.4% 11.2%;
@@ -30,7 +30,7 @@
         --destructive-foreground: 210 40% 98%;
         --border: 214.3 31.8% 91.4%;
         --input: 214.3 31.8% 91.4%;
-        --ring: 24.6 100% 50%;
+        --ring: 36 100% 50%;
         --radius: 0.75rem;
         --success: 142.1 70.6% 45.3%;
         /* Emerald accent */
@@ -44,9 +44,9 @@
         --card-foreground: 210 40% 98%;
         --popover: 222.2 84% 4.9%;
         --popover-foreground: 210 40% 98%;
-        --primary: 24.6 100% 50%;
+        --primary: 36 100% 50%;
         --primary-foreground: 222.2 47.4% 11.2%;
-        --secondary: 24.6 100% 50%;
+        --secondary: 36 100% 50%;
         --secondary-foreground: 210 40% 98%;
         --accent: 217.2 32.6% 17.5%;
         --accent-foreground: 210 40% 98%;
@@ -58,7 +58,7 @@
         --destructive-foreground: 210 40% 98%;
         --border: 217.2 32.6% 17.5%;
         --input: 217.2 32.6% 17.5%;
-        --ring: 24.6 100% 50%;
+        --ring: 36 100% 50%;
         --success: 142.1 70.6% 45.3%;
         --glass-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
     }

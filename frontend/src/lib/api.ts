@@ -30,3 +30,31 @@ export async function fetchProducts(): Promise<Product[]> {
         return [];
     }
 }
+
+export async function getHomepageCategories(): Promise<any> {
+    try {
+        const response = await fetch(`${API_URL}/config/homepage-categories`, { cache: 'no-store' });
+        if (!response.ok) return null;
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching homepage categories:', error);
+        return null;
+    }
+}
+
+export async function setHomepageCategories(token: string, data: any): Promise<boolean> {
+    try {
+        const response = await fetch(`${API_URL}/admin/config/homepage-categories`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+        return response.ok;
+    } catch (error) {
+        console.error('Error setting homepage categories:', error);
+        return false;
+    }
+}

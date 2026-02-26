@@ -42,4 +42,10 @@ export class AppConfigController {
     async rejectProduct(@Param('id') id: string, @Body('reason') reason: string) {
         return this.appConfigService.rejectProduct(id, reason);
     }
+
+    @Post('homepage-categories')
+    async setHomepageCategories(@Body() data: any) {
+        await this.appConfigService.setHomepageCategories(data);
+        return { message: 'Homepage categories updated successfully' };
+    }
 }
