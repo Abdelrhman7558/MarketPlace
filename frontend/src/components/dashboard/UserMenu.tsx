@@ -38,7 +38,7 @@ export function UserMenu({ role }: UserMenuProps) {
         {
             label: 'My Profile',
             icon: User,
-            href: role === 'admin' ? '/admin/profile' : '/supplier/profile'
+            href: role === 'admin' ? '/admin/settings' : role === 'supplier' ? '/supplier/settings' : '/dashboard/customer'
         },
         {
             label: 'Dashboard',

@@ -19,7 +19,6 @@ import {
     Trash
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { PRODUCTS } from '@/lib/products';
 
 interface OfferPlacement {
     id: string;
@@ -82,7 +81,6 @@ export default function SupplierOffersPage() {
         title: '',
         type: 'Discount' as any,
         slot: 'FEATURED' as 'HERO' | 'FEATURED' | 'BANNER' | 'LISTING',
-        product: PRODUCTS[0]?.name || '',
         startDate: '',
         startTime: '',
         expiry: '',
@@ -135,7 +133,6 @@ export default function SupplierOffersPage() {
             title: offer.title,
             type: offer.type as any,
             slot: offer.slot,
-            product: PRODUCTS[0]?.name || '',
             startDate: offer.startDate || '',
             startTime: offer.startTime || '',
             expiry: offer.expiry,
@@ -168,7 +165,6 @@ export default function SupplierOffersPage() {
                             title: '',
                             type: 'Discount' as any,
                             slot: 'FEATURED' as 'HERO' | 'FEATURED' | 'BANNER' | 'LISTING',
-                            product: '',
                             startDate: '',
                             startTime: '',
                             expiry: '',

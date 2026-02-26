@@ -4,11 +4,12 @@ import * as React from 'react';
 import AmazonNavbar from '@/components/layout/AmazonNavbar';
 import AmazonHero from '@/components/ui/AmazonHero';
 import AmazonCardTile from '@/components/ui/AmazonCardTile';
-import { PRODUCTS, BRANDS } from '@/lib/products';
+import { BRANDS, type Product } from '@/lib/products';
+import { fetchProducts } from '@/lib/api';
 import ProductCard from '@/components/product/ProductCard';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { AdPlacements } from '@/components/marketplace/AdPlacements';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -26,14 +27,23 @@ function CatalogSection({ title, children }: { title: string; children: React.Re
 export default function Home() {
     const { t } = useLanguage();
     const [selectedPopularBrand, setSelectedPopularBrand] = useState<string | null>(null);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetchProducts().then(data => {
+            setProducts(data);
+            setIsLoading(false);
+        });
+    }, []);
 
     const popularProducts = useMemo(() => {
-        let filtered = PRODUCTS.slice(0, 20); // Initial set of popular products
+        let filtered = products.slice(0, 20); // Initial set of popular products
         if (selectedPopularBrand) {
             filtered = filtered.filter(p => p.brand === selectedPopularBrand);
         }
         return filtered.slice(0, 8); // Show up to 8
-    }, [selectedPopularBrand]);
+    }, [products, selectedPopularBrand]);
 
     return (
         <div className="flex flex-col min-h-screen bg-[#F5F7F7] dark:bg-[#0A0D12] transition-colors duration-500">
@@ -105,11 +115,15 @@ export default function Home() {
                     {/* Best Sellers Scroller */}
                     <CatalogSection title={t('home', 'trendingBevs')}>
                         <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 pt-2 -mx-2 px-2">
-                            {PRODUCTS.slice(0, 10).map((product, i) => (
-                                <div key={product.id} className="min-w-[180px] md:min-w-[220px] max-w-[220px]">
-                                    <ProductCard product={product} index={i} />
-                                </div>
-                            ))}
+                            {isLoading ? (
+                                <div className="py-8 px-4 text-muted-foreground font-medium text-sm">Loading best sellers...</div>
+                            ) : (
+                                products.slice(0, 10).map((product, i) => (
+                                    <div key={product.id} className="min-w-[180px] md:min-w-[220px] max-w-[220px]">
+                                        <ProductCard product={product} index={i} />
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </CatalogSection>
 
@@ -146,9 +160,13 @@ export default function Home() {
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                {popularProducts.map((product, i) => (
-                                    <ProductCard key={product.id} product={product} index={i} />
-                                ))}
+                                {isLoading ? (
+                                    <div className="col-span-full py-8 text-center text-muted-foreground font-medium">Loading popular picks...</div>
+                                ) : (
+                                    popularProducts.map((product, i) => (
+                                        <ProductCard key={product.id} product={product} index={i} />
+                                    ))
+                                )}
                             </div>
 
                             {popularProducts.length === 0 && (

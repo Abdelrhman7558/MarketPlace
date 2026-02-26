@@ -116,7 +116,7 @@ export default function Navbar() {
 
                     {/* Account */}
                     <Link
-                        href={user ? (user.role === 'admin' ? '/dashboard/super-admin-7bd0' : `/dashboard/${user.role}`) : '/auth/login'}
+                        href={user ? (user.role === 'admin' ? '/admin' : user.role === 'supplier' ? '/supplier' : '/dashboard/customer') : '/auth/login'}
                         className="flex flex-col items-center gap-0.5 group"
                     >
                         <User className="w-5 h-5 group-hover:text-secondary transition-colors" />

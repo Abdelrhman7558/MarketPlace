@@ -4,7 +4,8 @@ import * as React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutList, Send, Clock, CheckCircle, XCircle, AlertCircle, Plus, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { PRODUCTS } from '@/lib/products';
+import { type Product } from '@/lib/products';
+import { fetchProducts } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 
 interface PlacementRequest {
@@ -31,9 +32,19 @@ export default function SupplierPlacementsPage() {
     const [isFormOpen, setIsFormOpen] = React.useState(false);
     const [formData, setFormData] = React.useState({
         slot: 'HERO' as 'HERO' | 'FEATURED' | 'BANNER',
-        product: PRODUCTS[0].name,
+        product: '',
         duration: '7 Days'
     });
+    const [myProducts, setMyProducts] = React.useState<Product[]>([]);
+
+    React.useEffect(() => {
+        fetchProducts().then(data => {
+            setMyProducts(data);
+            if (data.length > 0) {
+                setFormData(prev => ({ ...prev, product: data[0].name }));
+            }
+        });
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -168,7 +179,7 @@ export default function SupplierPlacementsPage() {
                                         onChange={e => setFormData({ ...formData, product: e.target.value })}
                                         className="w-full h-14 bg-white/5 rounded-xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium appearance-none"
                                     >
-                                        {PRODUCTS.slice(0, 10).map(p => (
+                                        {myProducts.slice(0, 10).map(p => (
                                             <option key={p.id} value={p.name}>{p.name}</option>
                                         ))}
                                     </select>

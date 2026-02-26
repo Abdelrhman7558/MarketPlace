@@ -16,11 +16,21 @@ import {
     Star
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
-import { PRODUCTS } from '@/lib/products';
+import { type Product } from '@/lib/products';
+import { fetchProducts } from '@/lib/api';
 import ProductCard from '@/components/product/ProductCard';
 
 export default function CustomerDashboard() {
     const { user } = useAuth();
+    const [products, setProducts] = React.useState<Product[]>([]);
+    const [isLoading, setIsLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        fetchProducts().then(data => {
+            setProducts(data);
+            setIsLoading(false);
+        });
+    }, []);
 
     return (
         <div className="max-w-7xl mx-auto space-y-10 p-4 md:p-8 pt-24 min-h-screen bg-[#F5F7F7] dark:bg-[#0A0D12]">
@@ -123,19 +133,23 @@ export default function CustomerDashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {PRODUCTS.slice(4, 8).map((product, i) => (
-                        <div key={product.id} className="group relative">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-[#FF8C33] rounded-3xl blur opacity-0 group-hover:opacity-20 transition duration-500" />
-                            <div className="relative">
-                                <ProductCard product={product} index={i} />
+                    {isLoading ? (
+                        <div className="col-span-full py-8 text-center text-muted-foreground font-medium">Loading recommendations...</div>
+                    ) : (
+                        products.slice(4, 8).map((product, i) => (
+                            <div key={product.id} className="group relative">
+                                <div className="absolute -inset-1 bg-gradient-to-r from-primary to-[#FF8C33] rounded-3xl blur opacity-0 group-hover:opacity-20 transition duration-500" />
+                                <div className="relative">
+                                    <ProductCard product={product} index={i} />
+                                </div>
+                                {/* Recommendation Badge */}
+                                <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg border border-black/5 flex items-center gap-1.5 shadow-sm transform -rotate-1 group-hover:rotate-0 transition-transform">
+                                    <Star size={10} className="text-primary" fill="currentColor" />
+                                    <span className="text-[9px] font-black uppercase text-primary">Best Match</span>
+                                </div>
                             </div>
-                            {/* Recommendation Badge */}
-                            <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg border border-black/5 flex items-center gap-1.5 shadow-sm transform -rotate-1 group-hover:rotate-0 transition-transform">
-                                <Star size={10} className="text-primary" fill="currentColor" />
-                                <span className="text-[9px] font-black uppercase text-primary">Best Match</span>
-                            </div>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
             </div>
         </div>

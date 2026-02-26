@@ -3,7 +3,8 @@
 import { useState, useMemo } from 'react';
 import ProductCard from '@/components/product/ProductCard';
 import ProductFilters from '@/components/product/ProductFilters';
-import { PRODUCTS, BRANDS, CATEGORIES_LIST } from '@/lib/products';
+import { BRANDS, CATEGORIES_LIST, type Product } from '@/lib/products';
+import { fetchProducts } from '@/lib/api';
 import { SlidersHorizontal, X, ChevronRight, Package, Search } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,11 +20,21 @@ function CategoriesContent() {
     const searchParams = useSearchParams();
     const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [selectedAudience, setSelectedAudience] = useState<string[]>([]);
     const [priceRange, setPriceRange] = useState({ min: '', max: '' });
     const [appliedPrice, setAppliedPrice] = useState({ min: '', max: '' });
     const [sortBy, setSortBy] = useState('featured');
     const [showFilters, setShowFilters] = useState(false);
     const [localQuery, setLocalQuery] = useState('');
+    const [products, setProducts] = useState<Product[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetchProducts().then(data => {
+            setProducts(data);
+            setIsLoading(false);
+        });
+    }, []);
 
     useEffect(() => {
         const query = searchParams.get('q');
@@ -41,11 +52,29 @@ function CategoriesContent() {
     const handleCategoryChange = (category: string) => {
         setSelectedCategories((prev) => prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]);
     };
+    const handleAudienceChange = (audience: string) => {
+        setSelectedAudience((prev) => prev.includes(audience) ? prev.filter((a) => a !== audience) : [...prev, audience]);
+    };
 
     const filteredProducts = useMemo(() => {
-        let result = [...PRODUCTS];
+        let result = [...products];
         if (selectedBrands.length > 0) result = result.filter((p) => selectedBrands.includes(p.brand));
         if (selectedCategories.length > 0) result = result.filter((p) => selectedCategories.includes(p.category));
+
+        if (selectedAudience.length > 0) {
+            result = result.filter(p => {
+                const searchStr = (p.name + ' ' + p.brand).toLowerCase();
+                const isMen = searchStr.includes('homme') || searchStr.includes('men') || searchStr.includes('boy') || searchStr.includes('bulldog') || searchStr.includes('diesel') || searchStr.includes('nautica') || searchStr.includes('(m)');
+                const isWomen = searchStr.includes('femme') || searchStr.includes('women') || searchStr.includes('girl') || searchStr.includes('pregnacare') || searchStr.includes('lady') || searchStr.includes('her') || searchStr.includes('(w)') || searchStr.includes('beauty') || searchStr.includes('makeup') || searchStr.includes('mascara') || searchStr.includes('lipstick');
+
+                if (selectedAudience.includes('Men') && isMen) return true;
+                if (selectedAudience.includes('Women') && isWomen) return true;
+                if (selectedAudience.includes('Unisex') && !isMen && !isWomen) return true;
+
+                return false;
+            });
+        }
+
         if (appliedPrice.min) result = result.filter((p) => p.price >= parseFloat(appliedPrice.min));
         if (appliedPrice.max) result = result.filter((p) => p.price <= parseFloat(appliedPrice.max));
 
@@ -64,9 +93,9 @@ function CategoriesContent() {
             case 'name': result.sort((a, b) => a.name.localeCompare(b.name)); break;
         }
         return result;
-    }, [selectedBrands, selectedCategories, appliedPrice, sortBy, localQuery]);
+    }, [products, selectedBrands, selectedCategories, selectedAudience, appliedPrice, sortBy, localQuery]);
 
-    const activeFilters = [...selectedBrands, ...selectedCategories];
+    const activeFilters = [...selectedBrands, ...selectedCategories, ...selectedAudience];
 
     return (
         <div className="min-h-screen bg-muted/10 pb-20 overflow-x-hidden">
@@ -125,9 +154,11 @@ function CategoriesContent() {
                             categories={CATEGORIES_LIST}
                             selectedBrands={selectedBrands}
                             selectedCategories={selectedCategories}
+                            selectedAudience={selectedAudience}
                             priceRange={priceRange}
                             onBrandChange={handleBrandChange}
                             onCategoryChange={handleCategoryChange}
+                            onAudienceChange={handleAudienceChange}
                             onPriceChange={setPriceRange}
                             onApplyPrice={() => setAppliedPrice(priceRange)}
                         />
@@ -165,8 +196,17 @@ function CategoriesContent() {
                                         {category} <X size={12} />
                                     </button>
                                 ))}
+                                {selectedAudience.map((audience) => (
+                                    <button
+                                        key={audience}
+                                        onClick={() => handleAudienceChange(audience)}
+                                        className="inline-flex items-center gap-1.5 bg-muted text-foreground px-2.5 py-1 rounded-[4px] text-[11px] font-medium border border-border hover:bg-muted/80 transition-colors"
+                                    >
+                                        {audience} <X size={12} />
+                                    </button>
+                                ))}
                                 <button
-                                    onClick={() => { setSelectedBrands([]); setSelectedCategories([]); setLocalQuery(''); }}
+                                    onClick={() => { setSelectedBrands([]); setSelectedCategories([]); setSelectedAudience([]); setLocalQuery(''); }}
                                     className="text-[11px] text-primary hover:underline ml-2 font-medium"
                                 >
                                     Clear all
@@ -175,20 +215,26 @@ function CategoriesContent() {
                         )}
 
                         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                            <AnimatePresence mode="popLayout">
-                                {filteredProducts.map((product, i) => (
-                                    <motion.div
-                                        layout
-                                        key={product.id}
-                                        initial={{ opacity: 0, scale: 0.98 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.98 }}
-                                        transition={{ duration: 0.2 }}
-                                    >
-                                        <ProductCard product={product} index={i} />
-                                    </motion.div>
-                                ))}
-                            </AnimatePresence>
+                            {isLoading ? (
+                                <div className="col-span-full py-20 text-center text-muted-foreground font-medium">
+                                    Loading products...
+                                </div>
+                            ) : (
+                                <AnimatePresence mode="popLayout">
+                                    {filteredProducts.map((product, i) => (
+                                        <motion.div
+                                            layout
+                                            key={product.id}
+                                            initial={{ opacity: 0, scale: 0.98 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.98 }}
+                                            transition={{ duration: 0.2 }}
+                                        >
+                                            <ProductCard product={product} index={i} />
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            )}
                         </div>
 
                         {filteredProducts.length === 0 && (
@@ -197,7 +243,7 @@ function CategoriesContent() {
                                 <h3 className="text-lg font-bold">No products found</h3>
                                 <p className="text-muted-foreground text-sm max-w-xs mt-1 mb-6">We couldn't find any products matching your specific filters. Try broadening your search.</p>
                                 <Button
-                                    onClick={() => { setSelectedBrands([]); setSelectedCategories([]); setLocalQuery(''); }}
+                                    onClick={() => { setSelectedBrands([]); setSelectedCategories([]); setSelectedAudience([]); setLocalQuery(''); }}
                                     className="h-10 px-6 rounded-md font-bold"
                                 >
                                     Clear Filters
@@ -234,9 +280,11 @@ function CategoriesContent() {
                                 categories={CATEGORIES_LIST}
                                 selectedBrands={selectedBrands}
                                 selectedCategories={selectedCategories}
+                                selectedAudience={selectedAudience}
                                 priceRange={priceRange}
                                 onBrandChange={handleBrandChange}
                                 onCategoryChange={handleCategoryChange}
+                                onAudienceChange={handleAudienceChange}
                                 onPriceChange={setPriceRange}
                                 onApplyPrice={() => { setAppliedPrice(priceRange); setShowFilters(false); }}
                             />

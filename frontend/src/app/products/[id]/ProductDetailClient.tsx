@@ -8,7 +8,9 @@ import {
     ShieldCheck, RotateCcw, ChevronRight, Share2,
     Heart, Info, Package, Sparkles, ArrowLeft, ShoppingCart
 } from 'lucide-react';
-import { PRODUCTS, type Product } from '@/lib/products';
+import { type Product } from '@/lib/products';
+import { fetchProducts } from '@/lib/api';
+import { useEffect } from 'react';
 import { useCart } from '@/lib/cart';
 import ProductCard from '@/components/product/ProductCard';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -22,10 +24,28 @@ export default function ProductDetailClient() {
     const [isAdded, setIsAdded] = useState(false);
     const router = useRouter();
 
-    const product = PRODUCTS.find(p => p.id === id);
-    let relatedProducts = PRODUCTS.filter(p => p.id !== id && p.category === product?.category);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetchProducts().then(data => {
+            setProducts(data);
+            setIsLoading(false);
+        });
+    }, []);
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex text-muted-foreground font-medium items-center justify-center p-6 pt-20">
+                Loading product details...
+            </div>
+        );
+    }
+
+    const product = products.find(p => p.id === id);
+    let relatedProducts = products.filter(p => p.id !== id && p.category === product?.category);
     if (relatedProducts.length < 4) {
-        const padding = PRODUCTS.filter(p => p.id !== id && !relatedProducts.includes(p));
+        const padding = products.filter(p => p.id !== id && !relatedProducts.includes(p));
         relatedProducts = [...relatedProducts, ...padding].slice(0, 4);
     } else {
         relatedProducts = relatedProducts.slice(0, 4);

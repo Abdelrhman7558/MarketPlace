@@ -48,7 +48,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     // Save to localStorage
     useEffect(() => {
-        if (typeof window !== 'undefined' && items.length > 0) {
+        if (typeof window !== 'undefined') {
             localStorage.setItem('bev-cart', JSON.stringify(items));
         }
     }, [items]);

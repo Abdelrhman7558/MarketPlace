@@ -38,12 +38,15 @@ export default function AdminOverviewPage() {
         fetchPendingUsers();
     }, []);
 
-    const STATS = [
-        { label: 'Pending Approvals', value: pendingUsers.length.toString(), trend: pendingUsers.length > 5 ? 'High' : 'Stable', up: pendingUsers.length > 0, icon: Clock, color: 'text-amber-400' },
-    ];
-
     const [revenueData, setRevenueData] = React.useState<any[]>([]);
     const [activePlacements, setActivePlacements] = React.useState<any[]>([]);
+
+    const STATS = [
+        { label: 'Total Revenue', value: '$124,500', trend: '+12.5%', up: true, icon: DollarSign, color: 'text-emerald-400' },
+        { label: 'Active Placements', value: activePlacements.length.toString(), trend: '+5.2%', up: true, icon: Package, color: 'text-blue-400' },
+        { label: 'Pending Approvals', value: pendingUsers.length.toString(), trend: pendingUsers.length > 5 ? 'High' : 'Stable', up: pendingUsers.length > 0, icon: Clock, color: 'text-amber-400' },
+        { label: 'Total Users', value: '1,240', trend: '+18.2%', up: true, icon: Users, color: 'text-indigo-400' }
+    ];
 
     return (
         <div className="space-y-10 max-w-7xl mx-auto">
@@ -102,12 +105,8 @@ export default function AdminOverviewPage() {
                             <BarChart3 className="text-primary" /> Revenue Overview
                         </h3>
                     </div>
-                    <div className="h-[300px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <div className="flex items-center justify-center w-full h-full text-muted-foreground">
-                                Detailed Revenue Charts (Data pending)
-                            </div>
-                        </ResponsiveContainer>
+                    <div className="h-[300px] w-full flex items-center justify-center bg-muted/20 rounded-xl border border-border/50 border-dashed">
+                        <span className="text-muted-foreground font-medium">Detailed Revenue Charts (Data pending)</span>
                     </div>
                 </div>
 

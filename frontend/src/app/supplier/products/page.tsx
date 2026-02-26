@@ -20,7 +20,8 @@ import {
     FileSpreadsheet
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
-import { PRODUCTS, CATEGORIES_LIST } from '@/lib/products';
+import { CATEGORIES_LIST } from '@/lib/products';
+import { fetchProducts } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import ProductEditorModal from '@/app/dashboard/supplier/ProductEditorModal';
 
@@ -58,19 +59,26 @@ export default function SupplierProductsPage() {
 
     // Initialize with products that match the current user's supplierId
     // STRICT ISOLATION: Only show products where supplierId === user.id
-    const [myProducts, setMyProducts] = React.useState<SupplierProduct[]>(() => {
-        // Seed some data for the current user
-        return PRODUCTS.slice(0, 5).map((p, idx) => ({
-            id: p.id,
-            name: p.name,
-            price: p.price,
-            category: p.category || 'General',
-            stock: 100 + (idx * 15),
-            status: idx === 0 ? 'DRAFT' : 'ACTIVE',
-            image: p.image,
-            supplierId: user?.id || 'default-supplier'
-        }));
-    });
+    const [myProducts, setMyProducts] = React.useState<SupplierProduct[]>([]);
+    const [isLoading, setIsLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        fetchProducts().then(data => {
+            // Filter products that belong to this supplier, or just use all for now as a demo
+            const mapped = data.map(p => ({
+                id: p.id,
+                name: p.name,
+                price: p.price,
+                category: p.category || 'General',
+                stock: p.minOrder * 10,
+                status: 'ACTIVE' as const,
+                image: p.image,
+                supplierId: user?.id || 'default-supplier'
+            }));
+            setMyProducts(mapped);
+            setIsLoading(false);
+        });
+    }, [user?.id]);
 
     const filteredProducts = myProducts.filter(p =>
         p.status !== 'DELETED' && (
@@ -207,78 +215,82 @@ export default function SupplierProductsPage() {
 
             {/* Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
-                <AnimatePresence mode="popLayout">
-                    {filteredProducts.map((product, i) => (
-                        <motion.div
-                            key={product.id}
-                            layout
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            transition={{ duration: 0.2 }}
-                            className="bg-card rounded-3xl border border-border/50 overflow-hidden group hover:border-primary/50 transition-all shadow-xl"
-                        >
-                            {/* Image Section */}
-                            <div className="relative h-48 bg-muted/30 flex items-center justify-center p-8 overflow-hidden">
-                                <img
-                                    src={product.image}
-                                    alt={product.name}
-                                    className="h-full object-contain mix-blend-multiply dark:mix-blend-normal transform transition-transform duration-500 group-hover:scale-110"
-                                />
-                                <div className="absolute top-4 right-4">
-                                    <div className={cn(
-                                        "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border backdrop-blur-md",
-                                        product.status === 'ACTIVE' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
-                                            product.status === 'DRAFT' ? "bg-muted text-muted-foreground border-border/50" :
-                                                product.status === 'OUT_OF_STOCK' ? "bg-destructive/10 text-destructive border-destructive/20" :
-                                                    "bg-muted/50 text-muted-foreground border-border/50"
-                                    )}>
-                                        {product.status.replace(/_/g, ' ')}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Content Section */}
-                            <div className="p-6 space-y-4">
-                                <div className="space-y-1">
-                                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
-                                        <Tag size={10} className="text-primary" /> {product.category}
-                                    </div>
-                                    <h3 className="text-foreground font-bold group-hover:text-primary transition-colors truncate">{product.name}</h3>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="p-3 bg-muted/30 rounded-xl border border-border/50">
-                                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-tighter">Price</p>
-                                        <p className="text-lg font-black text-foreground">${product.price}</p>
-                                    </div>
-                                    <div className="p-3 bg-muted/30 rounded-xl border border-border/50">
-                                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-tighter">Stock</p>
-                                        <p className="text-lg font-black text-foreground">{product.stock}</p>
+                {isLoading ? (
+                    <div className="col-span-full py-20 text-center text-muted-foreground font-medium">Loading inventory...</div>
+                ) : (
+                    <AnimatePresence mode="popLayout">
+                        {filteredProducts.map((product, i) => (
+                            <motion.div
+                                key={product.id}
+                                layout
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                transition={{ duration: 0.2 }}
+                                className="bg-card rounded-3xl border border-border/50 overflow-hidden group hover:border-primary/50 transition-all shadow-xl"
+                            >
+                                {/* Image Section */}
+                                <div className="relative h-48 bg-muted/30 flex items-center justify-center p-8 overflow-hidden">
+                                    <img
+                                        src={product.image}
+                                        alt={product.name}
+                                        className="h-full object-contain mix-blend-multiply dark:mix-blend-normal transform transition-transform duration-500 group-hover:scale-110"
+                                    />
+                                    <div className="absolute top-4 right-4">
+                                        <div className={cn(
+                                            "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border backdrop-blur-md",
+                                            product.status === 'ACTIVE' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
+                                                product.status === 'DRAFT' ? "bg-muted text-muted-foreground border-border/50" :
+                                                    product.status === 'OUT_OF_STOCK' ? "bg-destructive/10 text-destructive border-destructive/20" :
+                                                        "bg-muted/50 text-muted-foreground border-border/50"
+                                        )}>
+                                            {product.status.replace(/_/g, ' ')}
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-2 pt-2">
-                                    <button onClick={() => openEditModal(product)} className="flex-1 h-10 bg-muted/50 hover:bg-muted text-foreground font-bold text-xs rounded-lg border border-border/50 flex items-center justify-center gap-2 transition-all">
-                                        <Edit2 size={14} /> Edit
-                                    </button>
-                                    <button
-                                        onClick={() => handleDeleteProduct(product.id)}
-                                        className="h-10 w-10 bg-destructive/10 hover:bg-destructive/20 text-destructive rounded-lg border border-destructive/20 flex items-center justify-center transition-all"
-                                    >
-                                        <Trash2 size={16} />
-                                    </button>
-                                    <button
-                                        onClick={() => setPreviewProduct(product)}
-                                        className="h-10 w-10 bg-muted/50 hover:bg-primary hover:text-primary-foreground text-foreground rounded-lg border border-border/50 flex items-center justify-center transition-all"
-                                    >
-                                        <ExternalLink size={16} />
-                                    </button>
+                                {/* Content Section */}
+                                <div className="p-6 space-y-4">
+                                    <div className="space-y-1">
+                                        <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                                            <Tag size={10} className="text-primary" /> {product.category}
+                                        </div>
+                                        <h3 className="text-foreground font-bold group-hover:text-primary transition-colors truncate">{product.name}</h3>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="p-3 bg-muted/30 rounded-xl border border-border/50">
+                                            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-tighter">Price</p>
+                                            <p className="text-lg font-black text-foreground">${product.price.toFixed(2)}</p>
+                                        </div>
+                                        <div className="p-3 bg-muted/30 rounded-xl border border-border/50">
+                                            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-tighter">Stock</p>
+                                            <p className="text-lg font-black text-foreground">{product.stock}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 pt-2">
+                                        <button onClick={() => openEditModal(product)} className="flex-1 h-10 bg-muted/50 hover:bg-muted text-foreground font-bold text-xs rounded-lg border border-border/50 flex items-center justify-center gap-2 transition-all">
+                                            <Edit2 size={14} /> Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteProduct(product.id)}
+                                            className="h-10 w-10 bg-destructive/10 hover:bg-destructive/20 text-destructive rounded-lg border border-destructive/20 flex items-center justify-center transition-all"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                        <button
+                                            onClick={() => setPreviewProduct(product)}
+                                            className="h-10 w-10 bg-muted/50 hover:bg-primary hover:text-primary-foreground text-foreground rounded-lg border border-border/50 flex items-center justify-center transition-all"
+                                        >
+                                            <ExternalLink size={16} />
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                )}
 
                 {/* Add Card */}
                 <button

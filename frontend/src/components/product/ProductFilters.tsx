@@ -10,9 +10,11 @@ interface FilterProps {
     categories: string[];
     selectedBrands: string[];
     selectedCategories: string[];
+    selectedAudience?: string[];
     priceRange: { min: string; max: string };
     onBrandChange: (brand: string) => void;
     onCategoryChange: (category: string) => void;
+    onAudienceChange?: (audience: string) => void;
     onPriceChange: (range: { min: string; max: string }) => void;
     onApplyPrice: () => void;
 }
@@ -111,6 +113,31 @@ export default function ProductFilters(props: FilterProps) {
                                     isActive ? "font-bold text-foreground" : "text-muted-foreground"
                                 )}>
                                     {brand}
+                                </span>
+                            </label>
+                        );
+                    })}
+                </div>
+            </FilterSection>
+
+            {/* Target Audience */}
+            <FilterSection title="Target Audience" defaultOpen={true}>
+                <div className="flex flex-col gap-1.5 pt-1">
+                    {['Women', 'Men', 'Unisex'].map(audience => {
+                        const isActive = props.selectedAudience?.includes(audience);
+                        return (
+                            <label key={audience} className="flex items-center gap-2 cursor-pointer group">
+                                <input
+                                    type="checkbox"
+                                    checked={isActive}
+                                    onChange={() => props.onAudienceChange?.(audience)}
+                                    className="w-4 h-4 rounded-sm border-border text-primary focus:ring-primary/20 transition-all cursor-pointer accent-primary"
+                                />
+                                <span className={cn(
+                                    "text-sm group-hover:text-primary transition-colors",
+                                    isActive ? "font-bold text-foreground" : "text-muted-foreground"
+                                )}>
+                                    {audience}
                                 </span>
                             </label>
                         );
