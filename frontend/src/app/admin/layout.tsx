@@ -32,6 +32,7 @@ const ADMIN_LINKS = [
     { label: 'Users & Approvals', href: '/admin/users', icon: Users },
     { label: 'Buyers', href: '/admin/buyers', icon: Users },
     { label: 'Suppliers', href: '/admin/suppliers', icon: Package },
+    { label: 'All Products', href: '/admin/products', icon: Package },
     { label: 'Add Catalog Item', href: '/admin/products/new', icon: Package },
     { label: 'Security', href: '/admin/security', icon: Shield },
     { label: 'Offer Approvals', href: '/admin/offers', icon: Tag },
