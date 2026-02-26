@@ -1,0 +1,177 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { getHomepageCategories, setHomepageCategories } from '@/lib/api';
+import { Plus, Trash2, Save } from 'lucide-react';
+
+export default function AdminHomepageConfig() {
+    const [categories, setCategories] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
+
+    useEffect(() => {
+        getHomepageCategories().then(data => {
+            if (data && Array.isArray(data)) {
+                setCategories(data);
+            }
+            setIsLoading(false);
+        });
+    }, []);
+
+    const handleAddCategory = () => {
+        setCategories([...categories, {
+            title: 'New Section',
+            footerLink: '/categories',
+            footerText: 'See more',
+            items: [
+                { label: 'Item 1', image: '', link: '' },
+                { label: 'Item 2', image: '', link: '' },
+                { label: 'Item 3', image: '', link: '' },
+                { label: 'Item 4', image: '', link: '' },
+            ]
+        }]);
+    };
+
+    const handleRemoveCategory = (index: number) => {
+        setCategories(categories.filter((_, i) => i !== index));
+    };
+
+    const handleChangeCategory = (index: number, field: string, value: string) => {
+        const updated = [...categories];
+        updated[index] = { ...updated[index], [field]: value };
+        setCategories(updated);
+    };
+
+    const handleChangeItem = (catIndex: number, itemIndex: number, field: string, value: string) => {
+        const updated = [...categories];
+        const updatedItems = [...updated[catIndex].items];
+        updatedItems[itemIndex] = { ...updatedItems[itemIndex], [field]: value };
+        updated[catIndex].items = updatedItems;
+        setCategories(updated);
+    };
+
+    const handleSave = async () => {
+        setIsSaving(true);
+        const token = localStorage.getItem('bev-token') || '';
+        const success = await setHomepageCategories(token, categories);
+        setIsSaving(false);
+        if (success) {
+            alert('Homepage categories saved successfully!');
+        } else {
+            alert('Failed to save. Check your permissions.');
+        }
+    };
+
+    if (isLoading) return <div className="p-8 text-center animate-pulse text-muted-foreground font-black tracking-widest uppercase">Loading Configuration...</div>;
+
+    return (
+        <div className="max-w-7xl mx-auto space-y-8">
+            <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border/50 shadow-sm">
+                <div>
+                    <h1 className="text-3xl font-black tracking-tight text-foreground">Homepage Layout</h1>
+                    <p className="text-sm text-muted-foreground mt-1">Configure the 4-tile ad blocks on the main store.</p>
+                </div>
+                <button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 disabled:opacity-50"
+                >
+                    <Save size={20} />
+                    {isSaving ? 'Deploying...' : 'Save & Publish'}
+                </button>
+            </div>
+
+            <div className="space-y-6">
+                {categories.map((cat, catIndex) => (
+                    <div key={catIndex} className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm relative group transition-all hover:border-border">
+                        <button
+                            onClick={() => handleRemoveCategory(catIndex)}
+                            className="absolute top-6 right-6 p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                            title="Remove Section"
+                        >
+                            <Trash2 size={20} />
+                        </button>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 pr-12">
+                            <div>
+                                <label className="block text-xs font-black text-muted-foreground uppercase tracking-widest mb-2">Section Title</label>
+                                <input
+                                    type="text"
+                                    value={cat.title}
+                                    onChange={(e) => handleChangeCategory(catIndex, 'title', e.target.value)}
+                                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/50 outline-none transition-all"
+                                    placeholder="e.g. Makeup for Everyone"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-black text-muted-foreground uppercase tracking-widest mb-2">Footer Text</label>
+                                    <input
+                                        type="text"
+                                        value={cat.footerText}
+                                        onChange={(e) => handleChangeCategory(catIndex, 'footerText', e.target.value)}
+                                        className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm font-medium text-foreground outline-none"
+                                        placeholder="Shop all..."
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-black text-muted-foreground uppercase tracking-widest mb-2">Footer Link</label>
+                                    <input
+                                        type="text"
+                                        value={cat.footerLink}
+                                        onChange={(e) => handleChangeCategory(catIndex, 'footerLink', e.target.value)}
+                                        className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm font-medium text-foreground outline-none"
+                                        placeholder="/categories?category=..."
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {cat.items.map((item: any, itemIndex: number) => (
+                                <div key={itemIndex} className="border border-border/50 rounded-xl p-4 bg-background/50 space-y-3 flex flex-col items-center">
+                                    <div className="text-xs font-black text-primary uppercase tracking-widest w-full text-center">Tile {itemIndex + 1}</div>
+                                    {item.image ? (
+                                        <div className="w-20 h-20 rounded bg-muted overflow-hidden flex-shrink-0">
+                                            <img src={item.image} alt={item.label} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97' }} />
+                                        </div>
+                                    ) : (
+                                        <div className="w-20 h-20 rounded bg-muted border border-border border-dashed flex items-center justify-center text-[10px] text-muted-foreground uppercase text-center p-2">No Image</div>
+                                    )}
+                                    <input
+                                        type="text"
+                                        value={item.label}
+                                        onChange={(e) => handleChangeItem(catIndex, itemIndex, 'label', e.target.value)}
+                                        className="w-full bg-background border border-border rounded-lg px-2 py-2 text-xs font-bold text-center outline-none"
+                                        placeholder="Label"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={item.image}
+                                        onChange={(e) => handleChangeItem(catIndex, itemIndex, 'image', e.target.value)}
+                                        className="w-full bg-background border border-border rounded-lg px-2 py-2 text-xs font-medium text-center outline-none"
+                                        placeholder="Image URL"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={item.link}
+                                        onChange={(e) => handleChangeItem(catIndex, itemIndex, 'link', e.target.value)}
+                                        className="w-full bg-background border border-border rounded-lg px-2 py-2 text-xs font-medium text-center outline-none"
+                                        placeholder="Target URL /categories?..."
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <button
+                onClick={handleAddCategory}
+                className="w-full py-6 border-2 border-dashed border-primary/30 rounded-2xl text-primary font-black uppercase tracking-widest hover:bg-primary/5 hover:border-primary/50 transition-all flex items-center justify-center gap-2"
+            >
+                <Plus size={24} /> Add New Catalog Section
+            </button>
+        </div>
+    );
+}

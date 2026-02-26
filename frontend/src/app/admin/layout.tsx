@@ -20,7 +20,8 @@ import {
     Shield,
     Ticket,
     Moon,
-    Sun
+    Sun,
+    Home
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
@@ -43,6 +44,7 @@ const ADMIN_LINKS = [
     { label: 'Team', href: '/admin/team', icon: Users },
     { label: 'Invite Center', href: '/admin/invite', icon: UserPlus },
     { label: 'Settings', href: '/admin/settings', icon: Settings },
+    { label: 'Homepage', href: '/admin/homepage', icon: Home },
 ];
 
 

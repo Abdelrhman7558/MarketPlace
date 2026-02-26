@@ -5,7 +5,7 @@ import AmazonNavbar from '@/components/layout/AmazonNavbar';
 import AmazonHero from '@/components/ui/AmazonHero';
 import AmazonCardTile from '@/components/ui/AmazonCardTile';
 import { BRANDS, type Product } from '@/lib/products';
-import { fetchProducts } from '@/lib/api';
+import { fetchProducts, getHomepageCategories } from '@/lib/api';
 import ProductCard from '@/components/product/ProductCard';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -29,11 +29,17 @@ export default function Home() {
     const [selectedPopularBrand, setSelectedPopularBrand] = useState<string | null>(null);
     const [products, setProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [dynamicCategories, setDynamicCategories] = useState<any[] | null>(null);
 
     useEffect(() => {
         fetchProducts().then(data => {
             setProducts(data);
             setIsLoading(false);
+        });
+        getHomepageCategories().then(data => {
+            if (data && Array.isArray(data)) {
+                setDynamicCategories(data);
+            }
         });
     }, []);
 
@@ -65,52 +71,66 @@ export default function Home() {
 
                     {/* Catalog Grid */}
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-                        <AmazonCardTile
-                            title={t('home', 'makeup')}
-                            items={[
-                                { label: "Women's Beauty", image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=200&h=200&fit=crop", link: "/categories?category=Makeup" },
-                                { label: "Men's Grooming", image: "https://images.unsplash.com/photo-1590156221122-c748c789d36a?w=200&h=200&fit=crop", link: "/categories?category=Makeup" },
-                                { label: "Skincare", image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
-                                { label: "Bestsellers", image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=200&h=200&fit=crop", link: "/categories?category=Makeup" }
-                            ]}
-                            footerLink="/categories?category=Makeup"
-                            footerText={t('home', 'shopAllBeauty')}
-                        />
-                        <AmazonCardTile
-                            title={t('home', 'fragrances')}
-                            items={[
-                                { label: "For Men", image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=200&h=200&fit=crop", link: "/categories?category=Perfume" },
-                                { label: "For Women", image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=200&h=200&fit=crop", link: "/categories?category=Perfume" },
-                                { label: "Gift Sets", image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=200&h=200&fit=crop", link: "/categories?category=Perfume" },
-                                { label: "New Arrivals", image: "https://images.unsplash.com/photo-1583467875263-d50dec37a88c?w=200&h=200&fit=crop", link: "/categories?category=Perfume" }
-                            ]}
-                            footerLink="/categories?category=Perfume"
-                            footerText={t('home', 'seeAllPerfumes')}
-                        />
-                        <AmazonCardTile
-                            title={t('home', 'personalCare')}
-                            items={[
-                                { label: "Body Care", image: "https://images.unsplash.com/photo-1612817288484-6f916006741a?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
-                                { label: "Hair Care", image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
-                                { label: "Oral Care", image: "https://images.unsplash.com/photo-1559613122-02ec9d898a00?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
-                                { label: "Shaving", image: "https://images.unsplash.com/photo-1626285492eda-fa605a9a4734?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" }
-                            ]}
-                            footerLink="/categories?category=Personal Care"
-                            footerText={t('home', 'essentials')}
-                        />
-                        <AmazonCardTile
-                            title={t('home', 'homeCleaning')}
-                            items={[
-                                { label: "Laundry", image: "https://images.unsplash.com/photo-1583947581924-860bda6a26df?w=200&h=200&fit=crop", link: "/categories?category=Home Care" },
-                                { label: "Dishwashing", image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=200&h=200&fit=crop", link: "/categories?category=Home Care" },
-                                { label: "Surface Care", image: "https://images.unsplash.com/photo-1584622781564-1d987f7333c1?w=200&h=200&fit=crop", link: "/categories?category=Home Care" },
-                                { label: "Paper & Plastic", image: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=200&h=200&fit=crop", link: "/categories?category=Home Care" }
-                            ]}
-                            footerLink="/categories?category=Home Care"
-                            footerText={t('home', 'shopHousehold')}
-                        />
-                    </div>
+                    {dynamicCategories ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+                            {dynamicCategories.slice(0, 4).map((cat: any, i: number) => (
+                                <AmazonCardTile
+                                    key={`top-${i}`}
+                                    title={cat.title}
+                                    items={cat.items}
+                                    footerLink={cat.footerLink}
+                                    footerText={cat.footerText}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+                            <AmazonCardTile
+                                title={t('home', 'makeup')}
+                                items={[
+                                    { label: "Women's Beauty", image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=200&h=200&fit=crop", link: "/categories?category=Makeup" },
+                                    { label: "Men's Grooming", image: "https://images.unsplash.com/photo-1590156221122-c748c789d36a?w=200&h=200&fit=crop", link: "/categories?category=Makeup" },
+                                    { label: "Skincare", image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
+                                    { label: "Bestsellers", image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=200&h=200&fit=crop", link: "/categories?category=Makeup" }
+                                ]}
+                                footerLink="/categories?category=Makeup"
+                                footerText={t('home', 'shopAllBeauty')}
+                            />
+                            <AmazonCardTile
+                                title={t('home', 'fragrances')}
+                                items={[
+                                    { label: "For Men", image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=200&h=200&fit=crop", link: "/categories?category=Perfume" },
+                                    { label: "For Women", image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=200&h=200&fit=crop", link: "/categories?category=Perfume" },
+                                    { label: "Gift Sets", image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=200&h=200&fit=crop", link: "/categories?category=Perfume" },
+                                    { label: "New Arrivals", image: "https://images.unsplash.com/photo-1583467875263-d50dec37a88c?w=200&h=200&fit=crop", link: "/categories?category=Perfume" }
+                                ]}
+                                footerLink="/categories?category=Perfume"
+                                footerText={t('home', 'seeAllPerfumes')}
+                            />
+                            <AmazonCardTile
+                                title={t('home', 'personalCare')}
+                                items={[
+                                    { label: "Body Care", image: "https://images.unsplash.com/photo-1612817288484-6f916006741a?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
+                                    { label: "Hair Care", image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
+                                    { label: "Oral Care", image: "https://images.unsplash.com/photo-1559613122-02ec9d898a00?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" },
+                                    { label: "Shaving", image: "https://images.unsplash.com/photo-1626285492eda-fa605a9a4734?w=200&h=200&fit=crop", link: "/categories?category=Personal Care" }
+                                ]}
+                                footerLink="/categories?category=Personal Care"
+                                footerText={t('home', 'essentials')}
+                            />
+                            <AmazonCardTile
+                                title={t('home', 'homeCleaning')}
+                                items={[
+                                    { label: "Laundry", image: "https://images.unsplash.com/photo-1583947581924-860bda6a26df?w=200&h=200&fit=crop", link: "/categories?category=Home Care" },
+                                    { label: "Dishwashing", image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=200&h=200&fit=crop", link: "/categories?category=Home Care" },
+                                    { label: "Surface Care", image: "https://images.unsplash.com/photo-1584622781564-1d987f7333c1?w=200&h=200&fit=crop", link: "/categories?category=Home Care" },
+                                    { label: "Paper & Plastic", image: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=200&h=200&fit=crop", link: "/categories?category=Home Care" }
+                                ]}
+                                footerLink="/categories?category=Home Care"
+                                footerText={t('home', 'shopHousehold')}
+                            />
+                        </div>
+                    )}
 
                     {/* Best Sellers Scroller */}
                     <CatalogSection title={t('home', 'trendingBevs')}>
@@ -178,41 +198,55 @@ export default function Home() {
                     </CatalogSection>
 
                     {/* Secondary Catalog Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mt-8">
-                        <AmazonCardTile
-                            title={t('home', 'bulkBevs')}
-                            items={[
-                                { label: "Energy Drinks", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&h=200&fit=crop", link: "/categories?category=Energy Drinks" },
-                                { label: "Soft Drinks", image: "https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=200&h=200&fit=crop", link: "/categories?category=Soft Drinks" },
-                                { label: "Juices", image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=200&h=200&fit=crop", link: "/categories?category=Soft Drinks" },
-                                { label: "Water", image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=200&h=200&fit=crop", link: "/categories?category=Soft Drinks" }
-                            ]}
-                            footerLink="/categories?category=Soft Drinks"
-                            footerText={t('home', 'restockDrinks')}
-                        />
-                        <AmazonCardTile
-                            title={t('home', 'snacks')}
-                            items={[
-                                { label: "Biscuits", image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" },
-                                { label: "Chocolates", image: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" },
-                                { label: "Chips", image: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" },
-                                { label: "Gums", image: "https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" }
-                            ]}
-                            footerLink="/categories?category=Snacks & Sweets"
-                            footerText={t('home', 'treatsInBulk')}
-                        />
-                        <AmazonCardTile
-                            title={t('home', 'coffeeTea')}
-                            items={[
-                                { label: "Instant Coffee", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" },
-                                { label: "Ground Coffee", image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" },
-                                { label: "Tea Bags", image: "https://images.unsplash.com/photo-1594631252845-29fc4586d517?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" },
-                                { label: "Creamers", image: "https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" }
-                            ]}
-                            footerLink="/categories?category=Coffee & Tea"
-                            footerText={t('home', 'caffeineSelection')}
-                        />
-                    </div>
+                    {dynamicCategories && dynamicCategories.length > 4 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mt-8">
+                            {dynamicCategories.slice(4).map((cat: any, i: number) => (
+                                <AmazonCardTile
+                                    key={`bottom-${i}`}
+                                    title={cat.title}
+                                    items={cat.items}
+                                    footerLink={cat.footerLink}
+                                    footerText={cat.footerText}
+                                />
+                            ))}
+                        </div>
+                    ) : !dynamicCategories ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mt-8">
+                            <AmazonCardTile
+                                title={t('home', 'bulkBevs')}
+                                items={[
+                                    { label: "Energy Drinks", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&h=200&fit=crop", link: "/categories?category=Energy Drinks" },
+                                    { label: "Soft Drinks", image: "https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=200&h=200&fit=crop", link: "/categories?category=Soft Drinks" },
+                                    { label: "Juices", image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=200&h=200&fit=crop", link: "/categories?category=Soft Drinks" },
+                                    { label: "Water", image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=200&h=200&fit=crop", link: "/categories?category=Soft Drinks" }
+                                ]}
+                                footerLink="/categories?category=Soft Drinks"
+                                footerText={t('home', 'restockDrinks')}
+                            />
+                            <AmazonCardTile
+                                title={t('home', 'snacks')}
+                                items={[
+                                    { label: "Biscuits", image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" },
+                                    { label: "Chocolates", image: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" },
+                                    { label: "Chips", image: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" },
+                                    { label: "Gums", image: "https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=200&h=200&fit=crop", link: "/categories?category=Snacks & Sweets" }
+                                ]}
+                                footerLink="/categories?category=Snacks & Sweets"
+                                footerText={t('home', 'treatsInBulk')}
+                            />
+                            <AmazonCardTile
+                                title={t('home', 'coffeeTea')}
+                                items={[
+                                    { label: "Instant Coffee", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" },
+                                    { label: "Ground Coffee", image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" },
+                                    { label: "Tea Bags", image: "https://images.unsplash.com/photo-1594631252845-29fc4586d517?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" },
+                                    { label: "Creamers", image: "https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=200&h=200&fit=crop", link: "/categories?category=Coffee & Tea" }
+                                ]}
+                                footerLink="/categories?category=Coffee & Tea"
+                                footerText={t('home', 'caffeineSelection')}
+                            />
+                        </div>
+                    ) : null}
                 </div>
             </main>
 
