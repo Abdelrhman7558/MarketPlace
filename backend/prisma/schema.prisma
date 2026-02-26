@@ -23,6 +23,12 @@ enum UserStatus {
   BLOCKED
 }
 
+enum ProductStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum PlacementType {
   HERO
   FEATURED
@@ -54,6 +60,7 @@ model User {
   role      Role     @default(CUSTOMER)
   status    UserStatus @default(PENDING_APPROVAL)
   phone     String?
+  avatar    String?
   companyName String?
   website     String?
   socialLinks String?
@@ -73,6 +80,10 @@ model Product {
   stock       Int      @default(0)
   category    String
   images      String[]
+  ean         String?
+  status      ProductStatus @default(PENDING)
+  adminNotes  String?
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -214,5 +225,13 @@ model Coupon {
   isActive       Boolean  @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model AppConfig {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 

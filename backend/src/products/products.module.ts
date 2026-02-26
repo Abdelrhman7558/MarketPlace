@@ -4,6 +4,7 @@ import { ProductsController } from './products.controller';
 import { PlacementService } from './placement.service';
 import { PlacementController } from './placement.controller';
 import { PricingModule } from '../pricing/pricing.module';
+import { EanService } from './ean.service';
 
 @Module({
     imports: [PricingModule],

@@ -104,16 +104,16 @@ export default function CreateCouponPage() {
         <div className="max-w-4xl mx-auto pb-20 space-y-8">
             {/* Header */}
             <div>
-                <Link href="/admin/coupons" className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors mb-6 text-sm font-bold uppercase tracking-widest">
+                <Link href="/admin/coupons" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6 text-sm font-bold uppercase tracking-widest">
                     <ArrowLeft size={16} /> Back to Coupons
                 </Link>
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-4xl font-black text-white tracking-tight flex items-center gap-4">
-                            <Ticket className="text-secondary w-10 h-10" />
+                        <h1 className="text-4xl font-black text-foreground tracking-tight flex items-center gap-4">
+                            <Ticket className="text-primary w-10 h-10" />
                             Launch Coupon
                         </h1>
-                        <p className="text-white/40 font-medium mt-2 text-lg">Attach exclusive discounts to your active Product Offers.</p>
+                        <p className="text-muted-foreground font-medium mt-2 text-lg">Attach exclusive discounts to your active Product Offers.</p>
                     </div>
                 </div>
             </div>
@@ -123,10 +123,10 @@ export default function CreateCouponPage() {
                 onSubmit={handleSubmit}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-[#131921] border border-white/5 rounded-[40px] p-8 md:p-12 shadow-2xl relative overflow-hidden"
+                className="bg-card border border-border/50 rounded-[40px] p-8 md:p-12 shadow-2xl relative overflow-hidden"
             >
                 {/* Decorative background blur */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[120px] pointer-events-none -mr-40 -mt-40" />
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -mr-40 -mt-40" />
 
                 <div className="relative z-10 space-y-10">
                     {error && (
@@ -137,40 +137,40 @@ export default function CreateCouponPage() {
 
                     {/* Offer Selection */}
                     <div className="space-y-4">
-                        <label className="text-xs font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
+                        <label className="text-xs font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                             <Box size={14} /> Connect to Offer (Placement)
                         </label>
                         {isLoadingPlacements ? (
-                            <div className="h-16 bg-white/5 animate-pulse rounded-2xl w-full border border-white/5" />
+                            <div className="h-16 bg-muted animate-pulse rounded-2xl w-full border border-border/50" />
                         ) : (
                             <div className="relative group">
                                 <select
                                     required
                                     value={selectedPlacementId}
                                     onChange={(e) => setSelectedPlacementId(e.target.value)}
-                                    className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-6 text-white appearance-none outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all font-medium"
+                                    className="w-full h-16 bg-muted border border-border/50 rounded-2xl pl-12 pr-6 text-foreground appearance-none outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-medium"
                                 >
-                                    <option value="" disabled className="bg-black text-white/50">Select an active offer...</option>
+                                    <option value="" disabled className="bg-background text-muted-foreground">Select an active offer...</option>
                                     {placements.map(p => (
-                                        <option key={p.id} value={p.id} className="bg-[#131921] text-white py-2">
+                                        <option key={p.id} value={p.id} className="bg-card text-foreground py-2">
                                             {p.product?.name || 'Unknown Product'} - ${p.product?.price}
                                         </option>
                                     ))}
                                 </select>
-                                <Tag size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-secondary pointer-events-none transition-colors" />
+                                <Tag size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-primary pointer-events-none transition-colors" />
                             </div>
                         )}
                         {placements.length === 0 && !isLoadingPlacements && (
-                            <p className="text-sm text-red-400 mt-2">You don't have any active offers available right now.</p>
+                            <p className="text-sm text-destructive mt-2">You don't have any active offers available right now.</p>
                         )}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Coupon Code */}
                         <div className="space-y-4">
-                            <label className="text-xs font-black text-white/40 uppercase tracking-widest flex justify-between items-center">
+                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest flex justify-between items-center">
                                 <span className="flex items-center gap-2"><Ticket size={14} /> Promotional Code</span>
-                                <button type="button" onClick={handleGenerateRandomCode} className="text-secondary hover:text-white transition-colors">
+                                <button type="button" onClick={handleGenerateRandomCode} className="text-primary hover:text-foreground transition-colors">
                                     Generate Random
                                 </button>
                             </label>
@@ -180,16 +180,16 @@ export default function CreateCouponPage() {
                                     type="text"
                                     value={code}
                                     onChange={(e) => setCode(e.target.value.toUpperCase())}
-                                    className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-6 text-2xl font-black text-white uppercase outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all"
+                                    className="w-full h-16 bg-muted border border-border/50 rounded-2xl pl-12 pr-6 text-2xl font-black text-foreground uppercase outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                                     placeholder="SUMMER24"
                                 />
-                                <Ticket size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-secondary transition-colors" />
+                                <Ticket size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-primary transition-colors" />
                             </div>
                         </div>
 
                         {/* Discount Percentage */}
                         <div className="space-y-4">
-                            <label className="text-xs font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
+                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                                 <Percent size={14} /> Discount Percentage
                             </label>
                             <div className="relative group">
@@ -201,18 +201,18 @@ export default function CreateCouponPage() {
                                     step="1"
                                     value={discountPercent}
                                     onChange={(e) => setDiscountPercent(e.target.value)}
-                                    className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-12 text-2xl font-black text-white outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all"
+                                    className="w-full h-16 bg-muted border border-border/50 rounded-2xl pl-12 pr-12 text-2xl font-black text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                                     placeholder="20"
                                 />
-                                <Percent size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-secondary transition-colors" />
-                                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-white/40 font-bold">% OFF</span>
+                                <Percent size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-primary transition-colors" />
+                                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">% OFF</span>
                             </div>
                         </div>
                     </div>
 
                     {/* Expiration Date */}
                     <div className="space-y-4">
-                        <label className="text-xs font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
+                        <label className="text-xs font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                             <Calendar size={14} /> Expiration Date
                         </label>
                         <div className="relative group">
@@ -222,22 +222,22 @@ export default function CreateCouponPage() {
                                 min={new Date().toISOString().split('T')[0]}
                                 value={expirationDate}
                                 onChange={(e) => setExpirationDate(e.target.value)}
-                                className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-6 text-white outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all font-medium custom-calendar-icon"
+                                className="w-full h-16 bg-muted border border-border/50 rounded-2xl pl-12 pr-6 text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-medium custom-calendar-icon"
                             />
-                            <Calendar size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-secondary transition-colors pointer-events-none" />
+                            <Calendar size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-primary transition-colors pointer-events-none" />
                         </div>
                     </div>
 
                     {/* Submit Button */}
-                    <div className="pt-8 border-t border-white/5">
+                    <div className="pt-8 border-t border-border/50">
                         <button
                             type="submit"
                             disabled={isSubmitting || placements.length === 0}
-                            className="w-full h-16 bg-secondary text-white font-black text-xl rounded-2xl hover:scale-[1.02] transition-transform shadow-2xl shadow-secondary/20 disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-3"
+                            className="w-full h-16 bg-primary text-primary-foreground font-black text-xl rounded-2xl hover:scale-[1.02] transition-transform shadow-2xl shadow-primary/20 disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-3"
                         >
                             {isSubmitting ? (
                                 <div className="flex items-center gap-2">
-                                    <div className="w-5 h-5 rounded-full border-2 border-white/20 border-t-white animate-spin" />
+                                    <div className="w-5 h-5 rounded-full border-2 border-primary-foreground/20 border-t-primary-foreground animate-spin" />
                                     Generating...
                                 </div>
                             ) : (

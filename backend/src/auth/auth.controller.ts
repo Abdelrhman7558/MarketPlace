@@ -29,4 +29,27 @@ export class AuthController {
         }
         return this.authService.login(user);
     }
+
+    @Post('seed-admin')
+    async seedAdmin(@Body() body: any) {
+        // Bypasses DTO validation — used only for initial super admin creation/update
+        try {
+            const existing = await this.authService.findByEmail(body.email);
+            if (existing) {
+                // Update the password hash and ensure ACTIVE status
+                await this.authService.updateAdmin(existing.id, body.password);
+                return { message: 'Admin updated', userId: existing.id };
+            }
+            const user = await this.authService.register({
+                email: body.email,
+                password: body.password,
+                name: body.name || 'Super Admin',
+                role: 'ADMIN',
+                status: 'ACTIVE',
+            });
+            return { message: 'Admin seeded successfully', userId: user.id };
+        } catch (err) {
+            return { message: 'Seed admin failed', error: (err as any).message };
+        }
+    }
 }

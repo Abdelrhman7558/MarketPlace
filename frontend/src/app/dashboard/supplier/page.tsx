@@ -12,17 +12,11 @@ import { Badge } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';
 import ProductEditorModal from './ProductEditorModal';
 
-const MOCK_PRODUCTS = [
-    { id: 'PRD-001', name: 'Coca Cola Classic 330ml', stock: 1200, price: '$0.85', status: 'Active', trend: '+12%' },
-    { id: 'PRD-002', name: 'Monster Energy 500ml', stock: 450, price: '$1.45', status: 'Low Stock', trend: '+45%' },
-    { id: 'PRD-003', name: 'Evian Water 500ml', stock: 3200, price: '$0.65', status: 'Active', trend: '-2%' },
-    { id: 'PRD-004', name: 'Red Bull Sugar Free', stock: 0, price: '$1.55', status: 'Out of Stock', trend: '+18%' },
-];
-
 export default function SupplierDashboard() {
     const [searchTerm, setSearchTerm] = useState('');
     const [isProductModalOpen, setIsProductModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<any>(null);
+    const [products, setProducts] = useState<any[]>([]); // Load from API later
 
     const handleNewProduct = () => {
         setEditingProduct(null);
@@ -142,7 +136,14 @@ export default function SupplierDashboard() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border/50">
-                            {MOCK_PRODUCTS.map((product) => (
+                            {products.length === 0 && (
+                                <tr>
+                                    <td colSpan={6} className="px-8 py-10 text-center text-muted-foreground text-sm font-bold">
+                                        No active products found.
+                                    </td>
+                                </tr>
+                            )}
+                            {products.map((product) => (
                                 <tr key={product.id} className="hover:bg-muted/20 transition-colors group">
                                     <td className="px-8 py-6">
                                         <div>

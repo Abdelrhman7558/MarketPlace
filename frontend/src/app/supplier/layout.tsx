@@ -25,7 +25,6 @@ const SUPPLIER_LINKS = [
     { label: 'Inventory Manager', href: '/supplier/products', icon: Box },
     { label: 'Offers & Ads', href: '/supplier/offers', icon: ListPlus },
     { label: 'My Sales', href: '/supplier/orders', icon: ShoppingCart },
-    { label: 'Customer Chat', href: '/supplier/messages', icon: MessageSquare },
 ];
 
 
@@ -36,22 +35,22 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
     const { user, logout } = useAuth();
 
     return (
-        <div className="flex h-screen bg-[#0A0D12] overflow-hidden transition-colors duration-500">
+        <div className="flex h-screen bg-background overflow-hidden transition-colors duration-500">
             {/* Sidebar */}
             <aside className={cn(
-                "bg-[#131921] border-r border-white/5 transition-all duration-300 flex flex-col z-50",
+                "bg-card border-r border-border/50 transition-all duration-300 flex flex-col z-50",
                 isOpen ? "w-64" : "w-20"
             )}>
                 {/* Sidebar Header */}
-                <div className="h-20 flex items-center justify-between px-6 border-b border-white/5">
+                <div className="h-20 flex items-center justify-between px-6 border-b border-border/50">
                     {isOpen ? (
-                        <Link href="/" className="font-heading font-black text-xl tracking-tighter text-white">
+                        <Link href="/" className="font-heading font-black text-xl tracking-tighter text-foreground">
                             Market<span className="text-primary">Place</span>
                         </Link>
                     ) : (
-                        <div className="w-8 h-8 bg-primary rounded flex items-center justify-center font-black text-xs text-[#131921]">S</div>
+                        <div className="w-8 h-8 bg-primary rounded flex items-center justify-center font-black text-xs text-primary-foreground">S</div>
                     )}
-                    <button onClick={() => setIsOpen(!isOpen)} className="text-white/60 hover:text-white transition-colors">
+                    <button onClick={() => setIsOpen(!isOpen)} className="text-muted-foreground hover:text-foreground transition-colors">
                         {isOpen ? <X size={20} /> : <Menu size={20} />}
                     </button>
                 </div>
@@ -68,8 +67,8 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
                                 className={cn(
                                     "flex items-center gap-4 px-4 py-3 rounded-xl transition-all group",
                                     isActive
-                                        ? "bg-primary text-[#131921] font-bold shadow-lg shadow-primary/20"
-                                        : "text-white/60 hover:text-white hover:bg-white/5"
+                                        ? "bg-primary text-primary-foreground font-bold shadow-lg shadow-primary/20"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                 )}
                             >
                                 <Icon size={20} className={cn("transition-transform group-hover:scale-110", isActive ? "stroke-[2.5]" : "")} />
@@ -80,13 +79,13 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
                 </nav>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-white/5">
+                <div className="p-4 border-t border-border/50">
                     <button
                         onClick={() => {
                             logout();
                             window.location.href = '/';
                         }}
-                        className="flex items-center gap-4 px-4 py-3 w-full text-white/40 hover:text-red-400 hover:bg-red-400/5 rounded-xl transition-all group"
+                        className="flex items-center gap-4 px-4 py-3 w-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all group"
                     >
                         <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
                         {isOpen && <span className="text-sm font-bold">Sign Out</span>}
@@ -97,22 +96,22 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
             {/* Main Content Area */}
             <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
                 {/* Header Row */}
-                <header className="h-20 bg-[#131921]/50 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-8 z-40">
+                <header className="h-20 bg-background/80 backdrop-blur-xl border-b border-border/50 flex items-center justify-between px-8 z-40">
                     <div className="flex items-center gap-8">
                         <div className="flex flex-col">
-                            <h2 className="text-white font-black tracking-tight text-xl">Business Hub</h2>
+                            <h2 className="text-foreground font-black tracking-tight text-xl">Business Hub</h2>
                             <p className="text-emerald-500 text-[10px] font-black uppercase tracking-[0.2em] leading-none mt-1">Direct Sales Access</p>
                         </div>
 
                         {/* Quick KPIs in Header */}
-                        <div className="hidden lg:flex items-center gap-8 border-l border-white/10 pl-8">
+                        <div className="hidden lg:flex items-center gap-8 border-l border-border/50 pl-8">
                             <div className="flex flex-col">
-                                <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">Revenue (MTD)</span>
-                                <span className="text-sm font-black text-white">$8,420.00</span>
+                                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Revenue (MTD)</span>
+                                <span className="text-sm font-black text-foreground">$8,420.00</span>
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">Active Sales</span>
-                                <span className="text-sm font-black text-emerald-400">12</span>
+                                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Active Sales</span>
+                                <span className="text-sm font-black text-emerald-500">12</span>
                             </div>
                         </div>
                     </div>
@@ -121,32 +120,32 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
                         <div className="relative group">
                             <button
                                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                                className="p-2 rounded-xl hover:bg-white/5 transition-all outline-none"
+                                className="p-2 rounded-xl hover:bg-muted transition-all outline-none"
                             >
-                                <Bell size={20} className="text-white/60 group-hover:text-emerald-400 transition-colors" />
-                                <span className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full border-2 border-[#131921]" />
+                                <Bell size={20} className="text-muted-foreground group-hover:text-emerald-500 transition-colors" />
+                                <span className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full border-2 border-background" />
                             </button>
 
                             {/* Dropdown Notification Preview */}
                             <div className={cn(
-                                "absolute top-full right-0 mt-4 w-80 bg-[#131921] border border-white/10 rounded-2xl shadow-2xl transition-all p-4 z-[100] origin-top-right",
+                                "absolute top-full right-0 mt-4 w-80 bg-card border border-border/50 rounded-2xl shadow-2xl transition-all p-4 z-[100] origin-top-right",
                                 isNotificationsOpen ? "scale-100 opacity-100 visible" : "scale-95 opacity-0 invisible"
                             )}>
-                                <h4 className="text-xs font-black text-white uppercase tracking-widest mb-4">Urgent Actions</h4>
+                                <h4 className="text-xs font-black text-foreground uppercase tracking-widest mb-4">Urgent Actions</h4>
                                 <div className="space-y-3">
-                                    <Link href="/supplier/orders" onClick={() => setIsNotificationsOpen(false)} className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5 hover:border-emerald-500/50 transition-colors">
+                                    <Link href="/supplier/orders" onClick={() => setIsNotificationsOpen(false)} className="flex items-center gap-3 p-2 rounded-lg bg-muted/50 border border-border/50 hover:border-emerald-500/50 transition-colors">
                                         <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                                        <p className="text-[10px] text-white/80 font-medium group-hover:text-emerald-400">New wholesale order received</p>
+                                        <p className="text-[10px] text-foreground/80 font-medium group-hover:text-emerald-500">New wholesale order received</p>
                                     </Link>
-                                    <Link href="/supplier/messages" onClick={() => setIsNotificationsOpen(false)} className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/5 hover:border-emerald-500/50 transition-colors">
+                                    <Link href="/supplier/messages" onClick={() => setIsNotificationsOpen(false)} className="flex items-center gap-3 p-2 rounded-lg bg-muted/50 border border-border/50 hover:border-emerald-500/50 transition-colors">
                                         <div className="w-2 h-2 rounded-full bg-blue-500" />
-                                        <p className="text-[10px] text-white/80 font-medium group-hover:text-emerald-400">New message from buyer</p>
+                                        <p className="text-[10px] text-foreground/80 font-medium group-hover:text-emerald-500">New message from buyer</p>
                                     </Link>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="h-8 w-[1px] bg-white/10 mx-2" />
+                        <div className="h-8 w-[1px] bg-border/50 mx-2" />
 
                         <UserMenu role="supplier" />
                     </div>
@@ -160,12 +159,12 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className="absolute inset-0 z-50 bg-[#131921]/60 backdrop-blur-md flex items-center justify-center p-8"
+                                className="absolute inset-0 z-50 bg-background/60 backdrop-blur-md flex items-center justify-center p-8"
                             >
                                 <motion.div
                                     initial={{ scale: 0.9, y: 20 }}
                                     animate={{ scale: 1, y: 0 }}
-                                    className="max-w-md w-full bg-[#131921] border border-white/10 rounded-[40px] p-10 text-center shadow-2xl relative overflow-hidden"
+                                    className="max-w-md w-full bg-card border border-border/50 rounded-[40px] p-10 text-center shadow-2xl relative overflow-hidden"
                                 >
                                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500/0 via-amber-500 to-amber-500/0" />
 
@@ -173,24 +172,24 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
                                         <Clock className="text-amber-500 animate-pulse" size={40} />
                                     </div>
 
-                                    <h3 className="text-2xl font-black text-white mb-4 tracking-tight">Registration Pending</h3>
-                                    <p className="text-white/40 text-sm font-medium leading-relaxed mb-10">
+                                    <h3 className="text-2xl font-black text-foreground mb-4 tracking-tight">Registration Pending</h3>
+                                    <p className="text-muted-foreground text-sm font-medium leading-relaxed mb-10">
                                         Your supplier application is currently under review by our administration team.
                                         You'll get full access to the vendor hub as soon as your account is verified.
                                     </p>
 
                                     <div className="space-y-4">
-                                        <div className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5 text-left">
+                                        <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-2xl border border-border/50 text-left">
                                             <div className="w-2 h-2 rounded-full bg-amber-500" />
                                             <div>
-                                                <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">Current Status</p>
-                                                <p className="text-xs font-bold text-white">Manual Verification in Progress</p>
+                                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Current Status</p>
+                                                <p className="text-xs font-bold text-foreground">Manual Verification in Progress</p>
                                             </div>
                                         </div>
 
                                         <button
                                             onClick={() => logout()}
-                                            className="w-full py-4 text-[11px] font-black text-white/20 hover:text-white uppercase tracking-[0.2em] transition-colors"
+                                            className="w-full py-4 text-[11px] font-black text-muted-foreground hover:text-foreground uppercase tracking-[0.2em] transition-colors"
                                         >
                                             Sign Out
                                         </button>

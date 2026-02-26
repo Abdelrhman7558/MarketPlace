@@ -20,6 +20,9 @@ export class UserDto {
     phone?: string;
 
     @Expose()
+    avatar?: string;
+
+    @Expose()
     companyName?: string;
 
     @Expose()

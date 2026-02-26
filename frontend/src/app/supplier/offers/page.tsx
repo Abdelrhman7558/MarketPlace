@@ -146,18 +146,22 @@ export default function SupplierOffersPage() {
     };
 
     return (
-        <div className="space-y-10 max-w-7xl mx-auto pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-12 max-w-[1400px] mx-auto pb-24 px-6 lg:px-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-                        <Tag className="text-primary" size={32} />
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 relative z-10">
+                <div className="space-y-2">
+                    <h1 className="text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-white/90 to-white/40 tracking-tight flex items-center gap-4">
+                        <span className="p-3 bg-primary/10 rounded-2xl border border-primary/20 shadow-lg shadow-primary/20">
+                            <Tag className="text-primary w-8 h-8" />
+                        </span>
                         Offers & Ad Placements
                     </h1>
-                    <p className="text-white/40 font-medium">Create performance-driven offers and boost visibility across the platform.</p>
+                    <p className="text-white/50 font-medium text-lg max-w-2xl pl-16">Supercharge your visibility. Deploy performance-driven campaigns directly to enterprise buyers.</p>
                 </div>
 
-                <button
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => {
                         setEditingId(null);
                         setFormData({
@@ -172,107 +176,131 @@ export default function SupplierOffersPage() {
                         });
                         setIsModalOpen(true);
                     }}
-                    className="h-12 px-6 bg-primary text-[#131921] font-black text-sm rounded-xl hover:scale-105 transition-transform shadow-lg shadow-primary/20 flex items-center gap-2"
+                    className="h-14 px-8 bg-primary text-[#131921] font-black text-base rounded-2xl shadow-2xl shadow-primary/30 flex items-center gap-3 overflow-hidden relative group"
                 >
-                    <Plus size={18} strokeWidth={3} /> Create New Offer
-                </button>
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                    <span className="relative z-10 flex items-center gap-2"><Plus size={20} strokeWidth={3} /> Launch Campaign</span>
+                </motion.button>
             </div>
 
-            {/* Pricing Tiers */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {Object.entries(SLOT_PRICES).map(([slot, price]) => (
-                    <div key={slot} className="relative group overflow-hidden bg-[#131921] border border-white/5 p-8 rounded-3xl hover:border-primary/30 transition-all">
-                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <ImageIcon size={64} />
-                        </div>
-                        <div className="relative z-10 space-y-4">
-                            <div className="flex items-center gap-2">
-                                <div className={cn(
-                                    "w-2 h-2 rounded-full",
-                                    slot === 'HERO' ? "bg-primary animate-pulse" : "bg-emerald-500"
-                                )} />
-                                <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">{slot} PLACEMENT</p>
+            {/* Pricing Tiers Glass Panels */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+                {Object.entries(SLOT_PRICES).map(([slot, price], index) => (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        key={slot}
+                        className="relative group overflow-hidden bg-white/[0.02] border border-white/10 rounded-[2rem] p-8 hover:bg-white/[0.04] transition-all duration-500 backdrop-blur-xl"
+                    >
+                        {/* Glow effect */}
+                        <div className={cn(
+                            "absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-0 group-hover:opacity-50 transition-opacity duration-700",
+                            slot === 'HERO' ? "bg-primary" : slot === 'FEATURED' ? "bg-purple-500" : slot === 'BANNER' ? "bg-blue-500" : "bg-emerald-500"
+                        )} />
+
+                        <div className="relative z-10 space-y-5">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className={cn(
+                                        "w-2.5 h-2.5 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.5)]",
+                                        slot === 'HERO' ? "bg-primary shadow-primary" : slot === 'FEATURED' ? "bg-purple-400 shadow-purple-400" : slot === 'BANNER' ? "bg-blue-400 shadow-blue-400" : "bg-emerald-400 shadow-emerald-400"
+                                    )} />
+                                    <p className="text-[11px] font-black text-white/50 uppercase tracking-[0.2em]">{slot}</p>
+                                </div>
+                                <ImageIcon size={20} className="text-white/20 group-hover:text-white/60 transition-colors" />
                             </div>
-                            <h3 className="text-3xl font-black text-white">${price}</h3>
-                            <p className="text-xs text-white/40 leading-relaxed">
-                                {slot === 'HERO' && "Maximum platform visibility. Premium homepage hero section display. (Requires Admin Approval)"}
+
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-xl font-bold text-white/40">$</span>
+                                <h3 className="text-5xl font-black text-white tracking-tighter">{price}</h3>
+                            </div>
+
+                            <p className="text-sm font-medium text-white/40 leading-relaxed border-t border-white/5 pt-5 min-h-[80px]">
+                                {slot === 'HERO' && "Maximum platform visibility. Premium homepage hero section display."}
                                 {slot === 'FEATURED' && "High visibility in search results and category featured sections."}
                                 {slot === 'BANNER' && "Consistent brand awareness via footer and sidebar banner placements."}
                                 {slot === 'LISTING' && "Highlighted standard product listing within specific categories."}
                             </p>
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
             </div>
 
-            {/* Offers Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {offers.map((offer) => (
-                    <motion.div
-                        layout
-                        key={offer.id}
-                        className="bg-[#131921] border border-white/5 rounded-3xl p-6 hover:border-white/10 transition-all group overflow-hidden relative"
-                    >
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-primary/10 transition-colors" />
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-12" />
 
-                        <div className="flex justify-between items-start mb-6">
-                            <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">
-                                    <Zap className="text-primary" size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-black text-white">{offer.title}</h3>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-[9px] font-black text-primary uppercase tracking-widest">{offer.type}</span>
-                                        <span className="w-1 h-1 rounded-full bg-white/10" />
-                                        <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">{offer.slot} SLOT</span>
+            {/* Offers Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 relative z-10">
+                <AnimatePresence>
+                    {offers.map((offer, index) => (
+                        <motion.div
+                            layout
+                            key={offer.id}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ delay: index * 0.05 }}
+                            className="bg-gradient-to-b from-[#1A222C] to-[#131921] border border-white/10 rounded-[2.5rem] p-8 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 group overflow-hidden relative"
+                        >
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-[100px] group-hover:bg-primary/20 transition-colors duration-700" />
+
+                            <div className="flex justify-between items-start mb-8 relative z-10">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 shadow-inner overflow-hidden">
+                                        <div className="w-full h-full bg-gradient-to-br from-primary/20 to-transparent flex items-center justify-center">
+                                            <Zap className="text-primary group-hover:scale-110 transition-transform duration-500" size={24} />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <h3 className="text-xl font-black text-white line-clamp-1 group-hover:text-primary transition-colors">{offer.title}</h3>
+                                        <div className="flex items-center gap-2">
+                                            <span className="px-2 py-0.5 rounded text-[10px] font-black text-[#131921] bg-primary uppercase tracking-widest leading-none">{offer.type}</span>
+                                            <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">{offer.slot} SLOT</span>
+                                        </div>
                                     </div>
                                 </div>
+                                <div className={cn(
+                                    "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm",
+                                    offer.status === 'ACTIVE' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                                        offer.status === 'PENDING' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
+                                            "bg-red-500/10 text-red-500 border-red-500/20"
+                                )}>
+                                    {offer.status}
+                                </div>
                             </div>
-                            <div className={cn(
-                                "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter border",
-                                offer.status === 'ACTIVE' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
-                                    offer.status === 'PENDING' ? "bg-primary/10 text-primary border-primary/20" :
-                                        "bg-red-500/10 text-red-500 border-red-500/20"
-                            )}>
-                                {offer.status}
-                            </div>
-                        </div>
 
-                        <div className="grid grid-cols-3 gap-4 py-6 border-y border-white/5 mb-6">
-                            <div className="space-y-1">
-                                <p className="text-[9px] font-black text-white/20 uppercase tracking-widest">Investment</p>
-                                <p className="text-sm font-black text-white">${offer.price}</p>
+                            <div className="bg-black/20 rounded-2xl p-5 grid grid-cols-3 gap-2 mb-8 relative z-10 border border-white/5">
+                                <div className="space-y-1.5 text-center px-2 border-r border-white/5">
+                                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Investment</p>
+                                    <p className="text-lg font-black text-white">${offer.price}</p>
+                                </div>
+                                <div className="space-y-1.5 text-center px-2 border-r border-white/5">
+                                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Expires</p>
+                                    <p className="text-sm font-bold text-white/80 mt-1">{new Date(offer.expiry).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
+                                </div>
+                                <div className="space-y-1.5 text-center px-2">
+                                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Views</p>
+                                    <p className="text-lg font-black text-emerald-400">{offer.impressions.toLocaleString()}</p>
+                                </div>
                             </div>
-                            <div className="space-y-1">
-                                <p className="text-[9px] font-black text-white/20 uppercase tracking-widest">Expires</p>
-                                <p className="text-sm font-black text-white/60">{offer.expiry}</p>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-[9px] font-black text-white/20 uppercase tracking-widest">Impressions</p>
-                                <p className="text-sm font-black text-emerald-400">{offer.impressions.toLocaleString()}</p>
-                            </div>
-                        </div>
 
-                        <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/5">
-                            <div className="flex items-center gap-2 text-white/40">
-                                <Clock size={12} />
-                                <span className="text-[10px] font-bold">Last updated 2h ago</span>
+                            <div className="flex items-center justify-between pt-2 relative z-10">
+                                <div className="flex items-center gap-2 text-white/30 bg-white/5 px-3 py-1.5 rounded-full">
+                                    <Clock size={12} />
+                                    <span className="text-[10px] font-bold uppercase tracking-wider">Updated 2h ago</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <button onClick={() => openEditModal(offer)} className="w-10 h-10 flex items-center justify-center text-white/40 hover:text-white transition-colors hover:bg-white/10 rounded-xl bg-white/5">
+                                        <Edit2 size={16} />
+                                    </button>
+                                    <button onClick={() => handleDelete(offer.id)} className="w-10 h-10 flex items-center justify-center text-white/40 hover:text-red-400 transition-colors hover:bg-red-500/10 rounded-xl bg-white/5">
+                                        <Trash size={16} />
+                                    </button>
+                                </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <button onClick={() => openEditModal(offer)} className="p-2 text-white/40 hover:text-primary transition-colors hover:bg-white/5 rounded-lg border border-transparent hover:border-white/10">
-                                    <Edit2 size={16} />
-                                </button>
-                                <button onClick={() => handleDelete(offer.id)} className="p-2 text-white/40 hover:text-red-400 transition-colors hover:bg-white/5 rounded-lg border border-transparent hover:border-white/10">
-                                    <Trash size={16} />
-                                </button>
-                                <button className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors ml-2">
-                                    Analytics
-                                </button>
-                            </div>
-                        </div>
-                    </motion.div>
-                ))}
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
             </div>
 
             {/* Create Offer Modal */}

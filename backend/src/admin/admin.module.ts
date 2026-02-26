@@ -6,11 +6,15 @@ import { DashboardService } from '../common/dashboard.service';
 import { AnalyticsService } from '../common/analytics.service';
 import { AuditService } from './audit.service';
 import { AuditController } from './audit.controller';
+import { AppConfigService } from './app-config.service';
+import { AppConfigController } from './app-config.controller';
+import { SecurityService } from './security.service';
+import { SecurityController } from './security.controller';
 
 @Module({
     imports: [ProductsModule],
-    providers: [ExcelService, DashboardService, AnalyticsService, AuditService],
-    controllers: [DashboardController, AuditController],
-    exports: [ExcelService, DashboardService, AnalyticsService, AuditService],
+    providers: [ExcelService, DashboardService, AnalyticsService, AuditService, AppConfigService],
+    controllers: [DashboardController, AuditController, AppConfigController],
+    exports: [ExcelService, DashboardService, AnalyticsService, AuditService, AppConfigService],
 })
 export class AdminModule { }

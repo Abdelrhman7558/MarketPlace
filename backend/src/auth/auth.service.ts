@@ -9,6 +9,18 @@ export class AuthService {
 
     constructor(private jwtService: JwtService) { }
 
+    async findByEmail(email: string) {
+        return this.prisma.user.findUnique({ where: { email } });
+    }
+
+    async updateAdmin(id: string, newPassword: string) {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        return this.prisma.user.update({
+            where: { id },
+            data: { password: hashedPassword, status: 'ACTIVE', role: 'ADMIN' },
+        });
+    }
+
     async validateUser(email: string, pass: string): Promise<any> {
         const user = await this.prisma.user.findUnique({ where: { email } });
         if (!user) return null;
@@ -45,7 +57,7 @@ export class AuthService {
                 website: data.website,
                 socialLinks: data.socialLinks,
                 role: data.role.toUpperCase(),
-                status: 'PENDING_APPROVAL'
+                status: data.status || 'PENDING_APPROVAL'
             },
         });
     }

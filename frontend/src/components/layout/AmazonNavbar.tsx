@@ -2,9 +2,10 @@
 
 import * as React from 'react';
 import { useCart } from '@/lib/cart';
-import { Search, ShoppingCart, Menu, ChevronDown, Coffee, Zap, Droplets, IceCream, ShieldCheck, Home, Grid, Sparkles, Heart } from 'lucide-react';
+import { Search, ShoppingCart, Menu, ChevronDown, Coffee, Zap, Droplets, IceCream, ShieldCheck, Home, Grid, Sparkles, Heart, Moon, Sun } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { CATEGORIES_LIST } from '@/lib/products';
@@ -31,6 +32,13 @@ export default function AmazonNavbar() {
     const [isCategoriesOpen, setIsCategoriesOpen] = React.useState(false);
     const router = useRouter();
     const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -83,6 +91,17 @@ export default function AmazonNavbar() {
 
                 {/* Right Actions */}
                 <div className="flex items-center gap-1 h-full font-heading">
+                    {/* Theme Toggle */}
+                    {mounted && (
+                        <button
+                            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                            className="hidden sm:flex items-center justify-center p-2 mx-1 hover:bg-white/10 rounded-full transition-colors text-white/80 hover:text-white"
+                            aria-label="Toggle Theme"
+                        >
+                            {theme === 'dark' ? <Sun size={20} className="stroke-[1.5]" /> : <Moon size={20} className="stroke-[1.5]" />}
+                        </button>
+                    )}
+
                     {/* Account & Lists */}
                     <div className="relative group h-full flex items-center">
                         {user ? (

@@ -1,4 +1,5 @@
-import { IsString, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsString, IsNumber, IsOptional, Min, IsEnum } from 'class-validator';
+import { ProductStatus } from '@prisma/client';
 
 export class CreateProductDto {
     @IsString()
@@ -21,6 +22,18 @@ export class CreateProductDto {
     @IsOptional()
     @IsString({ each: true })
     images?: string[];
+
+    @IsOptional()
+    @IsString()
+    ean?: string;
+
+    @IsOptional()
+    @IsEnum(ProductStatus)
+    status?: ProductStatus;
+
+    @IsOptional()
+    @IsString()
+    adminNotes?: string;
 
     @IsString()
     supplierId: string = '';

@@ -83,16 +83,16 @@ export default function AdminInvitePage() {
         <div className="max-w-5xl mx-auto space-y-12">
             {/* Header */}
             <div className="space-y-1">
-                <h1 className="text-3xl font-black text-white tracking-tight">Invite Center</h1>
-                <p className="text-white/40 font-medium">Generate secure, single-use onboarding links for verified partners.</p>
+                <h1 className="text-3xl font-black text-foreground tracking-tight">Invite Center</h1>
+                <p className="text-muted-foreground font-medium">Generate secure, single-use onboarding links for verified partners.</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 {/* Generation Form */}
-                <div className="bg-[#131921] p-8 rounded-3xl border border-white/5 space-y-8 layered-3d-shadow">
+                <div className="bg-card p-8 rounded-3xl border border-border/50 space-y-8 layered-3d-shadow">
                     <div className="space-y-6">
                         <div className="space-y-3">
-                            <label className="text-[11px] font-black uppercase tracking-widest text-white/40">Select Target Role</label>
+                            <label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Select Target Role</label>
                             <div className="flex gap-3">
                                 {['supplier', 'customer'].map((r) => (
                                     <button
@@ -101,8 +101,8 @@ export default function AdminInvitePage() {
                                         className={cn(
                                             "flex-1 py-4 rounded-xl font-black text-sm border transition-all uppercase tracking-tighter",
                                             role === r
-                                                ? "bg-primary text-[#131921] border-primary shadow-lg shadow-primary/20"
-                                                : "bg-white/5 text-white/40 border-white/5 hover:border-white/10"
+                                                ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20"
+                                                : "bg-muted/50 text-muted-foreground border-border/50 hover:border-border"
                                         )}
                                     >
                                         {r}
@@ -112,19 +112,19 @@ export default function AdminInvitePage() {
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-[11px] font-black uppercase tracking-widest text-white/40">Partner Email (Optional)</label>
+                            <label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Partner Email (Optional)</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="name@company.com"
-                                className="w-full h-14 bg-white/5 rounded-xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium"
+                                className="w-full h-14 bg-muted rounded-xl border border-border/50 px-6 outline-none focus:border-primary/50 text-foreground font-medium"
                             />
                         </div>
 
                         <button
                             onClick={generateInvite}
-                            className="w-full py-5 bg-primary text-[#131921] font-black rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/10 flex items-center justify-center gap-3"
+                            className="w-full py-5 bg-primary text-primary-foreground font-black rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/10 flex items-center justify-center gap-3"
                         >
                             <UserPlus size={20} strokeWidth={3} /> Generate Secure Link
                         </button>
@@ -135,19 +135,19 @@ export default function AdminInvitePage() {
                             <motion.div
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: 'auto' }}
-                                className="pt-8 border-t border-white/5 space-y-4"
+                                className="pt-8 border-t border-border/50 space-y-4"
                             >
                                 <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-3">
                                     <ShieldCheck className="text-emerald-400" size={20} />
                                     <span className="text-[11px] text-emerald-400 font-black uppercase tracking-widest">Token Secured (24h Expiry)</span>
                                 </div>
                                 <div className="flex items-center gap-2 group">
-                                    <div className="flex-1 h-12 bg-black/40 rounded-xl px-4 flex items-center font-mono text-xs text-primary truncate border border-white/5">
+                                    <div className="flex-1 h-12 bg-black/40 rounded-xl px-4 flex items-center font-mono text-xs text-primary truncate border border-border/50">
                                         {generatedLink}
                                     </div>
                                     <button
                                         onClick={copyToClipboard}
-                                        className="h-12 w-12 bg-white/5 hover:bg-white/10 text-white rounded-xl flex items-center justify-center transition-all border border-white/5"
+                                        className="h-12 w-12 bg-muted/50 hover:bg-muted text-foreground rounded-xl flex items-center justify-center transition-all border border-border/50"
                                     >
                                         {copied ? <CheckCircle size={18} className="text-emerald-400" /> : <Copy size={18} />}
                                     </button>
@@ -159,13 +159,13 @@ export default function AdminInvitePage() {
 
                 {/* History */}
                 <div className="space-y-6">
-                    <h3 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
+                    <h3 className="text-xl font-black text-foreground tracking-tight flex items-center gap-3">
                         <Timer className="text-primary" /> Active Invites
                     </h3>
 
                     <div className="space-y-4 max-h-[500px] overflow-y-auto no-scrollbar pb-10">
                         {invites.length > 0 ? invites.map((invite, i) => (
-                            <div key={invite.token} className="p-5 bg-[#131921] rounded-2xl border border-white/5 flex items-center justify-between group hover:border-primary/20 transition-all">
+                            <div key={invite.token} className="p-5 bg-card rounded-2xl border border-border/50 flex items-center justify-between group hover:border-primary/20 transition-all">
                                 <div className="flex items-center gap-4">
                                     <div className={cn(
                                         "w-10 h-10 rounded-full flex items-center justify-center font-black text-[10px] uppercase",
@@ -174,10 +174,10 @@ export default function AdminInvitePage() {
                                         {invite.role[0]}
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-sm font-bold text-white uppercase tracking-tight truncate max-w-[150px]">
+                                        <span className="text-sm font-bold text-foreground uppercase tracking-tight truncate max-w-[150px]">
                                             {invite.email || 'Open Invite'}
                                         </span>
-                                        <span className="text-[10px] text-white/30 font-medium">Exp: {new Date(invite.expiresAt).toLocaleDateString()}</span>
+                                        <span className="text-[10px] text-muted-foreground font-medium">Exp: {new Date(invite.expiresAt).toLocaleDateString()}</span>
                                     </div>
                                 </div>
 
@@ -193,11 +193,11 @@ export default function AdminInvitePage() {
                                             </span>
                                         </div>
                                     )}
-                                    <div className="flex items-center gap-2 border-l border-white/5 pl-3 ml-1">
+                                    <div className="flex items-center gap-2 border-l border-border/50 pl-3 ml-1">
                                         {!invite.used && (
                                             <button
                                                 onClick={() => togglePause(invite.token)}
-                                                className="p-1.5 text-white/40 hover:text-white transition-colors rounded-lg hover:bg-white/5"
+                                                className="p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50"
                                                 title={invite.paused ? "Resume Invite" : "Pause Invite"}
                                             >
                                                 {invite.paused ? <PlayCircle size={16} /> : <PauseCircle size={16} />}
@@ -214,9 +214,9 @@ export default function AdminInvitePage() {
                                 </div>
                             </div>
                         )) : (
-                            <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
-                                <LinkIcon size={40} className="mx-auto text-white/10 mb-4" />
-                                <p className="text-white/20 text-sm font-medium">No active invite tokens found.</p>
+                            <div className="text-center py-20 bg-muted/50 rounded-3xl border border-dashed border-border/50">
+                                <LinkIcon size={40} className="mx-auto text-muted-foreground/50 mb-4" />
+                                <p className="text-muted-foreground text-sm font-medium">No active invite tokens found.</p>
                             </div>
                         )}
                     </div>

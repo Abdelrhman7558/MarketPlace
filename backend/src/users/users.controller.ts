@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, UseGuards, Post, Param, Body, Query, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -14,8 +14,8 @@ export class UsersController {
 
     @Get()
     @Roles(Role.ADMIN)
-    async findAll() {
-        const users = await this.usersService.findAll();
+    async findAll(@Query('status') status?: string) {
+        const users = await this.usersService.findAll(status);
         return plainToInstance(UserDto, users);
     }
 
@@ -23,5 +23,12 @@ export class UsersController {
     @Roles(Role.ADMIN)
     async updateStatus(@Param('id') id: string, @Body('status') status: string) {
         return this.usersService.updateStatus(id, status);
+    }
+
+    @Delete(':id')
+    @Roles(Role.ADMIN)
+    async deleteUser(@Param('id') id: string) {
+        await this.usersService.deleteUser(id);
+        return { message: 'User deleted successfully' };
     }
 }

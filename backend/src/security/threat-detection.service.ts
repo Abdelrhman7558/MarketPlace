@@ -16,6 +16,8 @@ export class ThreatDetectionService implements OnModuleInit {
         setInterval(() => this.analyzeThreats(), 60000); // Every minute
     }
 
+    private readonly WHITELISTED_IPS = ['::1', '127.0.0.1', '::ffff:127.0.0.1'];
+
     async analyzeThreats() {
         this.logger.log('Running automated threat analysis...');
 
@@ -35,6 +37,9 @@ export class ThreatDetectionService implements OnModuleInit {
             });
 
             for (const log of logs) {
+                // Never block localhost / whitelisted IPs
+                if (log.ip && this.WHITELISTED_IPS.includes(log.ip)) continue;
+
                 if (log._count.id > 10 && log.ip) {
                     this.logger.warn(`Potential brute force detected from IP: ${log.ip}`);
                     await this.securityService.blockIp(log.ip, 'Brute force detected', 60); // Block for 1 hour

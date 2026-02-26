@@ -58,8 +58,7 @@ export default function SecurityDashboard() {
 
     // Auto-Healer Agent State
     const [agentState, setAgentState] = React.useState<'IDLE' | 'ANALYZING' | 'PATCHING' | 'RESOLVED'>('IDLE');
-    const [mockErrors, setMockErrors] = React.useState<any[]>([]);
-
+    const [errors, setErrors] = React.useState<any[]>([]);
     const fetchStatus = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -77,7 +76,7 @@ export default function SecurityDashboard() {
             if (agentRes.ok) {
                 const agentData = await agentRes.json();
                 setAgentState(agentData.state);
-                setMockErrors(agentData.errors || []);
+                setErrors(agentData.errors || []);
             }
 
             setLastScanSeconds(0);
@@ -153,7 +152,7 @@ export default function SecurityDashboard() {
         <div className="flex items-center justify-center h-[60vh]">
             <div className="flex flex-col items-center gap-4">
                 <RefreshCcw className="w-8 h-8 text-primary animate-spin" />
-                <p className="text-white/40 font-medium">Initializing Security Protocols...</p>
+                <p className="text-muted-foreground font-medium">Initializing Security Protocols...</p>
             </div>
         </div>
     );
@@ -163,11 +162,11 @@ export default function SecurityDashboard() {
             {/* Header Section */}
             <div className="flex items-end justify-between">
                 <div>
-                    <h1 className="text-4xl font-black text-white tracking-tight flex items-center gap-3">
+                    <h1 className="text-4xl font-black text-foreground tracking-tight flex items-center gap-3">
                         <Shield className="text-primary w-10 h-10" />
                         Security Shield
                     </h1>
-                    <p className="text-white/40 mt-1 font-medium italic">Autonomous 24/7 Threat Mitigation Agent</p>
+                    <p className="text-muted-foreground mt-1 font-medium italic">Autonomous 24/7 Threat Mitigation Agent</p>
                 </div>
 
                 <button
@@ -187,55 +186,55 @@ export default function SecurityDashboard() {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-[#131921] border border-white/5 rounded-2xl p-6 relative overflow-hidden group">
+                <div className="bg-card border border-border/50 rounded-2xl p-6 relative overflow-hidden group shadow-sm">
                     <div className="absolute top-0 right-0 p-4 opacity-10 transition-transform group-hover:scale-125 duration-500">
                         <ShieldCheck size={80} className="text-primary" />
                     </div>
-                    <p className="text-white/40 text-xs font-black uppercase tracking-widest">System Health</p>
-                    <h3 className="text-4xl font-black text-white mt-2">🛡️ {status?.score}%</h3>
+                    <p className="text-muted-foreground text-xs font-black uppercase tracking-widest">System Health</p>
+                    <h3 className="text-4xl font-black text-foreground mt-2">🛡️ {status?.score}%</h3>
                     <p className="text-emerald-500 text-[10px] font-bold mt-2 uppercase">Integrity Verified</p>
                 </div>
 
-                <div className="bg-[#131921] border border-white/5 rounded-2xl p-6 relative overflow-hidden group">
+                <div className="bg-card border border-border/50 rounded-2xl p-6 relative overflow-hidden group shadow-sm">
                     <div className="absolute top-0 right-0 p-4 opacity-10 transition-transform group-hover:scale-125 duration-500">
                         <UserX size={80} className="text-red-500" />
                     </div>
-                    <p className="text-white/40 text-xs font-black uppercase tracking-widest">Blocked Threats</p>
-                    <h3 className="text-4xl font-black text-white mt-2">{status?.blockedIps?.length || 0}</h3>
+                    <p className="text-muted-foreground text-xs font-black uppercase tracking-widest">Blocked Threats</p>
+                    <h3 className="text-4xl font-black text-foreground mt-2">{status?.blockedIps?.length || 0}</h3>
                     <p className="text-red-400 text-[10px] font-bold mt-2 uppercase">Active IP Blocks</p>
                 </div>
 
-                <div className="bg-[#131921] border border-white/5 rounded-2xl p-6 relative overflow-hidden group">
+                <div className="bg-card border border-border/50 rounded-2xl p-6 relative overflow-hidden group shadow-sm">
                     <div className="absolute top-0 right-0 p-4 opacity-10 transition-transform group-hover:scale-125 duration-500">
                         <Clock size={80} className="text-amber-500" />
                     </div>
-                    <p className="text-white/40 text-xs font-black uppercase tracking-widest">Monitoring Status</p>
-                    <h3 className="text-4xl font-black text-white mt-2 flex items-center gap-2">ACTIVE <span className="w-3 h-3 rounded-full bg-amber-500 animate-pulse mt-1" /></h3>
+                    <p className="text-muted-foreground text-xs font-black uppercase tracking-widest">Monitoring Status</p>
+                    <h3 className="text-4xl font-black text-foreground mt-2 flex items-center gap-2">ACTIVE <span className="w-3 h-3 rounded-full bg-amber-500 animate-pulse mt-1" /></h3>
                     <p className="text-amber-400 text-[10px] font-bold mt-2 uppercase underline underline-offset-4 decoration-2">Last Scan: {lastScanSeconds}s ago</p>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Threat Feed */}
-                <div className="bg-[#131921] border border-white/5 rounded-3xl overflow-hidden flex flex-col">
-                    <div className="p-6 border-b border-white/5 flex items-center justify-between">
-                        <h3 className="text-white font-black flex items-center gap-2">
+                <div className="bg-card border border-border/50 rounded-3xl overflow-hidden flex flex-col shadow-sm">
+                    <div className="p-6 border-b border-border/50 flex items-center justify-between">
+                        <h3 className="text-foreground font-black flex items-center gap-2">
                             <ShieldAlert className="text-primary" size={20} />
                             Real-Time Threat Feed
                         </h3>
-                        <button onClick={fetchStatus} className="text-white/40 hover:text-white transition-colors">
+                        <button onClick={fetchStatus} className="text-muted-foreground hover:text-foreground transition-colors">
                             <RefreshCcw size={16} />
                         </button>
                     </div>
                     <div className="flex-1 overflow-y-auto max-h-[500px] no-scrollbar">
                         {!status?.recentLogs || status?.recentLogs?.length === 0 ? (
-                            <div className="h-full flex items-center justify-center p-12 text-white/20 italic">
+                            <div className="h-full flex items-center justify-center p-12 text-muted-foreground/50 italic">
                                 No threats detected in the last session.
                             </div>
                         ) : (
-                            <div className="divide-y divide-white/5">
+                            <div className="divide-y divide-border/50">
                                 {status?.recentLogs?.map((log) => (
-                                    <div key={log.id} className="p-4 hover:bg-white/5 transition-colors group">
+                                    <div key={log.id} className="p-4 hover:bg-muted/30 transition-colors group">
                                         <div className="flex items-start gap-4">
                                             <div className={cn(
                                                 "p-2 rounded-lg mt-1",
@@ -246,15 +245,15 @@ export default function SecurityDashboard() {
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center justify-between mb-1">
-                                                    <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-white/5 text-white/40">
+                                                    <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-muted/50 text-muted-foreground">
                                                         {log.eventType}
                                                     </span>
-                                                    <span className="text-[10px] text-white/20 font-medium">
+                                                    <span className="text-[10px] text-muted-foreground/50 font-medium">
                                                         {new Date(log.createdAt).toLocaleTimeString()}
                                                     </span>
                                                 </div>
-                                                <p className="text-sm text-white/80 font-medium">{log.description}</p>
-                                                <div className="mt-2 flex items-center gap-4 text-[10px] text-white/30">
+                                                <p className="text-sm text-foreground/80 font-medium">{log.description}</p>
+                                                <div className="mt-2 flex items-center gap-4 text-[10px] text-muted-foreground/50">
                                                     <span className="flex items-center gap-1 font-mono">
                                                         <Globe size={10} /> {log.ip}
                                                     </span>
@@ -271,33 +270,33 @@ export default function SecurityDashboard() {
 
                 {/* Blocked IPs & Actions */}
                 <div className="space-y-8">
-                    <div className="bg-[#131921] border border-white/5 rounded-3xl p-6">
-                        <h3 className="text-white font-black mb-6 flex items-center gap-2">
+                    <div className="bg-card border border-border/50 rounded-3xl p-6 shadow-sm">
+                        <h3 className="text-foreground font-black mb-6 flex items-center gap-2">
                             <Lock className="text-red-500" size={20} />
                             Active IP Embargo
                         </h3>
                         <div className="space-y-3">
                             {status?.blockedIps?.map((block) => (
-                                <div key={block.ip} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 group">
+                                <div key={block.ip} className="flex items-center justify-between p-4 rounded-2xl bg-muted/50 border border-border/50 group">
                                     <div className="flex items-center gap-4">
                                         <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
                                             <Globe size={18} />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-black text-white">{block.ip}</p>
-                                            <p className="text-[10px] text-white/40">{block.reason}</p>
+                                            <p className="text-sm font-black text-foreground">{block.ip}</p>
+                                            <p className="text-[10px] text-muted-foreground">{block.reason}</p>
                                         </div>
                                     </div>
                                     <button
                                         onClick={() => unblockIp(block.ip)}
-                                        className="opacity-0 group-hover:opacity-100 px-3 py-1.5 rounded-lg bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest transition-all"
+                                        className="opacity-0 group-hover:opacity-100 px-3 py-1.5 rounded-lg bg-emerald-500 text-primary-foreground text-[10px] font-black uppercase tracking-widest transition-all"
                                     >
                                         Unblock
                                     </button>
                                 </div>
                             ))}
                             {(!status?.blockedIps || status?.blockedIps?.length === 0) && (
-                                <div className="text-center py-8 text-white/20 italic text-sm">No active embargoes.</div>
+                                <div className="text-center py-8 text-muted-foreground/50 italic text-sm">No active embargoes.</div>
                             )}
                         </div>
                     </div>
@@ -308,14 +307,14 @@ export default function SecurityDashboard() {
                         <h3 className="text-primary font-black mb-2 uppercase tracking-tighter italic text-xl flex items-center gap-2">
                             <Cpu size={20} /> AI Resolution Agent
                         </h3>
-                        <p className="text-white/60 text-xs leading-relaxed mb-6">
+                        <p className="text-muted-foreground text-xs leading-relaxed mb-6">
                             Autonomous diagnostic engine. Detects unhandled exceptions, backend lag, and hydration mismatches. Deploys hotfixes instantly without downtime.
                         </p>
 
                         <div className="space-y-4 mb-6 relative z-10">
                             <AnimatePresence mode="popLayout">
-                                {mockErrors.length > 0 ? (
-                                    mockErrors.map(err => (
+                                {errors.length > 0 ? (
+                                    errors.map(err => (
                                         <motion.div
                                             key={err.id}
                                             initial={{ opacity: 0, x: 20 }}
@@ -325,7 +324,7 @@ export default function SecurityDashboard() {
                                         >
                                             <div className="flex items-center gap-3">
                                                 <AlertTriangle size={14} className="text-red-500" />
-                                                <span className="text-xs font-bold text-white/80">{err.msg}</span>
+                                                <span className="text-xs font-bold text-foreground/80">{err.msg}</span>
                                             </div>
                                             <span className="text-[10px] text-red-400 font-mono tracking-widest uppercase">{err.time}</span>
                                         </motion.div>
@@ -346,8 +345,8 @@ export default function SecurityDashboard() {
 
                         <button
                             onClick={runAgentFix}
-                            disabled={(agentState !== 'IDLE' && agentState !== 'RESOLVED') || mockErrors.length === 0}
-                            className="w-full relative h-14 bg-primary text-[#131921] font-black text-xs uppercase tracking-widest rounded-xl overflow-hidden hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed group z-10 shadow-lg shadow-primary/20"
+                            disabled={(agentState !== 'IDLE' && agentState !== 'RESOLVED') || errors.length === 0}
+                            className="w-full relative h-14 bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest rounded-xl overflow-hidden hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed group z-10 shadow-lg shadow-primary/20"
                         >
                             <AnimatePresence mode="wait">
                                 {agentState === 'IDLE' && (

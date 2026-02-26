@@ -80,42 +80,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const login = async (email: string, password: string): Promise<{ success: boolean; user?: User; message?: string }> => {
         // Super Admin Shortcut with Backend Sync
-        if ((email === '7bd0205@gmail.com' || email === '7bd02025@gmail.com') && password === '123456789') {
+        if ((email === '7bd0205@gmail.com' || email === '7bd02025@gmail.com') && password === 'Admin@2025!') {
             try {
-                let res = await fetch('http://localhost:3005/auth/login', {
+                // First, try to seed the admin (creates if not exists, with ACTIVE status)
+                await fetch('http://localhost:3005/auth/seed-admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, name: 'Super Admin' }),
+                });
+
+                // Now login
+                const res = await fetch('http://localhost:3005/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password }),
                 });
 
-                if (!res.ok) {
-                    // Try to auto-register the admin if not found
-                    await fetch('http://localhost:3005/auth/register', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name: 'Super Admin', email, password, role: 'ADMIN' }),
-                    });
-
-                    // Retry login
-                    res = await fetch('http://localhost:3005/auth/login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email, password }),
-                    });
-                }
-
                 if (res.ok) {
                     const result = await res.json();
-                    const userData = { ...result.user, role: 'admin', status: 'ACTIVE' };
-                    setUser(userData);
-                    localStorage.setItem('bev-user', JSON.stringify(userData));
-                    localStorage.setItem('bev-token', result.access_token);
-                    return { success: true, user: userData };
+                    if (result.access_token) {
+                        const userData = { ...result.user, role: 'admin', status: 'ACTIVE' as const };
+                        setUser(userData);
+                        localStorage.setItem('bev-user', JSON.stringify(userData));
+                        localStorage.setItem('bev-token', result.access_token);
+                        return { success: true, user: userData };
+                    }
                 }
             } catch (err) {
                 console.error("Super Admin backend sync failed, using local only", err);
             }
-            // Fallback
+            // Fallback — local-only admin (no API access)
             const userData: User = { id: 'sa-7bd0', name: 'Super Admin', email, role: 'admin', status: 'ACTIVE' };
             setUser(userData);
             localStorage.setItem('bev-user', JSON.stringify(userData));

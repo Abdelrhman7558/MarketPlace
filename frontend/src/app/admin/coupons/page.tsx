@@ -59,27 +59,27 @@ export default function AdminCouponsPage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-4">
                     <div>
-                        <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
+                        <h1 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
                             <Ticket className="text-secondary w-8 h-8" />
                             Coupons Management
                         </h1>
-                        <p className="text-white/40 font-medium mt-1">Generate and monitor promotional codes attached to active Offers.</p>
+                        <p className="text-muted-foreground font-medium mt-1">Generate and monitor promotional codes attached to active Offers.</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
                     <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-secondary transition-colors" size={18} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-secondary transition-colors" size={18} />
                         <input
                             type="text"
                             placeholder="Search by code..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="h-12 pl-12 pr-6 bg-[#131921] rounded-xl border border-white/5 outline-none focus:border-secondary/50 text-white text-sm w-[250px] transition-all"
+                            className="h-12 pl-12 pr-6 bg-card rounded-xl border border-border/50 outline-none focus:border-secondary/50 text-foreground text-sm w-[250px] transition-all shadow-sm"
                         />
                     </div>
 
-                    <Link href="/admin/coupons/new" className="h-12 px-6 bg-secondary text-white font-black text-sm rounded-xl hover:scale-105 transition-transform shadow-lg shadow-secondary/20 flex items-center gap-2">
+                    <Link href="/admin/coupons/new" className="h-12 px-6 bg-secondary text-secondary-foreground font-black text-sm rounded-xl hover:scale-105 transition-transform shadow-lg shadow-secondary/20 flex items-center gap-2">
                         <Plus size={18} strokeWidth={3} /> Create Coupon
                     </Link>
                 </div>
@@ -88,18 +88,18 @@ export default function AdminCouponsPage() {
             {/* Content */}
             {isLoading ? (
                 <div className="flex items-center justify-center py-20">
-                    <div className="w-12 h-12 rounded-full border-4 border-white/5 border-t-secondary animate-spin" />
+                    <div className="w-12 h-12 rounded-full border-4 border-border/50 border-t-secondary animate-spin" />
                 </div>
             ) : filtered.length === 0 ? (
-                <div className="bg-[#131921] border border-white/5 rounded-3xl p-20 flex flex-col items-center justify-center text-center space-y-6">
-                    <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center text-white/20">
+                <div className="bg-card border border-border/50 rounded-3xl p-20 flex flex-col items-center justify-center text-center space-y-6 shadow-sm">
+                    <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center text-muted-foreground/50">
                         <Ticket size={40} />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-white">No promotional codes generated</h3>
-                        <p className="text-white/40 mt-2">Deploy your first coupon strategy to boost engagement.</p>
+                        <h3 className="text-xl font-bold text-foreground">No promotional codes generated</h3>
+                        <p className="text-muted-foreground mt-2">Deploy your first coupon strategy to boost engagement.</p>
                     </div>
-                    <Link href="/admin/coupons/new" className="h-12 px-8 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-colors flex items-center gap-2">
+                    <Link href="/admin/coupons/new" className="h-12 px-8 bg-muted text-foreground font-bold rounded-xl hover:bg-muted/80 transition-colors flex items-center gap-2">
                         <Plus size={18} /> Create Now
                     </Link>
                 </div>
@@ -113,18 +113,18 @@ export default function AdminCouponsPage() {
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
-                                className="bg-[#131921] border border-white/5 rounded-3xl overflow-hidden group hover:border-secondary/30 transition-all hover:shadow-2xl hover:shadow-secondary/10"
+                                className="bg-card border border-border/50 rounded-3xl overflow-hidden group hover:border-secondary/30 transition-all hover:shadow-2xl hover:shadow-secondary/10 shadow-sm"
                             >
-                                <div className="p-6 border-b border-white/5 bg-secondary/5 relative overflow-hidden">
+                                <div className="p-6 border-b border-border/50 bg-secondary/10 relative overflow-hidden">
                                     <div className="absolute top-0 right-0 p-4 opacity-10 rotate-12 scale-150">
                                         <Ticket size={100} />
                                     </div>
                                     <div className="relative z-10 flex justify-between items-start">
                                         <div>
                                             <p className="text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Promo Code</p>
-                                            <h3 className="text-3xl font-black text-white tracking-widest">{coupon.code}</h3>
+                                            <h3 className="text-3xl font-black text-foreground tracking-widest">{coupon.code}</h3>
                                         </div>
-                                        <div className="bg-secondary text-white font-black px-3 py-1 rounded-lg shadow-lg">
+                                        <div className="bg-secondary text-secondary-foreground font-black px-3 py-1 rounded-lg shadow-lg">
                                             {coupon.discountPercent}% OFF
                                         </div>
                                     </div>
@@ -133,20 +133,20 @@ export default function AdminCouponsPage() {
                                 <div className="p-6 space-y-5">
                                     <div className="space-y-4">
                                         <div>
-                                            <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest flex items-center gap-1.5 mb-1.5"><Box size={12} /> Connected Product</p>
-                                            <p className="text-sm font-medium text-white truncate px-3 py-2 bg-white/5 rounded-lg border border-white/5">
+                                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5 mb-1.5"><Box size={12} /> Connected Product</p>
+                                            <p className="text-sm font-medium text-foreground truncate px-3 py-2 bg-muted/50 rounded-lg border border-border/50">
                                                 {coupon.placement?.product?.name || "Unknown Product"}
                                             </p>
                                         </div>
 
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest flex items-center gap-1.5 mb-1.5"><Calendar size={12} /> Expiry Date</p>
-                                                <p className="text-sm font-medium text-white">{new Date(coupon.expirationDate).toLocaleDateString()}</p>
+                                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5 mb-1.5"><Calendar size={12} /> Expiry Date</p>
+                                                <p className="text-sm font-medium text-foreground">{new Date(coupon.expirationDate).toLocaleDateString()}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Status</p>
-                                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Status</p>
+                                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Active
                                                 </div>
                                             </div>

@@ -4,7 +4,7 @@ import * as React from 'react';
 import AmazonNavbar from '@/components/layout/AmazonNavbar';
 import AmazonHero from '@/components/ui/AmazonHero';
 import AmazonCardTile from '@/components/ui/AmazonCardTile';
-import { PRODUCTS } from '@/lib/products';
+import { PRODUCTS, BRANDS } from '@/lib/products';
 import ProductCard from '@/components/product/ProductCard';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -129,7 +129,7 @@ export default function Home() {
                                 >
                                     {t('home', 'allBrands')}
                                 </button>
-                                {['Coca-Cola', 'Pepsi', 'Red Bull', 'Oreo', 'KitKat', 'Doritos', 'Pringles'].map(brand => (
+                                {BRANDS.slice(0, 7).map(brand => (
                                     <button
                                         key={brand}
                                         onClick={() => setSelectedPopularBrand(brand)}

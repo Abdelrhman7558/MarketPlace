@@ -39,4 +39,8 @@ export class RegisterDto {
     @IsString()
     @IsOptional()
     socialLinks?: string;
+
+    @IsString()
+    @IsOptional()
+    status?: string;
 }

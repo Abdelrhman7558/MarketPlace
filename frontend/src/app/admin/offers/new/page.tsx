@@ -65,15 +65,15 @@ export default function AdminNewOfferPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-4">
-                    <Link href="/admin/offers" className="inline-flex items-center gap-2 text-xs font-bold text-white/40 hover:text-white transition-colors uppercase tracking-widest">
+                    <Link href="/admin/offers" className="inline-flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest">
                         <ArrowLeft size={16} />
                         Back to Offers
                     </Link>
                     <div>
-                        <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-                            Initiate Promotion <Sparkles className="text-accent w-6 h-6" />
+                        <h1 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
+                            Initiate Promotion <Sparkles className="text-primary w-6 h-6" />
                         </h1>
-                        <p className="text-white/40 font-medium mt-1">Configure premium visibility placements for specific SKUs.</p>
+                        <p className="text-muted-foreground font-medium mt-1">Configure premium visibility placements for specific SKUs.</p>
                     </div>
                 </div>
             </div>
@@ -82,21 +82,21 @@ export default function AdminNewOfferPage() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-[#131921] border border-white/5 rounded-[40px] p-8 md:p-12 shadow-2xl relative overflow-hidden"
+                className="bg-card border border-border/50 rounded-[40px] p-8 md:p-12 shadow-sm relative overflow-hidden"
             >
                 {/* Decorative background blur */}
-                <div className="absolute top-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
                 <form onSubmit={handleSubmit} className="relative z-10 space-y-10">
                     <div className="space-y-6">
-                        <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-                            <Tag className="text-accent" size={20} />
-                            <h2 className="text-xl font-bold text-white">Placement Details</h2>
+                        <div className="flex items-center gap-3 border-b border-border/50 pb-4">
+                            <Tag className="text-primary" size={20} />
+                            <h2 className="text-xl font-bold text-foreground">Placement Details</h2>
                         </div>
 
                         <div className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-white/60 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2">
                                     Target Product ID <Hash size={12} />
                                 </label>
                                 <Input
@@ -106,17 +106,17 @@ export default function AdminNewOfferPage() {
                                     placeholder="Enter UUID of existing product..."
                                     required
                                 />
-                                <p className="text-[10px] text-white/30 ml-2 mt-1 font-medium">Find the UUID from the product catalog database.</p>
+                                <p className="text-[10px] text-muted-foreground/50 ml-2 mt-1 font-medium">Find the UUID from the product catalog database.</p>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-white/60 uppercase tracking-widest ml-1">Placement Type</label>
+                                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1">Placement Type</label>
                                     <select
                                         name="type"
                                         value={formData.type}
                                         onChange={handleChange}
-                                        className="w-full h-12 bg-[#0A0D14] border border-white/10 rounded-xl px-4 text-white text-sm outline-none focus:border-accent/50 transition-colors cursor-pointer appearance-none"
+                                        className="w-full h-12 bg-background border border-border/50 rounded-xl px-4 text-foreground text-sm outline-none focus:border-primary/50 transition-colors cursor-pointer appearance-none"
                                         required
                                     >
                                         <option value="HERO">HERO (Homepage Banner)</option>
@@ -126,7 +126,7 @@ export default function AdminNewOfferPage() {
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-white/60 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2">
                                         Duration (Days) <CalendarClock size={12} />
                                     </label>
                                     <Input
@@ -157,11 +157,11 @@ export default function AdminNewOfferPage() {
                         </div>
                     )}
 
-                    <div className="pt-6 border-t border-white/10 flex justify-end gap-4">
+                    <div className="pt-6 border-t border-border/50 flex justify-end gap-4">
                         <Link href="/admin/offers">
-                            <Button variant="outline" type="button" className="border-white/10 hover:bg-white/5">Cancel</Button>
+                            <Button variant="outline" type="button" className="border-border/50 hover:bg-muted/50">Cancel</Button>
                         </Link>
-                        <Button type="submit" isLoading={isSubmitting} className="font-black gap-2 min-w-[200px] bg-accent hover:bg-accent/80 text-white">
+                        <Button type="submit" isLoading={isSubmitting} className="font-black gap-2 min-w-[200px] bg-primary hover:bg-primary/90 text-primary-foreground">
                             Deploy Offer <Save size={18} />
                         </Button>
                     </div>

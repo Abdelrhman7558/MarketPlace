@@ -72,22 +72,22 @@ export default function AdminSettingsPage() {
         <div className="max-w-4xl mx-auto space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header */}
             <div className="space-y-1">
-                <h1 className="text-3xl font-black text-white tracking-tight">Account Settings</h1>
-                <p className="text-white/40 font-medium">Manage your professional profile and security preferences.</p>
+                <h1 className="text-3xl font-black text-foreground tracking-tight">Account Settings</h1>
+                <p className="text-muted-foreground font-medium">Manage your professional profile and security preferences.</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 {/* Left: Profile Information */}
                 <div className="lg:col-span-2 space-y-8">
-                    <form onSubmit={handleSave} className="bg-[#131921] border border-white/5 rounded-[32px] overflow-hidden p-8 space-y-8">
-                        <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <form onSubmit={handleSave} className="bg-card border border-border/50 rounded-[32px] overflow-hidden p-8 space-y-8">
+                        <h3 className="text-sm font-black text-foreground uppercase tracking-widest flex items-center gap-2">
                             <User size={16} className="text-primary" />
                             Personal Information
                         </h3>
 
                         <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
                             <div className="relative group shrink-0">
-                                <div className="w-24 h-24 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-3xl font-black text-primary overflow-hidden">
+                                <div className="w-24 h-24 rounded-3xl bg-muted/50 border border-border/50 flex items-center justify-center text-3xl font-black text-primary overflow-hidden">
                                     {avatar || user?.avatar ? <img src={avatar || user?.avatar} className="w-full h-full object-cover" /> : name[0]}
                                 </div>
                                 <input
@@ -100,14 +100,14 @@ export default function AdminSettingsPage() {
                                 <button
                                     type="button"
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-[#131921] shadow-lg hover:scale-110 transition-transform"
+                                    className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-lg hover:scale-110 transition-transform"
                                 >
                                     <Camera size={14} strokeWidth={3} />
                                 </button>
                             </div>
                             <div className="space-y-1 flex-1">
-                                <p className="text-[11px] font-black text-white/20 uppercase tracking-[0.2em]">Avatar Upload</p>
-                                <p className="text-xs text-white/40 font-medium leading-relaxed max-w-xs">
+                                <p className="text-[11px] font-black text-muted-foreground/50 uppercase tracking-[0.2em]">Avatar Upload</p>
+                                <p className="text-xs text-muted-foreground font-medium leading-relaxed max-w-xs">
                                     Pick a professional photo. Recommended size 400x400px. JPG or PNG allowed.
                                 </p>
                             </div>
@@ -115,39 +115,39 @@ export default function AdminSettingsPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-[11px] font-black text-white/30 uppercase tracking-widest ml-1">Full Name</label>
+                                <label className="text-[11px] font-black text-muted-foreground uppercase tracking-widest ml-1">Full Name</label>
                                 <input
                                     type="text"
                                     value={name}
                                     onChange={e => setName(e.target.value)}
-                                    className="w-full h-14 bg-white/5 rounded-2xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium"
+                                    className="w-full h-14 bg-muted rounded-2xl border border-border/50 px-6 outline-none focus:border-primary/50 text-foreground font-medium"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[11px] font-black text-white/30 uppercase tracking-widest ml-1">Business Email</label>
+                                <label className="text-[11px] font-black text-muted-foreground uppercase tracking-widest ml-1">Business Email</label>
                                 <input
                                     type="email"
                                     value={email}
                                     disabled
-                                    className="w-full h-14 bg-white/[0.02] rounded-2xl border border-white/5 px-6 text-white/20 font-medium cursor-not-allowed"
+                                    className="w-full h-14 bg-muted/30 rounded-2xl border border-border/50 px-6 text-muted-foreground/50 font-medium cursor-not-allowed"
                                 />
                             </div>
                             <div className="space-y-2 md:col-span-2">
-                                <label className="text-[11px] font-black text-white/30 uppercase tracking-widest ml-1">Phone Number</label>
+                                <label className="text-[11px] font-black text-muted-foreground uppercase tracking-widest ml-1">Phone Number</label>
                                 <input
                                     type="tel"
                                     value={phone}
                                     onChange={e => setPhone(e.target.value)}
-                                    className="w-full h-14 bg-white/5 rounded-2xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium"
+                                    className="w-full h-14 bg-muted rounded-2xl border border-border/50 px-6 outline-none focus:border-primary/50 text-foreground font-medium"
                                 />
                             </div>
                         </div>
 
-                        <div className="pt-4 border-t border-white/5 flex justify-end">
+                        <div className="pt-4 border-t border-border/50 flex justify-end">
                             <button
                                 type="submit"
                                 disabled={isSaving}
-                                className="h-12 px-8 bg-primary text-[#131921] font-black text-[11px] uppercase tracking-widest rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100 flex items-center gap-2"
+                                className="h-12 px-8 bg-primary text-primary-foreground font-black text-[11px] uppercase tracking-widest rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100 flex items-center gap-2"
                             >
                                 {isSaving ? 'Processing...' : <><Save size={14} /> Save Profile Changes</>}
                             </button>
@@ -155,8 +155,8 @@ export default function AdminSettingsPage() {
                     </form>
 
                     {/* Security */}
-                    <div className="bg-[#131921] border border-white/5 rounded-[32px] p-8 space-y-8">
-                        <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <div className="bg-card border border-border/50 rounded-[32px] p-8 space-y-8">
+                        <h3 className="text-sm font-black text-foreground uppercase tracking-widest flex items-center gap-2">
                             <Shield size={16} className="text-primary" />
                             Security & Password
                         </h3>
@@ -164,35 +164,35 @@ export default function AdminSettingsPage() {
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-white/30 uppercase tracking-widest ml-1">Current Password</label>
+                                    <label className="text-[11px] font-black text-muted-foreground uppercase tracking-widest ml-1">Current Password</label>
                                     <input
                                         type="password"
                                         value={oldPass}
                                         onChange={e => setOldPass(e.target.value)}
-                                        className="w-full h-14 bg-white/5 rounded-2xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium"
+                                        className="w-full h-14 bg-muted rounded-2xl border border-border/50 px-6 outline-none focus:border-primary/50 text-foreground font-medium"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-white/30 uppercase tracking-widest ml-1">New Password</label>
+                                    <label className="text-[11px] font-black text-muted-foreground uppercase tracking-widest ml-1">New Password</label>
                                     <div className="relative">
                                         <input
                                             type={showPass ? 'text' : 'password'}
                                             value={newPass}
                                             onChange={e => setNewPass(e.target.value)}
                                             placeholder="Leave blank to keep current"
-                                            className="w-full h-14 bg-white/5 rounded-2xl border border-white/5 px-6 outline-none focus:border-primary/50 text-white font-medium placeholder:text-white/10"
+                                            className="w-full h-14 bg-muted rounded-2xl border border-border/50 px-6 outline-none focus:border-primary/50 text-foreground font-medium placeholder:text-muted-foreground/50"
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowPass(!showPass)}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground transition-colors"
                                         >
                                             {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <button className="h-10 px-6 bg-white/5 border border-white/5 text-white/60 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-white/10 transition-all flex items-center gap-2">
+                            <button className="h-10 px-6 bg-muted border border-border/50 text-muted-foreground font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-muted/80 transition-all flex items-center gap-2">
                                 <Lock size={12} /> Update Password
                             </button>
                         </div>
@@ -201,8 +201,8 @@ export default function AdminSettingsPage() {
 
                 {/* Right: Preferences */}
                 <div className="space-y-6">
-                    <div className="bg-[#131921] border border-white/5 rounded-[32px] p-8 space-y-6">
-                        <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <div className="bg-card border border-border/50 rounded-[32px] p-8 space-y-6">
+                        <h3 className="text-sm font-black text-foreground uppercase tracking-widest flex items-center gap-2">
                             <Bell size={16} className="text-primary" />
                             Notifications
                         </h3>
@@ -215,8 +215,8 @@ export default function AdminSettingsPage() {
                             ].map((pref, i) => (
                                 <div key={i} className="flex items-center justify-between group">
                                     <div>
-                                        <p className="text-xs font-black text-white group-hover:text-primary transition-colors">{pref.label}</p>
-                                        <p className="text-[10px] text-white/20 font-medium">{pref.desc}</p>
+                                        <p className="text-xs font-black text-foreground group-hover:text-primary transition-colors">{pref.label}</p>
+                                        <p className="text-[10px] text-muted-foreground/50 font-medium">{pref.desc}</p>
                                     </div>
                                     <div className="w-10 h-5 bg-primary/20 rounded-full relative cursor-pointer border border-primary/20">
                                         <div className="absolute top-1 right-1 w-3 h-3 bg-primary rounded-full shadow-lg" />
@@ -230,8 +230,8 @@ export default function AdminSettingsPage() {
                         <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
                             <Check size={20} strokeWidth={3} />
                         </div>
-                        <h4 className="text-sm font-black text-white uppercase tracking-widest">Enterprise Verified</h4>
-                        <p className="text-[11px] text-white/40 font-medium leading-relaxed">
+                        <h4 className="text-sm font-black text-foreground uppercase tracking-widest">Enterprise Verified</h4>
+                        <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">
                             Your account is fully verified. You have maximum listing capacity and priority support access.
                         </p>
                     </div>
@@ -242,7 +242,7 @@ export default function AdminSettingsPage() {
             {toast && (
                 <div className={cn(
                     "fixed bottom-8 right-8 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-right-4 z-[100]",
-                    toast.type === 'success' ? "bg-emerald-500 text-white" : "bg-red-500 text-white"
+                    toast.type === 'success' ? "bg-emerald-500 text-primary-foreground" : "bg-red-500 text-primary-foreground"
                 )}>
                     {toast.type === 'success' ? <Check size={18} /> : <AlertCircle size={18} />}
                     <span className="text-xs font-black uppercase tracking-widest">{toast.msg}</span>
