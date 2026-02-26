@@ -23,12 +23,14 @@ import { ProductDto } from '../common/dtos/base.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { plainToInstance } from 'class-transformer';
 import { ExcelService } from '../admin/excel.service';
+import { EanService } from './ean.service';
 
 @Controller('products')
 export class ProductsController {
     constructor(
         private readonly productsService: ProductsService,
-        private readonly excelService: ExcelService
+        private readonly excelService: ExcelService,
+        private readonly eanService: EanService
     ) { }
 
     @Get()
@@ -49,6 +51,12 @@ export class ProductsController {
     async findOne(@Param('id') id: string) {
         const product = await this.productsService.findOne(id);
         return plainToInstance(ProductDto, product);
+    }
+
+    @Get('ean/:ean')
+    async findImageByEan(@Param('ean') ean: string) {
+        const imageUrl = await this.eanService.fetchImageUrlByEan(ean);
+        return { imageUrl };
     }
 
     @Post()

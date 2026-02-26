@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { getHomepageCategories, setHomepageCategories } from '@/lib/api';
-import { Plus, Trash2, Save } from 'lucide-react';
+import { getHomepageCategories, setHomepageCategories, fetchImageByEan } from '@/lib/api';
+import { Plus, Trash2, Save, Upload, Search, Link as LinkIcon, Image as ImageIcon, Loader2 } from 'lucide-react';
 
 export default function AdminHomepageConfig() {
     const [categories, setCategories] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [loadingTileEan, setLoadingTileEan] = useState<string | null>(null);
 
     useEffect(() => {
         getHomepageCategories().then(data => {
@@ -48,6 +49,29 @@ export default function AdminHomepageConfig() {
         updatedItems[itemIndex] = { ...updatedItems[itemIndex], [field]: value };
         updated[catIndex].items = updatedItems;
         setCategories(updated);
+    };
+
+    const handleFetchEanImage = async (catIndex: number, itemIndex: number, ean: string) => {
+        if (!ean) return;
+        setLoadingTileEan(`${catIndex}-${itemIndex}`);
+        const imageUrl = await fetchImageByEan(ean);
+        setLoadingTileEan(null);
+        if (imageUrl) {
+            handleChangeItem(catIndex, itemIndex, 'image', imageUrl);
+        } else {
+            alert('Could not find an image for this EAN.');
+        }
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, catIndex: number, itemIndex: number) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                handleChangeItem(catIndex, itemIndex, 'image', reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleSave = async () => {
@@ -142,23 +166,64 @@ export default function AdminHomepageConfig() {
                                         type="text"
                                         value={item.label}
                                         onChange={(e) => handleChangeItem(catIndex, itemIndex, 'label', e.target.value)}
-                                        className="w-full bg-background border border-border rounded-lg px-2 py-2 text-xs font-bold text-center outline-none"
+                                        className="w-full bg-background border border-border rounded-lg px-3 py-2 text-xs font-bold text-center outline-none focus:border-primary/50 transition-colors"
                                         placeholder="Label"
                                     />
-                                    <input
-                                        type="text"
-                                        value={item.image}
-                                        onChange={(e) => handleChangeItem(catIndex, itemIndex, 'image', e.target.value)}
-                                        className="w-full bg-background border border-border rounded-lg px-2 py-2 text-xs font-medium text-center outline-none"
-                                        placeholder="Image URL"
-                                    />
-                                    <input
-                                        type="text"
-                                        value={item.link}
-                                        onChange={(e) => handleChangeItem(catIndex, itemIndex, 'link', e.target.value)}
-                                        className="w-full bg-background border border-border rounded-lg px-2 py-2 text-xs font-medium text-center outline-none"
-                                        placeholder="Target URL /categories?..."
-                                    />
+                                    <div className="flex w-full gap-2">
+                                        <div className="relative flex-1">
+                                            <input
+                                                type="text"
+                                                value={item.ean || ''}
+                                                onChange={(e) => handleChangeItem(catIndex, itemIndex, 'ean', e.target.value)}
+                                                className="w-full bg-background border border-border rounded-lg pl-3 pr-8 py-2 text-xs font-medium outline-none focus:border-primary/50 transition-colors"
+                                                placeholder="Enter EAN..."
+                                            />
+                                            <button
+                                                onClick={() => handleFetchEanImage(catIndex, itemIndex, item.ean)}
+                                                disabled={loadingTileEan === `${catIndex}-${itemIndex}` || !item.ean}
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors disabled:opacity-50"
+                                                title="Fetch Image from EAN"
+                                            >
+                                                {loadingTileEan === `${catIndex}-${itemIndex}` ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="flex w-full gap-2 items-center">
+                                        <div className="relative flex-1">
+                                            <ImageIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                                            <input
+                                                type="text"
+                                                value={item.image}
+                                                onChange={(e) => handleChangeItem(catIndex, itemIndex, 'image', e.target.value)}
+                                                className="w-full bg-background border border-border rounded-lg pl-8 pr-3 py-2 text-xs font-medium outline-none focus:border-primary/50 transition-colors"
+                                                placeholder="Image URL"
+                                            />
+                                        </div>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            id={`upload-${catIndex}-${itemIndex}`}
+                                            onChange={(e) => handleImageUpload(e, catIndex, itemIndex)}
+                                        />
+                                        <label
+                                            htmlFor={`upload-${catIndex}-${itemIndex}`}
+                                            className="w-8 h-8 shrink-0 bg-muted hover:bg-muted/80 border border-border rounded-lg flex items-center justify-center cursor-pointer transition-colors"
+                                            title="Upload Local Image"
+                                        >
+                                            <Upload size={14} className="text-foreground" />
+                                        </label>
+                                    </div>
+                                    <div className="relative w-full">
+                                        <LinkIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                                        <input
+                                            type="text"
+                                            value={item.link}
+                                            onChange={(e) => handleChangeItem(catIndex, itemIndex, 'link', e.target.value)}
+                                            className="w-full bg-background border border-border rounded-lg pl-8 pr-3 py-2 text-xs font-medium outline-none focus:border-primary/50 transition-colors"
+                                            placeholder="Target URL /categories?..."
+                                        />
+                                    </div>
                                 </div>
                             ))}
                         </div>

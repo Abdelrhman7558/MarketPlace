@@ -58,3 +58,16 @@ export async function setHomepageCategories(token: string, data: any): Promise<b
         return false;
     }
 }
+
+export async function fetchImageByEan(ean: string): Promise<string | null> {
+    if (!ean) return null;
+    try {
+        const response = await fetch(`${API_URL}/products/ean/${ean}`, { cache: 'no-store' });
+        if (!response.ok) return null;
+        const data = await response.json();
+        return data.imageUrl || null;
+    } catch (error) {
+        console.error('Error fetching image by EAN:', error);
+        return null;
+    }
+}
