@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import {
     Users, Package, Store, Activity,
     Settings, ShieldAlert, CheckCircle2,
-    Search, Filter, ExternalLink, RefreshCcw, Percent, AlertCircle
+    Search, Filter, ExternalLink, RefreshCcw, Percent, AlertCircle, X, Plus, Tag, Megaphone, Trash2
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -25,7 +25,14 @@ export default function AdminDashboard() {
     const [pendingProducts, setPendingProducts] = useState<any[]>([]);
     const [approvedProducts, setApprovedProducts] = useState<any[]>([]);
     const [markup, setMarkup] = useState<number>(1.05);
+    const [brands, setBrands] = useState<string[]>([]);
+    const [newBrand, setNewBrand] = useState('');
+    const [brandsLoading, setBrandsLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [activeAds, setActiveAds] = useState<any[]>([]);
+    const [adProductId, setAdProductId] = useState('');
+    const [adPlacement, setAdPlacement] = useState('SPONSORED_PRODUCT');
 
     const fetchDashboardData = async () => {
         setIsLoading(true);
@@ -33,26 +40,38 @@ export default function AdminDashboard() {
             const token = localStorage.getItem('bev-token');
             const headers = { Authorization: `Bearer ${token}` };
 
-            // Fetch Pending Users
-            const usersRes = await fetch('http://localhost:3005/users?status=PENDING_APPROVAL', { headers });
-            if (usersRes.ok) {
-                const data = await usersRes.json();
+            const [usersP, productsP, markupP, brandsP, adsP] = await Promise.allSettled([
+                fetch('http://localhost:3005/users?status=PENDING_APPROVAL', { headers }),
+                fetch('http://localhost:3005/admin/config/all-products', { headers }),
+                fetch('http://localhost:3005/admin/config/markup', { headers }),
+                fetch('http://localhost:3005/admin/config/allowed-brands', { headers }),
+                fetch('http://localhost:3005/ads/admin/all', { headers })
+            ]);
+
+            if (usersP.status === 'fulfilled' && usersP.value.ok) {
+                const data = await usersP.value.json();
                 setPendingUsers(data.filter((u: any) => u.role !== 'ADMIN'));
             }
 
-            // Fetch All Products
-            const productsRes = await fetch('http://localhost:3005/admin/config/all-products', { headers });
-            if (productsRes.ok) {
-                const data = await productsRes.json();
+            if (productsP.status === 'fulfilled' && productsP.value.ok) {
+                const data = await productsP.value.json();
                 setPendingProducts(data.filter((p: any) => p.status === 'PENDING'));
                 setApprovedProducts(data.filter((p: any) => p.status === 'APPROVED'));
             }
 
-            // Fetch Markup
-            const markupRes = await fetch('http://localhost:3005/admin/config/markup', { headers });
-            if (markupRes.ok) {
-                const data = await markupRes.json();
+            if (markupP.status === 'fulfilled' && markupP.value.ok) {
+                const data = await markupP.value.json();
                 setMarkup(data.markup);
+            }
+
+            if (brandsP.status === 'fulfilled' && brandsP.value.ok) {
+                const data = await brandsP.value.json();
+                setBrands(data);
+            }
+
+            if (adsP.status === 'fulfilled' && adsP.value.ok) {
+                const data = await adsP.value.json();
+                setActiveAds(data);
             }
         } catch (err) {
             console.error('Failed to fetch dashboard data', err);
@@ -74,6 +93,40 @@ export default function AdminDashboard() {
         } catch (e) {
             alert('Failed to update markup');
         }
+    };
+
+    const handleSaveBrands = async () => {
+        setBrandsLoading(true);
+        try {
+            const token = localStorage.getItem('bev-token');
+            const res = await fetch('http://localhost:3005/admin/config/allowed-brands', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ brands })
+            });
+            if (res.ok) {
+                alert('Brands updated successfully');
+            } else {
+                alert('Failed to update brands');
+            }
+        } catch (e) {
+            alert('Failed to update brands');
+        } finally {
+            setBrandsLoading(false);
+        }
+    };
+
+    const handleAddBrand = () => {
+        if (!newBrand.trim()) return;
+        const brand = newBrand.trim().toLowerCase();
+        if (!brands.includes(brand)) {
+            setBrands([...brands, brand]);
+        }
+        setNewBrand('');
+    };
+
+    const handleRemoveBrand = (brandToRemove: string) => {
+        setBrands(brands.filter(b => b !== brandToRemove));
     };
 
     const handleApproveProduct = async (id: string) => {
@@ -108,6 +161,40 @@ export default function AdminDashboard() {
             }
         } catch (e) {
             alert('Failed to reject');
+        }
+    };
+
+    const handleCreateAd = async () => {
+        if (!adProductId) return alert("Enter Product ID");
+        try {
+            const token = localStorage.getItem('bev-token');
+            const res = await fetch(`http://localhost:3005/ads/admin/create`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId: adProductId, placement: adPlacement })
+            });
+            if (res.ok) {
+                fetchDashboardData();
+                setAdProductId('');
+                alert("Ad Created");
+            } else {
+                alert("Failed to create ad");
+            }
+        } catch (e) {
+            alert("Error creating ad");
+        }
+    };
+
+    const handleRemoveAd = async (id: string) => {
+        try {
+            const token = localStorage.getItem('bev-token');
+            await fetch(`http://localhost:3005/ads/admin/${id}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            fetchDashboardData();
+        } catch (e) {
+            alert("Error removing");
         }
     };
 
@@ -158,8 +245,8 @@ export default function AdminDashboard() {
                             <CheckCircle2 className="w-5 h-5 text-success" />
                             Approval Queue
                         </h2>
-                        <div className="flex items-center gap-2 p-1 bg-muted/30 rounded-full">
-                            {['users', 'products', 'approved', 'settings'].map(tab => (
+                        <div className="flex items-center gap-2 p-1 bg-muted/30 rounded-full flex-wrap">
+                            {['users', 'products', 'approved', 'brands', 'ads', 'settings'].map(tab => (
                                 <button
                                     key={tab}
                                     className={cn(
@@ -313,6 +400,118 @@ export default function AdminDashboard() {
                                             className="h-12 bg-background border border-border rounded-xl px-4 font-black w-40 text-lg"
                                         />
                                         <Button onClick={handleUpdateMarkup} className="h-12 px-8 rounded-xl font-black">Save Configuration</Button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'brands' && (
+                            <div className="p-8 space-y-8">
+                                <div>
+                                    <h3 className="text-xl font-bold flex items-center gap-2 mb-2">
+                                        <Tag className="w-5 h-5 text-primary" />
+                                        Allowed Brands configuration
+                                    </h3>
+                                    <p className="text-sm text-foreground/40 mb-6 max-w-2xl">
+                                        Control which brands are permitted on the marketplace. This list is strictly enforced during catalog imports and product creation.
+                                    </p>
+
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <input
+                                            type="text"
+                                            value={newBrand}
+                                            onChange={(e) => setNewBrand(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleAddBrand()}
+                                            placeholder="Enter brand name..."
+                                            className="h-12 bg-background border border-border rounded-xl px-4 font-bold flex-1 max-w-md"
+                                        />
+                                        <Button onClick={handleAddBrand} variant="secondary" className="h-12 px-6 rounded-xl font-black gap-2">
+                                            <Plus size={18} /> Add
+                                        </Button>
+                                        <Button
+                                            onClick={handleSaveBrands}
+                                            disabled={brandsLoading}
+                                            className="h-12 px-8 rounded-xl font-black ml-auto shadow-lg shadow-primary/20"
+                                        >
+                                            {brandsLoading ? 'Saving...' : 'Save Configuration'}
+                                        </Button>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-3">
+                                        {brands.map((brand) => (
+                                            <div key={brand} className="flex items-center gap-2 bg-muted/30 border border-border/50 rounded-full pl-4 pr-1.5 py-1.5 group hover:border-primary/50 transition-colors">
+                                                <span className="font-bold text-sm tracking-tight">{brand}</span>
+                                                <button
+                                                    onClick={() => handleRemoveBrand(brand)}
+                                                    className="w-6 h-6 rounded-full bg-background flex items-center justify-center text-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-colors"
+                                                >
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                        {brands.length === 0 && (
+                                            <p className="text-sm font-bold text-foreground/30 italic">No brands configured. All products will be blocked.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'ads' && (
+                            <div className="p-8 space-y-8">
+                                <div>
+                                    <h3 className="text-xl font-bold flex items-center gap-2 mb-2">
+                                        <Megaphone className="w-5 h-5 text-primary" />
+                                        Advertising & Sponsored Products
+                                    </h3>
+                                    <p className="text-sm text-foreground/40 mb-6 max-w-2xl">
+                                        Inject products natively into search results and brand banners to increase their visibility. Matches Amazon's Ad Platform logic.
+                                    </p>
+
+                                    <div className="flex flex-wrap items-center gap-4 mb-8 bg-muted/10 p-6 rounded-2xl border border-border/50">
+                                        <input
+                                            type="text"
+                                            value={adProductId}
+                                            onChange={(e) => setAdProductId(e.target.value)}
+                                            placeholder="Paste Product ID (ObjectId)..."
+                                            className="h-12 bg-background border border-border rounded-xl px-4 font-bold min-w-[300px]"
+                                        />
+                                        <select
+                                            value={adPlacement}
+                                            onChange={(e) => setAdPlacement(e.target.value)}
+                                            className="h-12 bg-background border border-border rounded-xl px-4 text-sm font-bold cursor-pointer outline-none"
+                                        >
+                                            <option value="SPONSORED_PRODUCT">Sponsored Product (Search Grid)</option>
+                                            <option value="SPONSORED_BRAND">Sponsored Brand (Top Banner)</option>
+                                            <option value="SPONSORED_DISPLAY">Sponsored Display (Sidebar)</option>
+                                        </select>
+                                        <Button onClick={handleCreateAd} variant="primary" className="h-12 px-6 rounded-xl font-black gap-2 shrink-0">
+                                            <Plus size={18} /> Inject Ad
+                                        </Button>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <h4 className="font-bold text-sm text-foreground">Active Campaigns ({activeAds.length})</h4>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {activeAds.map(ad => (
+                                                <div key={ad.id} className="flex items-center justify-between p-4 bg-background border border-border/50 rounded-xl hover:border-primary/30 transition-colors">
+                                                    <div>
+                                                        <div className="flex gap-2 items-center mb-1">
+                                                            <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/20">{ad.placement.replace('SPONSORED_', '')}</Badge>
+                                                            <span className="text-xs text-muted-foreground font-mono">{ad.id}</span>
+                                                        </div>
+                                                        <p className="font-bold text-sm">{ad.productName}</p>
+                                                        <p className="text-[11px] text-muted-foreground">Supplier: {ad.supplierName}</p>
+                                                    </div>
+                                                    <Button onClick={() => handleRemoveAd(ad.id)} variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive h-10 w-10 p-0 rounded-full">
+                                                        <Trash2 size={16} />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                            {activeAds.length === 0 && (
+                                                <p className="text-sm text-foreground/30 italic px-2">No active ad configurations currently running.</p>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, Lock, Mail, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
 
@@ -45,120 +45,109 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#050B18] flex items-center justify-center p-6 relative overflow-hidden">
-            {/* Animated Background Gradients */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#FF7A1A]/10 rounded-full blur-[120px] animate-pulse" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[150px] animate-pulse" />
-
+        <div className="min-h-screen bg-[#EAEDED] flex items-center justify-center p-6">
             <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="w-full max-w-[450px] z-10"
+                transition={{ duration: 0.4 }}
+                className="w-full max-w-[380px]"
             >
-                {/* Logo Section */}
-                <div className="text-center mb-10">
-                    <Link href="/" className="inline-block group">
-                        <motion.span
-                            initial={{ scale: 0.8 }}
-                            animate={{ scale: 1 }}
-                            whileHover={{ scale: 1.05 }}
-                            className="font-black text-4xl tracking-tighter text-white"
-                        >
-                            Market<span className="text-[#FF7A1A]">Place</span>
-                        </motion.span>
+                {/* Logo */}
+                <div className="text-center mb-6">
+                    <Link href="/" className="inline-block">
+                        <span className="font-black text-3xl tracking-tighter text-[#0F1111]">
+                            Market<span className="text-[#FF9900]">Place</span>
+                        </span>
                     </Link>
-                    <p className="text-gray-400 mt-2 font-medium">Wholesale Sourcing Excellence</p>
                 </div>
 
                 {/* Form Card */}
-                <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-10 shadow-2xl overflow-hidden relative group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-
-                    <h1 className="text-3xl font-black text-white mb-8 flex items-center gap-3">
-                        Sign In <Sparkles className="text-[#FF7A1A] w-6 h-6" />
-                    </h1>
+                <div className="bg-white border border-[#DDD] rounded-lg p-6 shadow-sm">
+                    <h1 className="text-2xl font-bold text-[#0F1111] mb-5">Sign in</h1>
 
                     {error && (
                         <motion.div
-                            initial={{ x: -10, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-6"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="bg-[#FCF4F4] border border-[#C40000] rounded-md p-3 mb-4"
                         >
-                            <p className="text-red-400 text-sm font-bold flex items-center gap-2">
-                                <span className="bg-red-500 text-white w-4 h-4 rounded-full flex items-center justify-center text-[10px]">!</span>
+                            <p className="text-[#C40000] text-sm font-medium flex items-center gap-2">
+                                <span className="font-bold">!</span>
                                 {error}
                             </p>
                         </motion.div>
                     )}
 
-                    <form onSubmit={handleLogin} className="space-y-6">
-                        <div className="space-y-2">
-                            <label className="text-sm font-black text-gray-300 uppercase tracking-widest ml-1">Work Email</label>
+                    <form onSubmit={handleLogin} className="space-y-4">
+                        <div className="space-y-1">
+                            <label className="text-sm font-bold text-[#0F1111]">Email</label>
                             <div className="relative">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="name@company.com"
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white outline-none focus:border-[#FF7A1A] focus:ring-4 focus:ring-[#FF7A1A]/10 transition-all placeholder:text-gray-600 font-medium"
+                                    className="w-full bg-white border border-[#888] rounded-md px-3 py-2 text-[#0F1111] text-sm outline-none focus:border-[#E77600] focus:shadow-[0_0_0_3px_rgba(228,121,17,0.5)] transition-all placeholder:text-gray-400"
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between ml-1">
-                                <label className="text-sm font-black text-gray-300 uppercase tracking-widest">Password</label>
-                                <Link href="/auth/forgot-password" className="text-xs font-bold text-[#FF7A1A] hover:underline">Forgot?</Link>
+                        <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                                <label className="text-sm font-bold text-[#0F1111]">Password</label>
+                                <Link href="/auth/forgot-password" className="text-xs text-[#007185] hover:text-[#C45500] hover:underline">Forgot your password?</Link>
                             </div>
                             <div className="relative">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                                 <input
                                     type={showPass ? 'text' : 'password'}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-12 py-4 text-white outline-none focus:border-[#FF7A1A] focus:ring-4 focus:ring-[#FF7A1A]/10 transition-all placeholder:text-gray-600 font-medium"
+                                    className="w-full bg-white border border-[#888] rounded-md px-3 pr-10 py-2 text-[#0F1111] text-sm outline-none focus:border-[#E77600] focus:shadow-[0_0_0_3px_rgba(228,121,17,0.5)] transition-all placeholder:text-gray-400"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPass(!showPass)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#0F1111] transition-colors"
                                 >
-                                    {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
                         </div>
 
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                        <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-[#FF7A1A] hover:bg-[#e66c17] text-white py-5 rounded-2xl font-black text-lg shadow-xl shadow-[#FF7A1A]/20 flex items-center justify-center gap-3 disabled:opacity-50 transition-all"
+                            className="w-full bg-gradient-to-b from-[#F7DFA5] to-[#F0C14B] border border-[#A88734] rounded-md py-2.5 text-sm font-bold text-[#0F1111] hover:from-[#F5D78E] hover:to-[#EEB933] disabled:opacity-50 transition-all shadow-sm"
                         >
                             {loading ? (
-                                <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                                <div className="w-5 h-5 border-2 border-[#0F1111]/30 border-t-[#0F1111] rounded-full animate-spin mx-auto" />
                             ) : (
-                                <>Sign In <ArrowRight size={20} /></>
+                                'Sign in'
                             )}
-                        </motion.button>
+                        </button>
                     </form>
 
-                    <div className="mt-8 flex items-center justify-center gap-2 text-sm text-gray-400 border-t border-white/10 pt-8">
-                        <ShieldCheck className="w-4 h-4 text-green-500" />
-                        Verified Business Login
+                    <div className="mt-5 text-xs text-[#555] text-center leading-relaxed">
+                        By signing in, you agree to MarketPlace's <a href="#" className="text-[#007185] hover:text-[#C45500] hover:underline">Terms</a> and <a href="#" className="text-[#007185] hover:text-[#C45500] hover:underline">Privacy Policy</a>.
                     </div>
                 </div>
 
                 {/* Footer Link */}
-                <p className="text-center mt-8 text-gray-500 font-medium tracking-tight">
-                    Don't have an account? {' '}
-                    <Link href="/auth/register" className="text-white font-black hover:text-[#FF7A1A] underline-offset-8 hover:underline transition-all">
-                        Create Marketplace Account
-                    </Link>
-                </p>
+                <div className="relative mt-6">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-[#DDD]" />
+                    </div>
+                    <div className="relative text-center">
+                        <span className="bg-[#EAEDED] px-3 text-xs text-[#767676]">New to MarketPlace?</span>
+                    </div>
+                </div>
+                <Link
+                    href="/auth/register"
+                    className="mt-3 block w-full text-center bg-gradient-to-b from-[#F7F8FA] to-[#E7E9EC] border border-[#ADB1B8] rounded-md py-2 text-sm font-medium text-[#0F1111] hover:from-[#E7E8EA] hover:to-[#D8DADC] transition-all shadow-sm"
+                >
+                    Create your MarketPlace account
+                </Link>
             </motion.div>
         </div>
     );

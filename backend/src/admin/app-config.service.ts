@@ -79,4 +79,26 @@ export class AppConfigService {
             update: { value: JSON.stringify(data) }
         });
     }
+
+    async getAllowedBrands(): Promise<string[]> {
+        const config = await this.prisma.appConfig.findUnique({
+            where: { key: 'ALLOWED_BRANDS' }
+        });
+        if (!config || !config.value) {
+            return [];
+        }
+        try {
+            return JSON.parse(config.value);
+        } catch (e) {
+            return [];
+        }
+    }
+
+    async setAllowedBrands(brands: string[]): Promise<any> {
+        return this.prisma.appConfig.upsert({
+            where: { key: 'ALLOWED_BRANDS' },
+            create: { key: 'ALLOWED_BRANDS', value: JSON.stringify(brands) },
+            update: { value: JSON.stringify(brands) }
+        });
+    }
 }

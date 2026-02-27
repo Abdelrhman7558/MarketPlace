@@ -36,7 +36,7 @@ export default function CreateCouponPage() {
     useEffect(() => {
         const fetchPlacements = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('bev-token');
                 if (!token) return;
 
                 const res = await fetch('http://localhost:3005/placements', {
@@ -72,7 +72,7 @@ export default function CreateCouponPage() {
         setIsSubmitting(true);
 
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('bev-token');
             const res = await fetch('http://localhost:3005/coupons', {
                 method: 'POST',
                 headers: {

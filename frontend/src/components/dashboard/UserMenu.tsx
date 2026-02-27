@@ -24,6 +24,9 @@ export function UserMenu({ role }: UserMenuProps) {
     const { user, logout } = useAuth();
     const menuRef = React.useRef<HTMLDivElement>(null);
 
+    // Detect if we're on the admin layout (white background) vs homepage (dark navbar)
+    const isAdminLayout = role === 'admin' || role === 'supplier';
+
     React.useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -63,7 +66,12 @@ export function UserMenu({ role }: UserMenuProps) {
         <div className="relative" ref={menuRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 p-1.5 rounded-2xl hover:bg-white/5 transition-all group border border-transparent hover:border-white/10"
+                className={cn(
+                    "flex items-center gap-3 p-1.5 rounded-2xl transition-all group border border-transparent",
+                    isAdminLayout
+                        ? "hover:bg-[#F3F3F3] hover:border-[#DDD]"
+                        : "hover:bg-white/5 hover:border-white/10"
+                )}
             >
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-[#FF8C33] flex items-center justify-center font-black text-[#131921] border-2 border-white/10 shadow-lg group-hover:scale-105 transition-transform overflow-hidden">
@@ -74,7 +82,10 @@ export function UserMenu({ role }: UserMenuProps) {
                         )}
                     </div>
                     <div className="text-left hidden lg:block">
-                        <p className="text-xs font-black text-white group-hover:text-primary transition-colors">{user?.name}</p>
+                        <p className={cn(
+                            "text-xs font-black group-hover:text-primary transition-colors",
+                            isAdminLayout ? "text-[#0F1111]" : "text-white"
+                        )}>{user?.name}</p>
                         <div className="flex items-center gap-1.5">
                             <div className={cn(
                                 "w-1.5 h-1.5 rounded-full animate-pulse",
@@ -92,7 +103,8 @@ export function UserMenu({ role }: UserMenuProps) {
                 <ChevronDown
                     size={16}
                     className={cn(
-                        "text-white/40 group-hover:text-white transition-all",
+                        "transition-all",
+                        isAdminLayout ? "text-[#888] group-hover:text-[#0F1111]" : "text-white/40 group-hover:text-white",
                         isOpen && "rotate-180 text-primary"
                     )}
                 />
@@ -105,17 +117,17 @@ export function UserMenu({ role }: UserMenuProps) {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
-                        className="absolute right-0 mt-4 w-64 bg-[#131921]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl z-[100] overflow-hidden"
+                        className="absolute right-0 mt-4 w-64 bg-white border border-[#DDD] rounded-xl shadow-xl z-[100] overflow-hidden"
                     >
-                        <div className="p-4 border-b border-white/5">
-                            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-3">Account</p>
+                        <div className="p-4 border-b border-[#EAEDED]">
+                            <p className="text-[10px] font-black text-[#888] uppercase tracking-[0.2em] mb-3">Account</p>
                             <div className="flex items-center gap-3 px-2 py-1">
-                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-                                    <Shield size={20} className={role === 'admin' ? "text-primary" : "text-emerald-500"} />
+                                <div className="w-10 h-10 rounded-full bg-[#F3F3F3] flex items-center justify-center border border-[#DDD]">
+                                    <Shield size={20} className={role === 'admin' ? "text-[#FF9900]" : "text-emerald-500"} />
                                 </div>
                                 <div className="overflow-hidden">
-                                    <p className="text-xs font-black text-white truncate">{user?.name}</p>
-                                    <p className="text-[10px] text-white/40 truncate">{user?.email}</p>
+                                    <p className="text-xs font-black text-[#0F1111] truncate">{user?.name}</p>
+                                    <p className="text-[10px] text-[#888] truncate">{user?.email}</p>
                                 </div>
                             </div>
                         </div>
@@ -128,23 +140,23 @@ export function UserMenu({ role }: UserMenuProps) {
                                         key={item.label}
                                         href={item.href}
                                         onClick={() => setIsOpen(false)}
-                                        className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all group"
+                                        className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#555] hover:text-[#0F1111] hover:bg-[#F3F3F3] transition-all group"
                                     >
-                                        <Icon size={18} className="group-hover:scale-110 group-hover:text-primary transition-all" />
+                                        <Icon size={18} className="group-hover:scale-110 group-hover:text-[#FF9900] transition-all" />
                                         <span className="text-sm font-bold">{item.label}</span>
                                     </Link>
                                 );
                             })}
                         </div>
 
-                        <div className="p-2 bg-white/[0.02] border-t border-white/5">
+                        <div className="p-2 bg-[#F9F9F9] border-t border-[#EAEDED]">
                             <button
                                 onClick={() => {
                                     setIsOpen(false);
                                     logout();
                                     window.location.href = '/';
                                 }}
-                                className="flex items-center gap-3 px-4 py-2.5 w-full rounded-xl text-red-400 hover:bg-red-400/10 transition-all group"
+                                className="flex items-center gap-3 px-4 py-2.5 w-full rounded-lg text-[#C40000] hover:bg-red-50 transition-all group"
                             >
                                 <LogOut size={18} className="group-hover:translate-x-1 transition-transform" />
                                 <span className="text-sm font-bold">Sign Out</span>

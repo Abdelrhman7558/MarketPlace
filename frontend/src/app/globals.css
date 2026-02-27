@@ -4,63 +4,120 @@
 
 @layer base {
     :root {
-        /* Brand HSL Colors - Adjusted for Amazon Style */
-        --background: 210 20% 98%;
-        --foreground: 222 47% 11%;
-
+        /* Brand HSL Colors - Amazon Style */
         --background: 0 0% 100%;
-        --foreground: 222.2 84% 4.9%;
+        /* #FFFFFF */
+        --foreground: 210 6% 6%;
+        /* #0F1111 */
         --card: 0 0% 100%;
-        --card-foreground: 222.2 84% 4.9%;
+        /* #FFFFFF */
+        --card-foreground: 210 6% 6%;
+        /* #0F1111 */
         --popover: 0 0% 100%;
-        --popover-foreground: 222.2 84% 4.9%;
+        /* #FFFFFF */
+        --popover-foreground: 210 6% 6%;
+        /* #0F1111 */
+
         --primary: 36 100% 50%;
-        /* MarketPlace Orange #FF9900 */
-        --primary-foreground: 210 40% 98%;
-        --secondary: 36 100% 50%;
-        --secondary-foreground: 222.2 47.4% 11.2%;
-        --accent: 210 40% 96.1%;
-        --accent-foreground: 222.2 47.4% 11.2%;
-        --highlight: 14 91% 54%;
-        /* Vibrant Red-Orange */
-        --highlight-foreground: 210 40% 98%;
-        --muted: 210 40% 96.1%;
-        --muted-foreground: 215.4 16.3% 46.9%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 210 40% 98%;
-        --border: 214.3 31.8% 91.4%;
-        --input: 214.3 31.8% 91.4%;
+        /* #FF9900 - Amazon Orange */
+        --primary-foreground: 0 0% 100%;
+        /* #FFFFFF */
+
+        --secondary: 214 28% 19%;
+        /* #232F3E - Amazon Header Blue */
+        --secondary-foreground: 0 0% 100%;
+        /* #FFFFFF */
+
+        --accent: 210 17% 96%;
+        /* #F3F3F3 - Amazon active/muted background */
+        --accent-foreground: 210 6% 6%;
+        /* #0F1111 */
+
+        --highlight: 40 100% 60%;
+        /* #FFB01F - Lighter orange for hover */
+        --highlight-foreground: 210 6% 6%;
+        /* #0F1111 */
+
+        --muted: 0 0% 87%;
+        /* #DDDDDD - Muted borders */
+        --muted-foreground: 0 0% 34%;
+        /* #565656 - Muted text */
+
+        --destructive: 12 96% 35%;
+        /* #B12704 - Amazon red */
+        --destructive-foreground: 0 0% 100%;
+        /* #FFFFFF */
+
+        --border: 0 0% 87%;
+        /* #DDDDDD */
+        --input: 0 0% 87%;
+        /* #DDDDDD */
         --ring: 36 100% 50%;
-        --radius: 0.75rem;
-        --success: 142.1 70.6% 45.3%;
-        /* Emerald accent */
-        --glass-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        /* #FF9900 */
+        --radius: 0.375rem;
+        /* Less rounded, more Amazon-like 6px */
+
+        --success: 189 100% 26%;
+        /* #007185 - Amazon teal link/success */
+        --glass-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        /* Flatter shadow */
     }
 
     .dark {
-        --background: 222.2 84% 4.9%;
-        --foreground: 210 40% 98%;
-        --card: 222.2 84% 4.9%;
-        --card-foreground: 210 40% 98%;
-        --popover: 222.2 84% 4.9%;
-        --popover-foreground: 210 40% 98%;
+        /* Amazon-inspired dark theme */
+        --background: 210 6% 7%;
+        /* #0F1111 */
+        --foreground: 0 0% 93%;
+        /* #EDEDED */
+        --card: 214 28% 10%;
+        /* #131921 */
+        --card-foreground: 0 0% 93%;
+        /* #EDEDED */
+        --popover: 214 28% 10%;
+        /* #131921 */
+        --popover-foreground: 0 0% 93%;
+        /* #EDEDED */
+
         --primary: 36 100% 50%;
-        --primary-foreground: 222.2 47.4% 11.2%;
-        --secondary: 36 100% 50%;
-        --secondary-foreground: 210 40% 98%;
-        --accent: 217.2 32.6% 17.5%;
-        --accent-foreground: 210 40% 98%;
-        --highlight: 14 91% 54%;
-        --highlight-foreground: 210 40% 98%;
-        --muted: 217.2 32.6% 17.5%;
-        --muted-foreground: 215 20.2% 65.1%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 210 40% 98%;
-        --border: 217.2 32.6% 17.5%;
-        --input: 217.2 32.6% 17.5%;
+        /* #FF9900 - Amazon Orange (same) */
+        --primary-foreground: 210 6% 7%;
+        /* #0F1111 */
+
+        --secondary: 214 19% 15%;
+        /* #1A1F26 */
+        --secondary-foreground: 0 0% 93%;
+        /* #EDEDED */
+
+        --accent: 214 19% 15%;
+        /* #1A1F26 */
+        --accent-foreground: 0 0% 93%;
+        /* #EDEDED */
+
+        --highlight: 40 100% 60%;
+        /* #FFB01F */
+        --highlight-foreground: 210 6% 7%;
+        /* #0F1111 */
+
+        --muted: 214 19% 18%;
+        /* #232F3E */
+        --muted-foreground: 0 0% 60%;
+        /* #999 */
+
+        --destructive: 0 72% 51%;
+        /* #DF3312 */
+        --destructive-foreground: 0 0% 100%;
+        /* #FFFFFF */
+
+        --border: 214 19% 20%;
+        /* #2A3342 */
+        --input: 214 19% 20%;
+        /* #2A3342 */
         --ring: 36 100% 50%;
-        --success: 142.1 70.6% 45.3%;
-        --glass-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+        /* #FF9900 */
+
+        --success: 189 100% 36%;
+        /* #00A8B5 */
+        --glass-shadow: 0 4px 15px 0 rgb(0 0 0 / 0.3), 0 2px 4px -1px rgb(0 0 0 / 0.2);
     }
 }
 
@@ -94,43 +151,44 @@
 
 @layer components {
     .glass {
-        @apply bg-background/80 backdrop-blur-md border border-border/50;
+        @apply bg-background border border-border;
+        /* Flatter Amazon style */
     }
 
     .glass-card {
-        @apply bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl;
+        @apply bg-background border border-border rounded-md;
     }
 
     .glass-card-strong {
-        @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-[32px] shadow-2xl;
+        @apply bg-background border border-border shadow-sm rounded-md;
     }
 
     .btn-primary {
-        @apply bg-secondary text-secondary-foreground font-bold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-secondary/20;
+        @apply bg-primary text-primary-foreground font-semibold rounded-md border border-[#F3A847] hover:bg-[#F3A847] transition-colors shadow-sm;
     }
 
     .btn-secondary {
-        @apply bg-white/10 text-white font-bold backdrop-blur-sm border border-white/20 transition-all duration-300 hover:bg-white/20 hover:scale-[1.02] active:scale-[0.98];
+        @apply bg-secondary text-secondary-foreground font-semibold rounded-md border border-secondary hover:bg-[#1a232f] transition-colors shadow-sm;
     }
 
     .btn-hover {
-        @apply transition-all duration-300 hover:scale-[1.02] active:scale-[0.98];
+        @apply hover:bg-muted/50 transition-colors;
     }
 
     .premium-shadow {
-        @apply shadow-premium dark:shadow-premium-dark;
+        @apply shadow-sm;
     }
 
     .section-title {
-        @apply text-4xl md:text-5xl font-black text-white text-center mb-4;
+        @apply text-2xl md:text-3xl font-bold text-foreground mb-4;
     }
 
     .section-subtitle {
-        @apply text-lg text-[#B0B0C8] text-center max-w-2xl mx-auto mb-12;
+        @apply text-base text-muted-foreground max-w-2xl mb-8;
     }
 
     .trust-card {
-        @apply p-8 rounded-3xl bg-white/[0.03] border border-white/[0.05] text-center transition-all duration-300 hover:bg-white/[0.06] hover:border-white/[0.1] hover:translate-y-[-5px];
+        @apply p-6 border border-border rounded-md hover:shadow-sm transition-all bg-card;
     }
 }
 
@@ -141,12 +199,12 @@
     transition-duration: 300ms;
 }
 
-/* Fix for Chrome autofill white-on-white text in dark mode */
+/* Fix for Chrome autofill */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #131921 inset !important;
-    -webkit-text-fill-color: white !important;
+    -webkit-box-shadow: 0 0 0 30px #FFFFFF inset !important;
+    -webkit-text-fill-color: #0F1111 !important;
     transition: background-color 5000s ease-in-out 0s;
 }

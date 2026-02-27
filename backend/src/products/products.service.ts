@@ -51,4 +51,24 @@ export class ProductsService {
     async findBySupplier(supplierId: string) {
         return this.prisma.product.findMany({ where: { supplierId } });
     }
+
+    async findRecommendations(categories: string[], excludeIds: string[], limit: number = 4) {
+        // Fetch up to 10 random approved products from these categories, not matching excluded IDs
+        const products = await this.prisma.product.findMany({
+            where: {
+                status: ProductStatus.APPROVED,
+                category: {
+                    in: categories,
+                },
+                id: {
+                    notIn: excludeIds,
+                }
+            },
+            take: 10,
+        });
+
+        // Shuffle the results and take the requested limit for random variety
+        const shuffled = products.sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, limit);
+    }
 }

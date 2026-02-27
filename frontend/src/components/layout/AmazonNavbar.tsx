@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { CATEGORIES_LIST } from '@/lib/products';
 import { UserMenu } from '@/components/dashboard/UserMenu';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Locale } from '@/locales';
 
 const CATEGORY_ICONS: Record<string, any> = {
     'Soft Drinks': Droplets,
@@ -26,7 +27,7 @@ const CATEGORY_ICONS: Record<string, any> = {
 export default function AmazonNavbar() {
     const { items } = useCart();
     const { user } = useAuth();
-    const { t } = useLanguage();
+    const { t, locale, setLocale } = useLanguage();
     const [searchTerm, setSearchTerm] = React.useState('');
     const [searchCategory, setSearchCategory] = React.useState('All');
     const [isCategoriesOpen, setIsCategoriesOpen] = React.useState(false);
@@ -101,6 +102,23 @@ export default function AmazonNavbar() {
                             {theme === 'dark' ? <Sun size={20} className="stroke-[1.5]" /> : <Moon size={20} className="stroke-[1.5]" />}
                         </button>
                     )}
+
+                    {/* Language Switcher */}
+                    <div className="hidden sm:flex items-center h-full">
+                        <select
+                            value={locale}
+                            onChange={(e) => setLocale(e.target.value as Locale)}
+                            className="bg-transparent text-xs font-bold outline-none cursor-pointer text-white/80 hover:text-white uppercase border border-transparent hover:border-white/20 rounded px-2 py-1 transition-all"
+                        >
+                            <option value="en" className="text-black bg-white">EN</option>
+                            <option value="ar" className="text-black bg-white">عربي</option>
+                            <option value="fr" className="text-black bg-white">FR</option>
+                            <option value="de" className="text-black bg-white">DE</option>
+                            <option value="es" className="text-black bg-white">ES</option>
+                            <option value="pt" className="text-black bg-white">PT</option>
+                            <option value="ro" className="text-black bg-white">RO</option>
+                        </select>
+                    </div>
 
                     {/* Account & Lists */}
                     <div className="relative group h-full flex items-center">

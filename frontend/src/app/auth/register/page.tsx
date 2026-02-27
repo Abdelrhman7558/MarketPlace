@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
     Mail, Lock, User, Phone, ShieldCheck,
-    ArrowRight, CheckCircle2, Sparkles, Building2,
+    ArrowRight, CheckCircle2, Building2,
     Eye, EyeOff, Globe, Link as LinkIcon
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
 import { Suspense } from 'react';
 
@@ -49,7 +49,6 @@ function RegisterForm() {
             });
 
             if (!success) {
-                // If it's a string, it's an error message. If it's false, it's a generic error.
                 if (typeof success === 'string') {
                     setError(success);
                 } else {
@@ -64,274 +63,187 @@ function RegisterForm() {
         submitRegister();
     };
 
+    const inputClass = "w-full bg-white border border-[#888] rounded-md px-3 pl-10 py-2.5 text-[#0F1111] text-sm outline-none focus:border-[#E77600] focus:shadow-[0_0_0_3px_rgba(228,121,17,0.5)] transition-all placeholder:text-gray-400";
+    const labelClass = "text-xs font-bold text-[#0F1111] ml-0.5";
+    const iconClass = "absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#888]";
+
     return (
-        <div className="min-h-screen bg-[#050B18] flex items-center justify-center p-6 relative overflow-hidden">
-            {/* Ambient Background Lights */}
-            <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-[#FF7A1A]/10 rounded-full blur-[150px] animate-pulse-slow" />
-            <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[150px] animate-pulse-slow" />
-
-            <div className="w-full max-w-[1100px] grid lg:grid-cols-2 gap-12 z-10">
-
-                {/* Visual Left Side */}
-                <div className="hidden lg:flex flex-col justify-center space-y-10">
-                    <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                    >
-                        <Link href="/" className="inline-block group">
-                            <span className="font-black text-5xl tracking-tighter text-white">
-                                Market<span className="text-[#FF7A1A]">Place</span>
-                            </span>
-                        </Link>
-                        <h2 className="text-5xl font-black text-white leading-tight mt-10">
-                            Empowering Your <br />
-                            <span className="text-gray-400">Business Growth.</span>
-                        </h2>
-                    </motion.div>
-
-                    <div className="space-y-6">
-                        {[
-                            { title: 'Verified Network', desc: 'Access 50,000+ certified global suppliers.', icon: ShieldCheck },
-                            { title: 'Wholesale Pricing', desc: 'Get direct manufacturer rates on everything.', icon: Sparkles },
-                            { title: 'Business Tools', desc: 'Manage orders, logistics, and financing.', icon: Building2 },
-                        ].map((item, i) => (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.1 + 0.3 }}
-                                key={i}
-                                className="flex gap-5 group"
-                            >
-                                <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-[#FF7A1A] group-hover:scale-110 group-hover:bg-[#FF7A1A]/10 transition-all border border-white/5">
-                                    <item.icon size={24} />
-                                </div>
-                                <div className="space-y-1">
-                                    <h4 className="text-lg font-black text-white">{item.title}</h4>
-                                    <p className="text-gray-500 font-medium max-w-xs">{item.desc}</p>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
+        <div className="min-h-screen bg-[#EAEDED] flex items-center justify-center p-6">
+            <div className="w-full max-w-[500px]">
+                {/* Logo */}
+                <div className="text-center mb-5">
+                    <Link href="/" className="inline-block">
+                        <span className="font-black text-3xl tracking-tighter text-[#0F1111]">
+                            Market<span className="text-[#FF9900]">Place</span>
+                        </span>
+                    </Link>
                 </div>
 
-                {/* Registration Form Right Side */}
+                {/* Form Card */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-10 md:p-12 shadow-2xl relative overflow-hidden"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white border border-[#DDD] rounded-lg p-6 shadow-sm"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-
                     {isSuccess ? (
-                        <div className="flex flex-col items-center justify-center text-center h-full space-y-6 animate-in fade-in zoom-in duration-500">
-                            <div className="w-24 h-24 rounded-full bg-emerald-500/10 border-4 border-emerald-500/20 flex items-center justify-center mb-4 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
-                                <CheckCircle2 size={48} className="text-emerald-500" />
+                        <div className="flex flex-col items-center text-center py-8 space-y-4">
+                            <div className="w-16 h-16 rounded-full bg-[#067D62]/10 border-2 border-[#067D62]/20 flex items-center justify-center">
+                                <CheckCircle2 size={36} className="text-[#067D62]" />
                             </div>
-                            <h2 className="text-3xl font-black text-white tracking-tight">Application Submitted</h2>
-                            <p className="text-gray-400 font-medium max-w-sm mx-auto leading-relaxed">
-                                Thank you for registering with MarketPlace. Your account is currently <strong className="text-white">pending admin review.</strong>
+                            <h2 className="text-xl font-bold text-[#0F1111]">Application Submitted</h2>
+                            <p className="text-[#555] text-sm max-w-sm leading-relaxed">
+                                Thank you for registering with MarketPlace. Your account is currently <strong className="text-[#0F1111]">pending admin review.</strong>
                             </p>
-                            <div className="p-6 bg-[#131921]/50 rounded-2xl border border-white/5 w-full mt-4 text-left space-y-3">
-                                <p className="text-sm text-gray-400 flex items-center gap-3">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-400" /> We will verify your business details.
-                                </p>
-                                <p className="text-sm text-gray-400 flex items-center gap-3">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-400" /> You will receive an email upon approval.
-                                </p>
+                            <div className="p-4 bg-[#FEF8E8] border border-[#F0C14B] rounded-md w-full text-left space-y-2 text-sm text-[#0F1111]">
+                                <p className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-[#FF9900]" /> We will verify your business details.</p>
+                                <p className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-[#FF9900]" /> You will receive an email upon approval.</p>
                             </div>
-                            <Link href="/" className="mt-8 px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all border border-white/5 inline-block">
+                            <Link href="/" className="mt-4 inline-block text-sm text-[#007185] hover:text-[#C45500] hover:underline font-medium">
                                 Return to Home
                             </Link>
                         </div>
                     ) : (
                         <>
-                            <div className="mb-10 lg:hidden">
-                                <Link href="/" className="font-black text-3xl tracking-tighter text-white">
-                                    Market<span className="text-[#FF7A1A]">Place</span>
-                                </Link>
-                            </div>
-
-                            <h1 className="text-3xl font-black text-white mb-2">Create Account</h1>
-                            <p className="text-gray-400 font-medium mb-10">Join the world's most trusted B2B network.</p>
+                            <h1 className="text-2xl font-bold text-[#0F1111] mb-1">Create account</h1>
+                            <p className="text-sm text-[#555] mb-5">Join the world's most trusted B2B network.</p>
 
                             {error && (
                                 <motion.div
-                                    initial={{ x: -10, opacity: 0 }}
-                                    animate={{ x: 0, opacity: 1 }}
-                                    className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 mb-8 flex items-center gap-3"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="bg-[#FCF4F4] border border-[#C40000] rounded-md p-3 mb-4"
                                 >
-                                    <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white font-black text-xs">!</div>
-                                    <p className="text-red-400 text-sm font-bold">{error}</p>
+                                    <p className="text-[#C40000] text-sm font-medium">{error}</p>
                                 </motion.div>
                             )}
 
-                            <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2 md:col-span-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Full Legal Name</label>
+                            <form onSubmit={handleRegister} className="space-y-4">
+                                <div className="space-y-1">
+                                    <label className={labelClass}>Your name</label>
                                     <div className="relative">
-                                        <User className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                        <input
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                            placeholder="e.g. John Smith"
-                                            value={form.name}
-                                            onChange={e => update('name', e.target.value)}
-                                        />
+                                        <User className={iconClass} />
+                                        <input className={inputClass} placeholder="First and last name" value={form.name} onChange={e => update('name', e.target.value)} />
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Work Email</label>
+                                <div className="space-y-1">
+                                    <label className={labelClass}>Email</label>
                                     <div className="relative">
-                                        <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                        <input
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                                            placeholder="name@company.com"
-                                            value={form.email}
-                                            disabled={!!inviteEmail}
-                                            onChange={e => update('email', e.target.value)}
-                                        />
+                                        <Mail className={iconClass} />
+                                        <input className={inputClass} placeholder="name@company.com" value={form.email} disabled={!!inviteEmail} onChange={e => update('email', e.target.value)} />
                                     </div>
                                 </div>
 
-                                <div className="space-y-2 md:col-span-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Company Name (Optional)</label>
+                                <div className="space-y-1">
+                                    <label className={labelClass}>Phone number</label>
                                     <div className="relative">
-                                        <Building2 className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                        <input
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                            placeholder="e.g. Acme Corp"
-                                            value={form.companyName}
-                                            onChange={e => update('companyName', e.target.value)}
-                                        />
+                                        <Phone className={iconClass} />
+                                        <input className={inputClass} placeholder="+1 234 567 890" value={form.phone} onChange={e => update('phone', e.target.value)} />
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Website (Optional)</label>
+                                <div className="space-y-1">
+                                    <label className={labelClass}>Company name <span className="text-[#888] font-normal">(optional)</span></label>
                                     <div className="relative">
-                                        <Globe className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                        <input
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                            placeholder="https://example.com"
-                                            value={form.website}
-                                            onChange={e => update('website', e.target.value)}
-                                        />
+                                        <Building2 className={iconClass} />
+                                        <input className={inputClass} placeholder="e.g. Acme Corp" value={form.companyName} onChange={e => update('companyName', e.target.value)} />
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Social Links (Optional)</label>
-                                    <div className="relative">
-                                        <LinkIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                        <input
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                            placeholder="LinkedIn, Facebook, etc."
-                                            value={form.socialLinks}
-                                            onChange={e => update('socialLinks', e.target.value)}
-                                        />
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1">
+                                        <label className={labelClass}>Website <span className="text-[#888] font-normal">(optional)</span></label>
+                                        <div className="relative">
+                                            <Globe className={iconClass} />
+                                            <input className={inputClass} placeholder="https://..." value={form.website} onChange={e => update('website', e.target.value)} />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className={labelClass}>Social links <span className="text-[#888] font-normal">(optional)</span></label>
+                                        <div className="relative">
+                                            <LinkIcon className={iconClass} />
+                                            <input className={inputClass} placeholder="LinkedIn, etc." value={form.socialLinks} onChange={e => update('socialLinks', e.target.value)} />
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Phone Number</label>
+                                <div className="space-y-1">
+                                    <label className={labelClass}>Password</label>
                                     <div className="relative">
-                                        <Phone className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                        <input
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                            placeholder="+1 234 567 890"
-                                            value={form.phone}
-                                            onChange={e => update('phone', e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Password</label>
-                                    <div className="relative">
-                                        <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+                                        <Lock className={iconClass} />
                                         <input
                                             type={showPass ? 'text' : 'password'}
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-12 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                            placeholder="••••••••"
+                                            className={inputClass + ' pr-10'}
+                                            placeholder="At least 8 characters"
                                             value={form.password}
                                             onChange={e => update('password', e.target.value)}
                                         />
-                                        <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-white transition-colors">
-                                            {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                                        <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#0F1111]">
+                                            {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                                         </button>
                                     </div>
-
-                                    {/* Password Strength Indicator */}
-                                    <div className="pt-2 flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap gap-1.5 pt-1">
                                         {[
                                             { label: '8+ chars', met: form.password.length >= 8 },
-                                            { label: 'Uppercase', met: /[A-Z]/.test(form.password) },
-                                            { label: 'Lowercase', met: /[a-z]/.test(form.password) },
-                                            { label: 'Number', met: /[0-9]/.test(form.password) },
+                                            { label: 'A-Z', met: /[A-Z]/.test(form.password) },
+                                            { label: 'a-z', met: /[a-z]/.test(form.password) },
+                                            { label: '0-9', met: /[0-9]/.test(form.password) },
                                             { label: 'Symbol', met: /[^A-Za-z0-9]/.test(form.password) }
                                         ].map((req, idx) => (
-                                            <div key={idx} className={`text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-1 transition-all ${req.met ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-white/5 text-gray-500 border border-white/5'}`}>
-                                                {req.met && <CheckCircle2 size={10} />}
+                                            <span key={idx} className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ${req.met ? 'bg-[#067D62]/10 text-[#067D62] border-[#067D62]/20' : 'bg-[#F3F3F3] text-[#888] border-[#DDD]'}`}>
+                                                {req.met && <CheckCircle2 size={9} className="inline mr-0.5" />}
                                                 {req.label}
-                                            </div>
+                                            </span>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Confirm Password</label>
+                                <div className="space-y-1">
+                                    <label className={labelClass}>Re-enter password</label>
                                     <div className="relative">
-                                        <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
-                                        <input
-                                            type={showPass ? 'text' : 'password'}
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-white outline-none focus:border-[#FF7A1A] transition-all font-medium placeholder:text-gray-700"
-                                            placeholder="••••••••"
-                                            value={form.confirmPassword}
-                                            onChange={e => update('confirmPassword', e.target.value)}
-                                        />
+                                        <Lock className={iconClass} />
+                                        <input type={showPass ? 'text' : 'password'} className={inputClass} placeholder="••••••••" value={form.confirmPassword} onChange={e => update('confirmPassword', e.target.value)} />
                                     </div>
                                 </div>
 
-                                <div className="space-y-2 md:col-span-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Business Role</label>
-                                    <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className={labelClass}>Business role</label>
+                                    <div className="grid grid-cols-2 gap-3">
                                         <button
                                             type="button"
                                             onClick={() => update('role', 'customer')}
-                                            className={`py-4 rounded-2xl font-black text-sm border transition-all ${form.role === 'customer' ? 'bg-[#FF7A1A] border-[#FF7A1A] text-white shadow-lg' : 'bg-white/5 border-white/10 text-gray-500 hover:border-white/20'}`}
+                                            className={`py-2.5 rounded-md text-sm font-bold border transition-all ${form.role === 'customer' ? 'bg-[#FEF8E8] border-[#FF9900] text-[#0F1111] shadow-sm' : 'bg-white border-[#DDD] text-[#555] hover:border-[#888]'}`}
                                         >
                                             Retail Buyer
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => update('role', 'supplier')}
-                                            className={`py-4 rounded-2xl font-black text-sm border transition-all ${form.role === 'supplier' ? 'bg-[#FF7A1A] border-[#FF7A1A] text-white shadow-lg' : 'bg-white/5 border-white/10 text-gray-500 hover:border-white/20'}`}
+                                            className={`py-2.5 rounded-md text-sm font-bold border transition-all ${form.role === 'supplier' ? 'bg-[#FEF8E8] border-[#FF9900] text-[#0F1111] shadow-sm' : 'bg-white border-[#DDD] text-[#555] hover:border-[#888]'}`}
                                         >
                                             Wholesale Supplier
                                         </button>
                                     </div>
                                 </div>
 
-                                <motion.button
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
+                                <button
                                     type="submit"
                                     disabled={loading}
-                                    className="md:col-span-2 bg-[#FF7A1A] hover:bg-[#e66c17] text-white py-5 rounded-2xl font-black text-lg shadow-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 mt-4"
+                                    className="w-full bg-gradient-to-b from-[#F7DFA5] to-[#F0C14B] border border-[#A88734] rounded-md py-2.5 text-sm font-bold text-[#0F1111] hover:from-[#F5D78E] hover:to-[#EEB933] disabled:opacity-50 transition-all shadow-sm mt-2"
                                 >
                                     {loading ? (
-                                        <div className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+                                        <div className="w-5 h-5 border-2 border-[#0F1111]/30 border-t-[#0F1111] rounded-full animate-spin mx-auto" />
                                     ) : (
-                                        <>Create Professional Account <ArrowRight size={22} /></>
+                                        'Create your MarketPlace account'
                                     )}
-                                </motion.button>
+                                </button>
                             </form>
 
-                            <div className="mt-10 pt-8 border-t border-white/10 text-center">
-                                <p className="text-gray-500 font-medium">
-                                    Already part of our network? {' '}
-                                    <Link href="/auth/login" className="text-white font-black hover:text-[#FF7A1A] underline-offset-8 hover:underline transition-all">
-                                        Sign In
+                            <div className="mt-5 pt-4 border-t border-[#DDD] text-center">
+                                <p className="text-sm text-[#555]">
+                                    Already have an account?{' '}
+                                    <Link href="/auth/login" className="text-[#007185] hover:text-[#C45500] hover:underline font-medium">
+                                        Sign in
                                     </Link>
                                 </p>
                             </div>
@@ -345,7 +257,7 @@ function RegisterForm() {
 
 export default function RegisterPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-[#0A0D14] flex justify-center items-center text-primary">Loading...</div>}>
+        <Suspense fallback={<div className="min-h-screen bg-[#EAEDED] flex justify-center items-center text-[#0F1111]">Loading...</div>}>
             <RegisterForm />
         </Suspense>
     );

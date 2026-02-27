@@ -61,7 +61,7 @@ export default function SecurityDashboard() {
     const [errors, setErrors] = React.useState<any[]>([]);
     const fetchStatus = async () => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('bev-token');
             const headers: Record<string, string> = token ? { 'Authorization': `Bearer ${token}` } : {};
 
             const [statusRes, agentRes] = await Promise.all([
@@ -101,7 +101,7 @@ export default function SecurityDashboard() {
         if (agentState !== 'IDLE' && agentState !== 'RESOLVED') return;
         setAgentState('ANALYZING');
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('bev-token');
             await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/admin/security/agent-fix`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -116,7 +116,7 @@ export default function SecurityDashboard() {
         if (!status) return;
         setLocking(true);
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('bev-token');
             await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/admin/security/lockdown`, {
                 method: 'POST',
                 headers: {
@@ -135,7 +135,7 @@ export default function SecurityDashboard() {
 
     const unblockIp = async (ip: string) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('bev-token');
             await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/admin/security/unblock`, {
                 method: 'POST',
                 headers: {

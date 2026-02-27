@@ -30,7 +30,7 @@ export default function AdminNewOfferPage() {
         setIsSubmitting(true);
 
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('bev-token');
             const res = await fetch('http://localhost:3005/placements/request', {
                 method: 'POST',
                 headers: {

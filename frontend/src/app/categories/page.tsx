@@ -3,6 +3,8 @@
 import { useState, useMemo } from 'react';
 import ProductCard from '@/components/product/ProductCard';
 import ProductFilters from '@/components/product/ProductFilters';
+import SponsoredProductCard from '@/components/ads/SponsoredProductCard';
+import SponsoredBrandBanner from '@/components/ads/SponsoredBrandBanner';
 import { BRANDS, CATEGORIES_LIST, type Product } from '@/lib/products';
 import { fetchProducts } from '@/lib/api';
 import { SlidersHorizontal, X, ChevronRight, Package, Search } from 'lucide-react';
@@ -28,12 +30,39 @@ function CategoriesContent() {
     const [localQuery, setLocalQuery] = useState('');
     const [products, setProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [sponsoredBrand, setSponsoredBrand] = useState<any>(null);
+    const [sponsoredProducts, setSponsoredProducts] = useState<any[]>([]);
 
     useEffect(() => {
-        fetchProducts().then(data => {
-            setProducts(data);
+        const loadPageData = async () => {
+            const [productsP, brandAdsP, productAdsP] = await Promise.allSettled([
+                fetchProducts(),
+                fetch('http://localhost:3005/ads?placement=SPONSORED_BRAND').then(res => res.json()),
+                fetch('http://localhost:3005/ads?placement=SPONSORED_PRODUCT').then(res => res.json())
+            ]);
+
+            if (productsP.status === 'fulfilled') {
+                setProducts(productsP.value);
+            }
+
+            if (brandAdsP.status === 'fulfilled' && brandAdsP.value && brandAdsP.value.length > 0) {
+                const data = brandAdsP.value;
+                const brandItem = data[0].product;
+                const brandName = brandItem.brand || brandItem.supplier?.name || "Premium Selection";
+                setSponsoredBrand({
+                    brandName,
+                    products: data.map((d: any) => d.product)
+                });
+            }
+
+            if (productAdsP.status === 'fulfilled' && productAdsP.value && productAdsP.value.length > 0) {
+                setSponsoredProducts(productAdsP.value.map((d: any) => d.product));
+            }
+
             setIsLoading(false);
-        });
+        };
+
+        loadPageData();
     }, []);
 
     useEffect(() => {
@@ -214,6 +243,13 @@ function CategoriesContent() {
                             </div>
                         )}
 
+                        {sponsoredBrand && (
+                            <SponsoredBrandBanner
+                                brandName={sponsoredBrand.brandName}
+                                products={sponsoredBrand.products}
+                            />
+                        )}
+
                         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
                             {isLoading ? (
                                 <div className="col-span-full py-20 text-center text-muted-foreground font-medium">
@@ -221,6 +257,12 @@ function CategoriesContent() {
                                 </div>
                             ) : (
                                 <AnimatePresence mode="popLayout">
+                                    {/* Interleave sponsored products at specific positions (e.g., 0, 4) if available */}
+                                    {sponsoredProducts[0] && (
+                                        <motion.div layout key="sp-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                                            <SponsoredProductCard product={sponsoredProducts[0]} index={0} />
+                                        </motion.div>
+                                    )}
                                     {filteredProducts.map((product, i) => (
                                         <motion.div
                                             layout
@@ -233,6 +275,11 @@ function CategoriesContent() {
                                             <ProductCard product={product} index={i} />
                                         </motion.div>
                                     ))}
+                                    {sponsoredProducts[1] && (
+                                        <motion.div layout key="sp-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                                            <SponsoredProductCard product={sponsoredProducts[1]} index={1} />
+                                        </motion.div>
+                                    )}
                                 </AnimatePresence>
                             )}
                         </div>

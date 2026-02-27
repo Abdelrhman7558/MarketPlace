@@ -68,7 +68,7 @@ export default function AdminProductsPage() {
     const handleSaveProduct = async (productData: any) => {
         setIsSubmitting(true);
         try {
-            const token = localStorage.getItem('bev-token') || localStorage.getItem('token');
+            const token = localStorage.getItem('bev-token') || localStorage.getItem('bev-token');
             const url = editingProduct ? `http://localhost:3005/products/${editingProduct.id}` : 'http://localhost:3005/products';
             const method = editingProduct ? 'PATCH' : 'POST';
 
@@ -110,7 +110,7 @@ export default function AdminProductsPage() {
         if (!confirm('Are you sure you want to permanently delete this product?')) return;
 
         try {
-            const token = localStorage.getItem('bev-token') || localStorage.getItem('token');
+            const token = localStorage.getItem('bev-token') || localStorage.getItem('bev-token');
             const res = await fetch(`http://localhost:3005/products/${id}`, {
                 method: 'DELETE',
                 headers: {

@@ -8,176 +8,472 @@ import {
     XCircle,
     Clock,
     Search,
-    Filter,
+    Plus,
     Building2,
     Calendar,
     CircleDollarSign,
     Zap,
-    ExternalLink,
     X,
     MapPin,
     Eye,
     Image as ImageIcon,
-    Upload
+    Upload,
+    Trash2,
+    FileSpreadsheet,
+    Edit2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface OfferRequest {
+interface Offer {
     id: string;
-    supplier: string;
-    offerTitle: string;
-    type: 'Flash Sale' | 'Bundle' | 'Discount';
-    slot: 'HERO' | 'FEATURED' | 'BANNER';
-    price: number;
-    status: 'PENDING' | 'APPROVED' | 'REJECTED';
-    requestedAt: string;
-    description?: string;
+    title: string;
+    description: string;
+    type: 'Flash Sale' | 'Bundle' | 'Discount' | 'BOGO';
+    slot: 'HERO' | 'FEATURED' | 'BANNER' | 'LISTING';
+    discount: string;
+    status: 'ACTIVE' | 'SCHEDULED' | 'EXPIRED';
+    startDate: string;
+    endDate: string;
     image?: string;
-    location?: string;
-    duration?: string;
+}
+
+const STORAGE_KEY = 'admin-offers';
+
+function loadOffers(): Offer[] {
+    if (typeof window === 'undefined') return [];
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        return stored ? JSON.parse(stored) : [];
+    } catch { return []; }
+}
+
+function saveOffers(offers: Offer[]) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(offers));
 }
 
 export default function AdminOffersPage() {
-    const [selectedOffer, setSelectedOffer] = React.useState<OfferRequest | null>(null);
-    const [requests, setRequests] = React.useState<OfferRequest[]>([]);
+    const [offers, setOffers] = React.useState<Offer[]>([]);
+    const [showAddModal, setShowAddModal] = React.useState(false);
+    const [selectedOffer, setSelectedOffer] = React.useState<Offer | null>(null);
+    const [searchTerm, setSearchTerm] = React.useState('');
+    const [message, setMessage] = React.useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-    const handleAction = (id: string, action: 'APPROVED' | 'REJECTED') => {
-        setRequests(requests.map(req => req.id === id ? { ...req, status: action } : req));
+    // Form state
+    const [form, setForm] = React.useState({
+        title: '',
+        description: '',
+        type: 'Discount' as Offer['type'],
+        slot: 'FEATURED' as Offer['slot'],
+        discount: '',
+        startDate: '',
+        endDate: '',
+        image: ''
+    });
+
+    React.useEffect(() => {
+        setOffers(loadOffers());
+    }, []);
+
+    const showMsg = (type: 'success' | 'error', text: string) => {
+        setMessage({ type, text });
+        setTimeout(() => setMessage(null), 4000);
+    };
+
+    const resetForm = () => {
+        setForm({ title: '', description: '', type: 'Discount', slot: 'FEATURED', discount: '', startDate: '', endDate: '', image: '' });
+    };
+
+    const addOffer = () => {
+        if (!form.title.trim() || !form.discount.trim()) {
+            showMsg('error', 'Title and discount are required.');
+            return;
+        }
+        const today = new Date().toISOString().split('T')[0];
+        const newOffer: Offer = {
+            id: 'OFF-' + Date.now().toString(36).toUpperCase(),
+            title: form.title.trim(),
+            description: form.description.trim(),
+            type: form.type,
+            slot: form.slot,
+            discount: form.discount.trim(),
+            status: (form.startDate && form.startDate > today) ? 'SCHEDULED' : 'ACTIVE',
+            startDate: form.startDate || today,
+            endDate: form.endDate || '',
+            image: form.image || ''
+        };
+        const updated = [newOffer, ...offers];
+        setOffers(updated);
+        saveOffers(updated);
+        resetForm();
+        setShowAddModal(false);
+        showMsg('success', `Offer "${newOffer.title}" added successfully!`);
+    };
+
+    const deleteOffer = (id: string) => {
+        const updated = offers.filter(o => o.id !== id);
+        setOffers(updated);
+        saveOffers(updated);
+        showMsg('success', 'Offer deleted.');
+    };
+
+    // CSV Upload
+    const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const text = event.target?.result as string;
+                const lines = text.split('\n').filter(l => l.trim());
+                if (lines.length < 2) { showMsg('error', 'CSV file must have a header row and at least one data row.'); return; }
+
+                const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+                const titleIdx = headers.indexOf('title');
+                const descIdx = headers.indexOf('description');
+                const typeIdx = headers.indexOf('type');
+                const discountIdx = headers.indexOf('discount');
+                const startIdx = headers.indexOf('startdate');
+                const endIdx = headers.indexOf('enddate');
+
+                if (titleIdx === -1 || discountIdx === -1) {
+                    showMsg('error', 'CSV must have at least "title" and "discount" columns.');
+                    return;
+                }
+
+                const today = new Date().toISOString().split('T')[0];
+                const newOffers: Offer[] = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                    const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+                    const title = cols[titleIdx];
+                    if (!title) continue;
+
+                    newOffers.push({
+                        id: 'OFF-' + (Date.now() + i).toString(36).toUpperCase(),
+                        title,
+                        description: descIdx !== -1 ? (cols[descIdx] || '') : '',
+                        type: (typeIdx !== -1 && ['Flash Sale', 'Bundle', 'Discount', 'BOGO'].includes(cols[typeIdx])) ? cols[typeIdx] as Offer['type'] : 'Discount',
+                        slot: 'FEATURED',
+                        discount: cols[discountIdx] || '0%',
+                        status: (startIdx !== -1 && cols[startIdx] > today) ? 'SCHEDULED' : 'ACTIVE',
+                        startDate: startIdx !== -1 ? (cols[startIdx] || today) : today,
+                        endDate: endIdx !== -1 ? (cols[endIdx] || '') : '',
+                    });
+                }
+
+                if (newOffers.length === 0) {
+                    showMsg('error', 'No valid offers found in CSV.');
+                    return;
+                }
+
+                const updated = [...newOffers, ...offers];
+                setOffers(updated);
+                saveOffers(updated);
+                showMsg('success', `${newOffers.length} offers imported from CSV!`);
+            } catch (err) {
+                showMsg('error', 'Failed to parse CSV file.');
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    };
+
+    const filtered = offers.filter(o =>
+        o.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        o.type.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const statusColors = {
+        ACTIVE: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+        SCHEDULED: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+        EXPIRED: 'bg-red-500/10 text-red-500 border-red-500/20'
+    };
+
+    const typeColors: Record<string, string> = {
+        'Flash Sale': 'bg-red-500/10 text-red-500 border-red-500/20',
+        'Bundle': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+        'Discount': 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+        'BOGO': 'bg-purple-500/10 text-purple-500 border-purple-500/20'
     };
 
     return (
-        <div className="space-y-10 max-w-7xl mx-auto pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-6 max-w-7xl mx-auto pb-20">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
-                        <Tag className="text-primary" size={32} />
-                        Offer Approvals
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-[#0F1111] dark:text-white flex items-center gap-2">
+                        <Tag className="text-[#FF9900]" size={24} />
+                        Offers Management
                     </h1>
-                    <p className="text-muted-foreground font-medium">Review and moderate supplier promotion and placement requests.</p>
+                    <p className="text-sm text-[#555] dark:text-[#999] mt-1">Create, manage, and track promotional offers.</p>
                 </div>
-
-                <button
-                    className="h-12 px-6 bg-card border border-border/50 text-foreground font-black text-sm rounded-xl hover:bg-muted transition-all flex items-center gap-2"
-                >
-                    <Upload size={18} /> Bulk Upload Sheet
-                </button>
+                <div className="flex items-center gap-2">
+                    <input type="file" ref={fileInputRef} accept=".csv" onChange={handleCSVUpload} className="hidden" />
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="h-10 px-4 bg-white dark:bg-[#1A1F26] border border-[#DDD] dark:border-white/10 text-[#555] dark:text-[#999] font-bold text-xs rounded-md hover:border-[#FF9900] hover:text-[#FF9900] transition-all flex items-center gap-2"
+                    >
+                        <FileSpreadsheet size={16} /> Upload CSV
+                    </button>
+                    <button
+                        onClick={() => { resetForm(); setShowAddModal(true); }}
+                        className="h-10 px-5 bg-gradient-to-b from-[#F7DFA5] to-[#F0C14B] border border-[#A88734] text-[#0F1111] font-bold text-xs rounded-md hover:from-[#F5D78E] hover:to-[#EEB933] transition-all flex items-center gap-2 shadow-sm"
+                    >
+                        <Plus size={16} /> Add Offer
+                    </button>
+                </div>
             </div>
 
+            {/* Message */}
+            <AnimatePresence>
+                {message && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className={`p-3 rounded-md border text-sm font-medium ${message.type === 'success' ? 'bg-[#F0FFF4] border-[#067D62]/30 text-[#067D62] dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-400' : 'bg-[#FCF4F4] border-[#C40000]/30 text-[#C40000] dark:bg-red-500/10 dark:border-red-500/30 dark:text-red-400'}`}
+                    >
+                        {message.text}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                    { label: 'Pending Review', value: requests.filter(r => r.status === 'PENDING').length, icon: Clock, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-                    { label: 'Approved Today', value: '12', icon: CheckCircle, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-                    { label: 'Placement Revenue', value: '$4,200', icon: CircleDollarSign, color: 'text-primary', bg: 'bg-primary/10' },
-                    { label: 'Active Offers', value: '45', icon: Zap, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: 'Total Offers', value: offers.length, icon: Tag, color: 'text-[#FF9900]', bg: 'bg-[#FF9900]/10' },
+                    { label: 'Active', value: offers.filter(o => o.status === 'ACTIVE').length, icon: Zap, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                    { label: 'Scheduled', value: offers.filter(o => o.status === 'SCHEDULED').length, icon: Clock, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+                    { label: 'Expired', value: offers.filter(o => o.status === 'EXPIRED').length, icon: XCircle, color: 'text-red-500', bg: 'bg-red-500/10' },
                 ].map((stat, i) => (
-                    <div key={i} className="bg-card border border-border/50 p-6 rounded-3xl hover:border-primary/20 transition-all group">
-                        <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110", stat.bg, stat.color)}>
-                            <stat.icon size={20} />
+                    <div key={i} className="bg-white dark:bg-[#131921] border border-[#DDD] dark:border-white/10 p-4 rounded-lg">
+                        <div className={cn("w-8 h-8 rounded-md flex items-center justify-center mb-2", stat.bg, stat.color)}>
+                            <stat.icon size={16} />
                         </div>
-                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">{stat.label}</p>
-                        <p className="text-2xl font-black text-foreground mt-1">{stat.value}</p>
+                        <p className="text-[10px] font-bold text-[#888] uppercase tracking-wider">{stat.label}</p>
+                        <p className="text-xl font-bold text-[#0F1111] dark:text-white">{stat.value}</p>
                     </div>
                 ))}
             </div>
 
-            {/* Requests Table */}
-            <div className="bg-card border border-border/50 rounded-[32px] overflow-hidden shadow-sm">
-                <div className="p-8 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                    <div className="relative flex-1 max-w-md">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                        <input
-                            type="text"
-                            placeholder="Search by supplier or offer..."
-                            className="w-full h-12 bg-background rounded-xl border border-border/50 pl-12 pr-6 outline-none focus:border-primary/50 text-foreground text-sm font-medium transition-all"
-                        />
-                    </div>
-                    <button className="h-12 px-6 bg-background text-muted-foreground font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-muted transition-all flex items-center gap-2 border border-border/50">
-                        <Filter size={14} /> Filter Requests
-                    </button>
+            {/* Search */}
+            <div className="relative max-w-sm">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888]" size={16} />
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    placeholder="Search offers..."
+                    className="w-full h-10 bg-white dark:bg-[#131921] border border-[#DDD] dark:border-white/10 rounded-md pl-10 pr-4 outline-none focus:border-[#FF9900] text-sm text-[#0F1111] dark:text-white transition-all"
+                />
+            </div>
+
+            {/* Offers Table */}
+            <div className="bg-white dark:bg-[#131921] border border-[#DDD] dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
+                <div className="px-4 py-3 bg-[#F3F3F3] dark:bg-white/5 border-b border-[#DDD] dark:border-white/10">
+                    <h3 className="text-sm font-bold text-[#0F1111] dark:text-white">All Offers ({filtered.length})</h3>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-muted/30">
-                                <th className="px-8 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Supplier</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Offer Details</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Slot & Price</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Status</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-border/50">
-                            {requests.map((req) => (
-                                <tr key={req.id} className="group hover:bg-muted/30 transition-colors">
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center border border-border/50 group-hover:border-primary/30 transition-colors">
-                                                <Building2 className="text-muted-foreground group-hover:text-primary transition-colors" size={20} />
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-black text-foreground truncate max-w-[150px]">{req.supplier}</p>
-                                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">ID: {req.id}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <p className="text-sm font-bold text-foreground">{req.offerTitle}</p>
-                                        <div className="flex items-center gap-2 mt-1">
-                                            <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-500 text-[8px] font-black uppercase tracking-widest border border-blue-500/20">{req.type}</span>
-                                            <div className="flex items-center gap-1 text-muted-foreground">
-                                                <Calendar size={10} />
-                                                <span className="text-[9px] font-medium">{req.requestedAt}</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <div className="flex flex-col">
-                                            <span className="text-xs font-black text-foreground">{req.slot} SLOT</span>
-                                            <span className="text-[10px] font-bold text-emerald-500">${req.price}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <div className={cn(
-                                            "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter border",
-                                            req.status === 'APPROVED' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
-                                                req.status === 'PENDING' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
-                                                    "bg-red-500/10 text-red-500 border-red-500/20"
-                                        )}>
-                                            {req.status === 'APPROVED' ? <CheckCircle size={10} /> : req.status === 'PENDING' ? <Clock size={10} /> : <XCircle size={10} />}
-                                            {req.status}
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6 text-right">
-                                        {req.status === 'PENDING' ? (
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button
-                                                    onClick={() => setSelectedOffer(req)}
-                                                    className="h-10 px-4 rounded-xl bg-background text-muted-foreground hover:text-foreground hover:bg-muted transition-all flex items-center gap-2 border border-border/50 text-[10px] font-black uppercase tracking-widest"
-                                                >
-                                                    <Eye size={16} /> View Details
-                                                </button>
-                                                <button
-                                                    onClick={() => handleAction(req.id, 'APPROVED')}
-                                                    className="w-10 h-10 rounded-xl bg-emerald-500/5 text-emerald-500/60 hover:text-emerald-500 hover:bg-emerald-500/10 transition-all flex items-center justify-center border border-emerald-500/20"
-                                                >
-                                                    <CheckCircle size={20} />
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <button className="w-10 h-10 rounded-xl bg-background text-muted-foreground hover:text-foreground hover:bg-muted transition-all flex items-center justify-center border border-border/50">
-                                                <ExternalLink size={18} />
-                                            </button>
-                                        )}
-                                    </td>
+                {filtered.length === 0 ? (
+                    <div className="py-16 text-center">
+                        <Tag className="w-12 h-12 text-[#DDD] dark:text-white/20 mx-auto mb-4" />
+                        <p className="text-sm text-[#888] font-medium">No offers yet. Click "Add Offer" or upload a CSV to get started.</p>
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                            <thead>
+                                <tr className="bg-[#FAFAFA] dark:bg-white/5">
+                                    <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider">Offer</th>
+                                    <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider">Type</th>
+                                    <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider">Discount</th>
+                                    <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider">Status</th>
+                                    <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider">Duration</th>
+                                    <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider text-right">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody className="divide-y divide-[#EAEDED] dark:divide-white/5">
+                                {filtered.map((offer) => (
+                                    <tr key={offer.id} className="hover:bg-[#F9F9F9] dark:hover:bg-white/5 transition-colors">
+                                        <td className="px-4 py-3">
+                                            <p className="text-sm font-bold text-[#0F1111] dark:text-white">{offer.title}</p>
+                                            <p className="text-[10px] text-[#888]">{offer.id}</p>
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <span className={cn("px-2 py-0.5 rounded text-[10px] font-bold uppercase border", typeColors[offer.type] || 'bg-gray-100 text-gray-500')}>
+                                                {offer.type}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <span className="text-sm font-bold text-[#067D62]">{offer.discount}</span>
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase border", statusColors[offer.status])}>
+                                                {offer.status === 'ACTIVE' ? <CheckCircle size={10} /> : offer.status === 'SCHEDULED' ? <Clock size={10} /> : <XCircle size={10} />}
+                                                {offer.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <span className="text-xs text-[#555] dark:text-[#999]">
+                                                {offer.startDate}{offer.endDate ? ` → ${offer.endDate}` : ''}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3 text-right">
+                                            <div className="flex items-center justify-end gap-1">
+                                                <button onClick={() => setSelectedOffer(offer)} className="p-1.5 rounded-md hover:bg-[#F3F3F3] dark:hover:bg-white/10 text-[#555] dark:text-[#999] transition-colors" title="View">
+                                                    <Eye size={14} />
+                                                </button>
+                                                <button onClick={() => deleteOffer(offer.id)} className="p-1.5 rounded-md hover:bg-[#FCF4F4] dark:hover:bg-red-500/10 text-[#C40000] transition-colors" title="Delete">
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
             </div>
+
+            {/* Add Offer Modal */}
+            <AnimatePresence>
+                {showAddModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setShowAddModal(false)}
+                            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="bg-white dark:bg-[#131921] w-full max-w-lg rounded-lg border border-[#DDD] dark:border-white/10 shadow-2xl relative z-10 overflow-hidden"
+                        >
+                            <div className="flex items-center justify-between px-5 py-4 border-b border-[#DDD] dark:border-white/10 bg-[#F3F3F3] dark:bg-white/5">
+                                <h3 className="text-sm font-bold text-[#0F1111] dark:text-white flex items-center gap-2">
+                                    <Plus size={16} className="text-[#FF9900]" /> Add New Offer
+                                </h3>
+                                <button onClick={() => setShowAddModal(false)} className="text-[#888] hover:text-[#0F1111] dark:hover:text-white transition-colors">
+                                    <X size={18} />
+                                </button>
+                            </div>
+
+                            <div className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-[#555] dark:text-[#999] uppercase tracking-wider">Offer Title *</label>
+                                    <input
+                                        value={form.title}
+                                        onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
+                                        placeholder="e.g. Summer Sale 50% Off"
+                                        className="w-full h-10 border border-[#888] dark:border-white/20 rounded-md px-3 text-sm outline-none focus:border-[#E77600] focus:shadow-[0_0_0_3px_rgba(228,121,17,0.5)] bg-white dark:bg-[#0F1111] text-[#0F1111] dark:text-white transition-all"
+                                    />
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-[#555] dark:text-[#999] uppercase tracking-wider">Description</label>
+                                    <textarea
+                                        value={form.description}
+                                        onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                                        placeholder="Offer details..."
+                                        rows={2}
+                                        className="w-full border border-[#888] dark:border-white/20 rounded-md px-3 py-2 text-sm outline-none focus:border-[#E77600] focus:shadow-[0_0_0_3px_rgba(228,121,17,0.5)] bg-white dark:bg-[#0F1111] text-[#0F1111] dark:text-white transition-all resize-none"
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold text-[#555] dark:text-[#999] uppercase tracking-wider">Type *</label>
+                                        <select
+                                            value={form.type}
+                                            onChange={e => setForm(f => ({ ...f, type: e.target.value as Offer['type'] }))}
+                                            className="w-full h-10 border border-[#888] dark:border-white/20 rounded-md px-3 text-sm outline-none focus:border-[#E77600] bg-white dark:bg-[#0F1111] text-[#0F1111] dark:text-white cursor-pointer"
+                                        >
+                                            <option value="Discount">Discount</option>
+                                            <option value="Flash Sale">Flash Sale</option>
+                                            <option value="Bundle">Bundle</option>
+                                            <option value="BOGO">Buy 1 Get 1</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold text-[#555] dark:text-[#999] uppercase tracking-wider">Discount *</label>
+                                        <input
+                                            value={form.discount}
+                                            onChange={e => setForm(f => ({ ...f, discount: e.target.value }))}
+                                            placeholder="e.g. 20% or $10"
+                                            className="w-full h-10 border border-[#888] dark:border-white/20 rounded-md px-3 text-sm outline-none focus:border-[#E77600] focus:shadow-[0_0_0_3px_rgba(228,121,17,0.5)] bg-white dark:bg-[#0F1111] text-[#0F1111] dark:text-white transition-all"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold text-[#555] dark:text-[#999] uppercase tracking-wider">Slot</label>
+                                        <select
+                                            value={form.slot}
+                                            onChange={e => setForm(f => ({ ...f, slot: e.target.value as Offer['slot'] }))}
+                                            className="w-full h-10 border border-[#888] dark:border-white/20 rounded-md px-3 text-sm outline-none focus:border-[#E77600] bg-white dark:bg-[#0F1111] text-[#0F1111] dark:text-white cursor-pointer"
+                                        >
+                                            <option value="HERO">Hero Banner</option>
+                                            <option value="FEATURED">Featured</option>
+                                            <option value="BANNER">Sidebar Banner</option>
+                                            <option value="LISTING">Listing</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold text-[#555] dark:text-[#999] uppercase tracking-wider">Image URL</label>
+                                        <input
+                                            value={form.image}
+                                            onChange={e => setForm(f => ({ ...f, image: e.target.value }))}
+                                            placeholder="https://..."
+                                            className="w-full h-10 border border-[#888] dark:border-white/20 rounded-md px-3 text-sm outline-none focus:border-[#E77600] focus:shadow-[0_0_0_3px_rgba(228,121,17,0.5)] bg-white dark:bg-[#0F1111] text-[#0F1111] dark:text-white transition-all"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold text-[#555] dark:text-[#999] uppercase tracking-wider">Start Date</label>
+                                        <input
+                                            type="date"
+                                            value={form.startDate}
+                                            onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))}
+                                            className="w-full h-10 border border-[#888] dark:border-white/20 rounded-md px-3 text-sm outline-none focus:border-[#E77600] bg-white dark:bg-[#0F1111] text-[#0F1111] dark:text-white cursor-pointer"
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold text-[#555] dark:text-[#999] uppercase tracking-wider">End Date</label>
+                                        <input
+                                            type="date"
+                                            value={form.endDate}
+                                            onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))}
+                                            className="w-full h-10 border border-[#888] dark:border-white/20 rounded-md px-3 text-sm outline-none focus:border-[#E77600] bg-white dark:bg-[#0F1111] text-[#0F1111] dark:text-white cursor-pointer"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="px-5 py-4 border-t border-[#DDD] dark:border-white/10 bg-[#F9F9F9] dark:bg-white/5 flex justify-end gap-2">
+                                <button onClick={() => setShowAddModal(false)} className="h-9 px-4 border border-[#DDD] dark:border-white/10 rounded-md text-xs font-bold text-[#555] dark:text-[#999] hover:bg-[#F3F3F3] dark:hover:bg-white/10 transition-all">
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={addOffer}
+                                    className="h-9 px-5 bg-gradient-to-b from-[#F7DFA5] to-[#F0C14B] border border-[#A88734] rounded-md text-xs font-bold text-[#0F1111] hover:from-[#F5D78E] hover:to-[#EEB933] transition-all shadow-sm"
+                                >
+                                    Add Offer
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
             {/* Detail Modal */}
             <AnimatePresence>
                 {selectedOffer && (
@@ -187,100 +483,59 @@ export default function AdminOffersPage() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setSelectedOffer(null)}
-                            className="absolute inset-0 bg-black/60 backdrop-blur-md"
+                            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                         />
                         <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="bg-card w-full max-w-2xl rounded-[32px] border border-border/50 overflow-hidden shadow-2xl relative"
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            className="bg-white dark:bg-[#131921] w-full max-w-md rounded-lg border border-[#DDD] dark:border-white/10 shadow-2xl relative z-10"
                         >
-                            <button
-                                onClick={() => setSelectedOffer(null)}
-                                className="absolute top-6 right-6 p-2 text-muted-foreground/50 hover:text-foreground transition-colors z-20"
-                            >
-                                <X size={20} />
-                            </button>
-
-                            {/* Modal Header Image */}
-                            <div className="h-64 w-full relative group">
-                                {selectedOffer.image ? (
-                                    <img src={selectedOffer.image} className="w-full h-full object-cover" alt={selectedOffer.offerTitle} />
-                                ) : (
-                                    <div className="w-full h-full bg-muted flex items-center justify-center">
-                                        <ImageIcon className="text-muted-foreground" size={64} />
-                                    </div>
+                            <div className="flex items-center justify-between px-5 py-4 border-b border-[#DDD] dark:border-white/10">
+                                <h3 className="text-sm font-bold text-[#0F1111] dark:text-white">Offer Details</h3>
+                                <button onClick={() => setSelectedOffer(null)} className="text-[#888] hover:text-[#0F1111] dark:hover:text-white transition-colors">
+                                    <X size={18} />
+                                </button>
+                            </div>
+                            <div className="p-5 space-y-4">
+                                {selectedOffer.image && (
+                                    <img src={selectedOffer.image} alt={selectedOffer.title} className="w-full h-40 object-cover rounded-md" />
                                 )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                                <div className="absolute bottom-6 left-8">
-                                    <span className="px-2 py-1 rounded bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest mb-2 inline-block">
-                                        {selectedOffer.slot} PLACEMENT
-                                    </span>
-                                    <h2 className="text-3xl font-black text-foreground tracking-tight">{selectedOffer.offerTitle}</h2>
+                                <div>
+                                    <h4 className="text-lg font-bold text-[#0F1111] dark:text-white">{selectedOffer.title}</h4>
+                                    <p className="text-xs text-[#888] mt-1">{selectedOffer.id}</p>
+                                </div>
+                                {selectedOffer.description && (
+                                    <p className="text-sm text-[#555] dark:text-[#999]">{selectedOffer.description}</p>
+                                )}
+                                <div className="grid grid-cols-2 gap-3 text-sm">
+                                    <div><span className="text-[10px] font-bold text-[#888] uppercase block">Type</span><span className="font-bold text-[#0F1111] dark:text-white">{selectedOffer.type}</span></div>
+                                    <div><span className="text-[10px] font-bold text-[#888] uppercase block">Discount</span><span className="font-bold text-[#067D62]">{selectedOffer.discount}</span></div>
+                                    <div><span className="text-[10px] font-bold text-[#888] uppercase block">Slot</span><span className="font-bold text-[#0F1111] dark:text-white">{selectedOffer.slot}</span></div>
+                                    <div><span className="text-[10px] font-bold text-[#888] uppercase block">Status</span><span className={cn("font-bold", selectedOffer.status === 'ACTIVE' ? 'text-emerald-600' : selectedOffer.status === 'SCHEDULED' ? 'text-amber-600' : 'text-red-500')}>{selectedOffer.status}</span></div>
+                                    <div><span className="text-[10px] font-bold text-[#888] uppercase block">Start</span><span className="text-[#555] dark:text-[#999]">{selectedOffer.startDate}</span></div>
+                                    <div><span className="text-[10px] font-bold text-[#888] uppercase block">End</span><span className="text-[#555] dark:text-[#999]">{selectedOffer.endDate || 'Open'}</span></div>
                                 </div>
                             </div>
-
-                            <div className="p-8 space-y-8">
-                                <div className="flex items-center justify-between border-b border-border/50 pb-8">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-background rounded-2xl flex items-center justify-center border border-border/50">
-                                            <Building2 className="text-primary" size={24} />
-                                        </div>
-                                        <div>
-                                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Requested By</p>
-                                            <p className="text-lg font-black text-foreground">{selectedOffer.supplier}</p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Placement Value</p>
-                                        <p className="text-2xl font-black text-emerald-500">${selectedOffer.price}</p>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-8">
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-3">
-                                            <MapPin className="text-muted-foreground" size={16} />
-                                            <div>
-                                                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Display Location</p>
-                                                <p className="text-xs font-bold text-foreground">{selectedOffer.location || 'Not Specified'}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <Clock className="text-muted-foreground" size={16} />
-                                            <div>
-                                                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Visual Duration</p>
-                                                <p className="text-xs font-bold text-foreground">{selectedOffer.duration || 'Flexible'}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Request Memo</p>
-                                        <p className="text-xs text-muted-foreground leading-relaxed font-medium">
-                                            {selectedOffer.description || 'No additional details provided by the supplier for this request.'}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="pt-4 flex gap-4">
-                                    <button
-                                        onClick={() => { handleAction(selectedOffer.id, 'REJECTED'); setSelectedOffer(null); }}
-                                        className="flex-1 h-14 bg-red-500/10 text-red-500 border border-red-500/20 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-2"
-                                    >
-                                        <XCircle size={18} /> Reject Request
-                                    </button>
-                                    <button
-                                        onClick={() => { handleAction(selectedOffer.id, 'APPROVED'); setSelectedOffer(null); }}
-                                        className="flex-[2] h-14 bg-primary text-primary-foreground border border-primary/20 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(255,140,51,0.3)]"
-                                    >
-                                        <CheckCircle size={18} /> Approve Placement
-                                    </button>
-                                </div>
+                            <div className="px-5 py-4 border-t border-[#DDD] dark:border-white/10 flex justify-end">
+                                <button
+                                    onClick={() => { deleteOffer(selectedOffer.id); setSelectedOffer(null); }}
+                                    className="h-9 px-4 text-xs font-bold text-[#C40000] hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md transition-all flex items-center gap-1.5"
+                                >
+                                    <Trash2 size={14} /> Delete Offer
+                                </button>
                             </div>
                         </motion.div>
                     </div>
                 )}
             </AnimatePresence>
+
+            {/* CSV Format Hint */}
+            <div className="bg-[#F0F4FF] dark:bg-blue-500/5 border border-blue-200 dark:border-blue-500/20 rounded-md p-4">
+                <p className="text-xs font-bold text-blue-700 dark:text-blue-400 mb-1">📄 CSV Upload Format</p>
+                <p className="text-[11px] text-blue-600 dark:text-blue-400/70 font-mono">title,discount,type,description,startdate,enddate</p>
+                <p className="text-[10px] text-blue-500/70 mt-1">Required columns: <strong>title</strong>, <strong>discount</strong>. Optional: type (Discount/Flash Sale/Bundle/BOGO), description, startdate, enddate.</p>
+            </div>
         </div>
     );
 }

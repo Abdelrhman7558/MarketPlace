@@ -26,7 +26,7 @@ export default function AdminOrdersPage() {
     React.useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('bev-token');
                 if (!token) return;
                 const res = await fetch('http://localhost:3005/orders', {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -45,7 +45,7 @@ export default function AdminOrdersPage() {
 
     const handleApprove = async (id: string) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('bev-token');
             const res = await fetch(`http://localhost:3005/orders/${id}/status`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -61,7 +61,7 @@ export default function AdminOrdersPage() {
 
     const handleReject = async (id: string) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('bev-token');
             const res = await fetch(`http://localhost:3005/orders/${id}/status`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },

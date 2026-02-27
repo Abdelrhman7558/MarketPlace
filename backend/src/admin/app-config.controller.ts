@@ -48,4 +48,18 @@ export class AppConfigController {
         await this.appConfigService.setHomepageCategories(data);
         return { message: 'Homepage categories updated successfully' };
     }
+
+    @Get('allowed-brands')
+    async getAllowedBrands() {
+        return this.appConfigService.getAllowedBrands();
+    }
+
+    @Post('allowed-brands')
+    async setAllowedBrands(@Body('brands') brands: string[]) {
+        if (!Array.isArray(brands)) {
+            return { error: 'Brands must be an array of strings' };
+        }
+        await this.appConfigService.setAllowedBrands(brands);
+        return { message: 'Allowed brands updated successfully', brands };
+    }
 }

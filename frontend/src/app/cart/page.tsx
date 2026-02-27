@@ -5,9 +5,12 @@ import Link from 'next/link';
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, ArrowRight, Package, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
+import RecommendationsSidebar from '@/components/cart/RecommendationsSidebar';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function CartPage() {
     const { items, removeItem, updateQuantity, total, clearCart } = useCart();
+    const { t } = useLanguage();
 
     if (items.length === 0) {
         return (
@@ -20,12 +23,12 @@ export default function CartPage() {
                     <div className="w-24 h-24 bg-muted rounded-[32px] flex items-center justify-center mx-auto mb-8">
                         <ShoppingBag className="w-12 h-12 text-muted-foreground" />
                     </div>
-                    <h2 className="text-3xl font-heading font-black mb-4">Your basket is empty</h2>
-                    <p className="text-muted-foreground mb-10 text-lg">Detailed inventory procurement starts with a single item. Browse our catalog to find premium SKU deals.</p>
+                    <h2 className="text-3xl font-heading font-black mb-4">{t('cart', 'emptyTitle')}</h2>
+                    <p className="text-muted-foreground mb-10 text-lg">{t('cart', 'emptyDescription')}</p>
                     <Link href="/categories">
                         <Button size="lg" className="rounded-2xl gap-2 font-black">
                             <ArrowLeft size={20} />
-                            Start Sourcing
+                            {t('cart', 'startSourcing')}
                         </Button>
                     </Link>
                 </motion.div>
@@ -40,12 +43,12 @@ export default function CartPage() {
                     <div className="space-y-3">
                         <div className="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-full">
                             <Package size={14} className="text-primary" />
-                            <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em]">Wholesale Basket</span>
+                            <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em]">{t('cart', 'wholesaleBasket')}</span>
                         </div>
                         <h1 className="text-2xl md:text-3xl font-heading font-black text-foreground tracking-tight">
-                            Procurement <span className="text-primary">Review</span>
+                            {t('cart', 'procurementReview')}
                         </h1>
-                        <p className="text-muted-foreground text-sm font-medium">Staging {items.length} unique SKU{items.length !== 1 ? 's' : ''} for bulk distribution</p>
+                        <p className="text-muted-foreground text-sm font-medium">{t('cart', 'staging')} {items.length} {t('cart', 'uniqueSKUs')}</p>
                     </div>
                     <Button
                         variant="ghost"
@@ -53,7 +56,7 @@ export default function CartPage() {
                         className="text-highlight hover:bg-highlight/10 h-12 px-6 rounded-2xl"
                     >
                         <Trash2 className="w-4 h-4 mr-2" />
-                        Reset Basket
+                        {t('cart', 'resetBasket')}
                     </Button>
                 </div>
 
@@ -83,7 +86,7 @@ export default function CartPage() {
                                         <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4">
                                             <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-xl">
                                                 <ShieldCheck size={14} className="text-accent" />
-                                                <span className="font-bold">Verified SKU</span>
+                                                <span className="font-bold">{t('cart', 'verifiedSKU')}</span>
                                             </div>
                                             <p className="font-heading font-bold text-xl text-primary">${item.price.toFixed(2)}<span className="text-muted-foreground text-xs font-medium ml-1">/ {item.unit}</span></p>
                                         </div>
@@ -108,7 +111,7 @@ export default function CartPage() {
                                         </div>
 
                                         <div className="text-right hidden xl:block min-w-[120px]">
-                                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block mb-1">Subtotal</span>
+                                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block mb-1">{t('cart', 'subtotal')}</span>
                                             <p className="font-heading font-black text-xl">${(item.price * item.quantity).toFixed(2)}</p>
                                         </div>
 
@@ -127,22 +130,22 @@ export default function CartPage() {
                     {/* Order Summary */}
                     <aside className="lg:w-[400px]">
                         <div className="bg-card rounded-[40px] border border-border/50 p-8 sticky top-32 premium-shadow space-y-8">
-                            <h3 className="font-heading font-bold text-2xl">Logistics Summary</h3>
+                            <h3 className="font-heading font-bold text-2xl">{t('cart', 'logisticsSummary')}</h3>
 
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center text-sm">
-                                    <span className="text-muted-foreground font-medium">Core Inventory</span>
+                                    <span className="text-muted-foreground font-medium">{t('cart', 'coreInventory')}</span>
                                     <span className="font-bold text-foreground font-heading">${total.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-sm">
-                                    <span className="text-muted-foreground font-medium">Distribution Fee</span>
+                                    <span className="text-muted-foreground font-medium">{t('cart', 'distributionFee')}</span>
                                     <span className={total >= 500 ? 'text-accent font-black' : 'text-foreground font-bold font-heading'}>
-                                        {total >= 500 ? 'FREE' : '$25.00'}
+                                        {total >= 500 ? t('cart', 'free') : '$25.00'}
                                     </span>
                                 </div>
                                 {total >= 500 && (
                                     <div className="bg-accent/10 border border-accent/20 text-accent text-[10px] rounded-xl px-4 py-3 font-bold text-center tracking-wider uppercase">
-                                        Bulk Shipment Threshold Met
+                                        {t('cart', 'bulkThreshold')}
                                     </div>
                                 )}
                             </div>
@@ -150,16 +153,16 @@ export default function CartPage() {
                             <div className="pt-8 border-t border-border">
                                 <div className="flex justify-between items-end mb-8">
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Total Payable</span>
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{t('cart', 'totalPayable')}</span>
                                         <p className="font-heading font-black text-3xl text-primary">${(total + (total >= 500 ? 0 : 25)).toFixed(2)}</p>
                                     </div>
-                                    <span className="text-xs text-muted-foreground font-medium mb-1">Excl. Tax</span>
+                                    <span className="text-xs text-muted-foreground font-medium mb-1">{t('cart', 'exclTax')}</span>
                                 </div>
 
                                 <Link href="/checkout">
                                     <Button size="xl" className="w-full flex items-center justify-center gap-3">
                                         <Package size={20} />
-                                        <span>Confirm Logistics</span>
+                                        <span>{t('cart', 'confirmLogistics')}</span>
                                         <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                                     </Button>
                                 </Link>
@@ -167,11 +170,14 @@ export default function CartPage() {
                                 <div className="mt-8 text-center">
                                     <Link href="/categories" className="text-xs font-bold text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-2">
                                         <ArrowLeft size={14} />
-                                        Back to Inventory
+                                        {t('cart', 'backToInventory')}
                                     </Link>
                                 </div>
                             </div>
                         </div>
+
+                        {/* Recommendations Sidebar Extension */}
+                        <RecommendationsSidebar items={items} />
                     </aside>
                 </div>
             </div>

@@ -59,6 +59,17 @@ export class ProductsController {
         return { imageUrl };
     }
 
+    @Get('cart/recommendations')
+    async getRecommendations(@Body() body: any, @Request() req) {
+        // As a GET endpoint with a body can sometimes be problematic in Next.js fetch,
+        // we use a GET with Query parameters
+        const categories = req.query.categories ? req.query.categories.split(',') : [];
+        const excludeIds = req.query.excludeIds ? req.query.excludeIds.split(',') : [];
+
+        const recommendations = await this.productsService.findRecommendations(categories, excludeIds);
+        return plainToInstance(ProductDto, recommendations);
+    }
+
     @Post()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.SUPPLIER, Role.ADMIN)

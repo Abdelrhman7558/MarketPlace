@@ -23,7 +23,7 @@ export default function Navbar() {
     const pathname = usePathname();
     const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
-    const isWhiteBackgroundPage = pathname.startsWith('/categories') || pathname.startsWith('/products');
+    const isWhiteBackgroundPage = pathname.startsWith('/categories') || pathname.startsWith('/products') || pathname.startsWith('/cart') || pathname.startsWith('/checkout') || pathname.startsWith('/dashboard');
 
     // Hide Navbar completely on auth pages, as they have their own integrated clean layout.
     if (pathname.startsWith('/auth')) {
@@ -59,7 +59,7 @@ export default function Navbar() {
 
                     <button className="hidden lg:flex items-center gap-2 text-sm font-bold hover:text-secondary transition-colors group">
                         <Menu size={20} className="group-hover:rotate-90 transition-transform" />
-                        <span>Categories</span>
+                        <span>{t('navbar', 'categories')}</span>
                         <ChevronRight size={16} className="rotate-90" />
                     </button>
                 </div>
@@ -70,7 +70,7 @@ export default function Navbar() {
                         type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search products, brands, SKU..."
+                        placeholder={t('navbar', 'searchPlaceholder')}
                         className="w-full h-full bg-white text-black rounded-l-lg px-12 text-sm font-medium outline-none border-none"
                     />
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -78,7 +78,7 @@ export default function Navbar() {
                         type="submit"
                         className="bg-secondary hover:bg-secondary/90 text-secondary-foreground px-8 font-bold text-sm rounded-r-lg transition-colors"
                     >
-                        Search
+                        {t('common', 'search')}
                     </button>
                 </form>
 
@@ -108,8 +108,8 @@ export default function Navbar() {
                         "hidden xl:flex flex-col items-end text-[10px] font-bold uppercase tracking-widest",
                         (scrolled || isWhiteBackgroundPage) ? "text-muted-foreground" : "text-white/50"
                     )}>
-                        <span>Help Center</span>
-                        <span className={(scrolled || isWhiteBackgroundPage) ? "text-foreground" : "text-white"}>Become a Supplier</span>
+                        <span>{t('navbar', 'logisticsHelp')}</span>
+                        <span className={(scrolled || isWhiteBackgroundPage) ? "text-foreground" : "text-white"}>{t('navbar', 'supplyPartners')}</span>
                     </div>
 
                     <div className={cn("w-px h-8 mx-2 hidden lg:block", (scrolled || isWhiteBackgroundPage) ? "bg-border" : "bg-white/10")} />
@@ -120,13 +120,13 @@ export default function Navbar() {
                         className="flex flex-col items-center gap-0.5 group"
                     >
                         <User className="w-5 h-5 group-hover:text-secondary transition-colors" />
-                        <span className="text-[10px] font-bold">Account</span>
+                        <span className="text-[10px] font-bold">{t('navbar', 'account')}</span>
                     </Link>
 
                     {/* Cart */}
                     <Link href="/cart" className="relative flex flex-col items-center gap-0.5 group">
                         <ShoppingCart className="w-5 h-5 group-hover:text-secondary transition-colors" />
-                        <span className="text-[10px] font-bold">Cart</span>
+                        <span className="text-[10px] font-bold">{t('navbar', 'cart')}</span>
                         {cartCount > 0 && (
                             <span className="absolute -top-1 -right-1 bg-secondary text-secondary-foreground text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                                 {cartCount}

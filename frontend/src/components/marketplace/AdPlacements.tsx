@@ -5,6 +5,7 @@ import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { ExternalLink, Tag, Zap, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AdItem {
     id: string;
@@ -16,37 +17,39 @@ interface AdItem {
     badge: string;
 }
 
-const ADS: AdItem[] = [
-    {
-        id: 'ad-1',
-        title: 'Coca-Cola Summer Edition',
-        subtitle: 'Bulk orders now open with 15% discount on all flavors.',
-        image: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?w=800&fit=crop',
-        color: '#F40009',
-        link: '/categories?brand=Coca-Cola',
-        badge: 'Top Seller'
-    },
-    {
-        id: 'ad-2',
-        title: 'Red Bull Energy Pack',
-        subtitle: 'Keep your inventory energized. Buy 10 cases, get 1 free.',
-        image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&fit=crop',
-        color: '#000B47',
-        link: '/categories?brand=Red Bull',
-        badge: 'Deal of the Day'
-    },
-    {
-        id: 'ad-3',
-        title: 'Premium Coffee Selection',
-        subtitle: 'Arabica beans starting from $45/kg for wholesale.',
-        image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=800&fit=crop',
-        color: '#4B3621',
-        link: '/categories?category=Coffee & Tea',
-        badge: 'New Arrival'
-    }
-];
-
 export function AdPlacements() {
+    const { t } = useLanguage();
+
+    const ADS: AdItem[] = [
+        {
+            id: 'ad-1',
+            title: t('ads', 'cocaColaTitle'),
+            subtitle: t('ads', 'cocaColaSubtitle'),
+            image: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?w=800&fit=crop',
+            color: '#F40009',
+            link: '/categories?brand=Coca-Cola',
+            badge: t('ads', 'topSeller')
+        },
+        {
+            id: 'ad-2',
+            title: t('ads', 'redBullTitle'),
+            subtitle: t('ads', 'redBullSubtitle'),
+            image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&fit=crop',
+            color: '#000B47',
+            link: '/categories?brand=Red Bull',
+            badge: t('ads', 'dealOfDay')
+        },
+        {
+            id: 'ad-3',
+            title: t('ads', 'coffeeTitle'),
+            subtitle: t('ads', 'coffeeSubtitle'),
+            image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=800&fit=crop',
+            color: '#4B3621',
+            link: '/categories?category=Coffee & Tea',
+            badge: t('ads', 'newArrival')
+        }
+    ];
+
     return (
         <section className="py-12 px-4 container mx-auto">
             <div className="flex items-center justify-between mb-8 px-2">
@@ -54,13 +57,13 @@ export function AdPlacements() {
                     <Link href="/sponsored-highlights">
                         <h2 className="text-2xl font-black text-[#111] dark:text-white tracking-tight flex items-center gap-2 hover:text-primary transition-colors cursor-pointer">
                             <Zap className="text-primary fill-primary" size={24} />
-                            Sponsored Highlights
+                            {t('ads', 'sponsoredHighlights')}
                         </h2>
                     </Link>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Premium Vendor Placements</p>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('ads', 'premiumVendor')}</p>
                 </div>
                 <Link href="/categories" className="text-sm font-black text-primary hover:underline flex items-center gap-1">
-                    Manage Ads <ArrowRight size={14} />
+                    {t('ads', 'manageAds')} <ArrowRight size={14} />
                 </Link>
             </div>
 
@@ -74,6 +77,7 @@ export function AdPlacements() {
 }
 
 function AdCard({ ad }: { ad: AdItem }) {
+    const { t } = useLanguage();
     const x = useMotionValue(0);
     const y = useMotionValue(0);
 
@@ -139,7 +143,7 @@ function AdCard({ ad }: { ad: AdItem }) {
                         </span>
                         <div className="flex items-center gap-1 text-white/40 text-[9px] font-bold uppercase tracking-widest">
                             <Tag size={10} />
-                            Sponsored
+                            {t('ads', 'sponsored')}
                         </div>
                     </div>
 
@@ -155,7 +159,7 @@ function AdCard({ ad }: { ad: AdItem }) {
                             href={ad.link}
                             className="h-10 px-6 bg-white text-[#131921] font-black text-[10px] uppercase tracking-widest rounded-xl hover:scale-105 transition-transform flex items-center justify-center gap-2"
                         >
-                            View Deal
+                            {t('ads', 'viewDeal')}
                             <ArrowRight size={14} />
                         </Link>
                         <button className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white hover:bg-white/20 transition-all">

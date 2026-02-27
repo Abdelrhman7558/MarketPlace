@@ -17,6 +17,7 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 import { PrismaModule } from './common/prisma.module';
 import { SecurityModule } from './security/security.module';
 import { SecurityInterceptor } from './security/security.interceptor';
+import { AdsModule } from './ads/ads.module';
 
 @Module({
     imports: [
@@ -33,7 +34,8 @@ import { SecurityInterceptor } from './security/security.interceptor';
         AuthModule,
         UsersModule,
         OrdersModule,
-        CouponsModule
+        CouponsModule,
+        AdsModule
     ],
     controllers: [AppController],
     providers: [

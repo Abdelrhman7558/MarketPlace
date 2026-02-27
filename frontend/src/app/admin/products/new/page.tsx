@@ -52,7 +52,7 @@ export default function AdminNewProductPage() {
         setIsSubmitting(true);
 
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('bev-token');
             const res = await fetch('http://localhost:3005/products', {
                 method: 'POST',
                 headers: {
