@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Mail, ArrowRight, ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
@@ -11,7 +13,7 @@ export default function ForgotPasswordPage() {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
 
-    const handleReset = (e: React.FormEvent) => {
+    const handleReset = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
 
@@ -21,11 +23,15 @@ export default function ForgotPasswordPage() {
         }
 
         setLoading(true);
-        // Simulate an API call to send the reset link
-        setTimeout(() => {
-            setLoading(false);
+        try {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/forgot-password`, { email });
             setSuccess(true);
-        }, 1500);
+            toast.success('Reset link sent!');
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to send reset link');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
