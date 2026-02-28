@@ -159,9 +159,9 @@ export default function AdminInvitePage() {
 
                 {/* History */}
                 <div className="space-y-6">
-                    <h3 className="text-xl font-black text-foreground tracking-tight flex items-center gap-3">
-                        <Timer className="text-primary" /> Active Invites
-                    </h3>
+                    <h2 className="text-3xl font-black text-[#0A1A2F] flex items-center gap-3">
+                        <Timer className="text-primary" /> Atlantis Invites
+                    </h2>
 
                     <div className="space-y-4 max-h-[500px] overflow-y-auto no-scrollbar pb-10">
                         {invites.length > 0 ? invites.map((invite, i) => (

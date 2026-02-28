@@ -138,7 +138,7 @@ export default function AdminProductsPage() {
                 <div className="space-y-1">
                     <div className="flex items-center gap-2">
                         <Settings2 className="text-primary" size={24} />
-                        <h1 className="text-3xl font-black text-foreground tracking-tight">Global Catalog</h1>
+                        <h1 className="text-3xl font-poppins font-black tracking-tight">Atlantis Inventory</h1>
                     </div>
                     <p className="text-muted-foreground font-medium">Manage and moderate all products across the entire marketplace.</p>
                 </div>

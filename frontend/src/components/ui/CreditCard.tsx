@@ -67,7 +67,7 @@ const CreditCard: React.FC<CreditCardProps> = ({
                     {/* Bottom Info */}
                     <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end text-white">
                         <div className="flex flex-col">
-                            <span className="text-[9px] uppercase tracking-widest opacity-80 mb-0.5">Card Holder</span>
+                            <div className="text-[10px] font-black tracking-widest text-white/40 uppercase">Atlantis Commercial</div>
                             <span className="font-medium tracking-wider text-sm">{cardHolder.toUpperCase()}</span>
                         </div>
                         <div className="flex flex-col items-end">

@@ -89,8 +89,8 @@ export default function AdminTeamPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-black text-foreground tracking-tight">Team Management</h1>
-                    <p className="text-muted-foreground font-medium">Coordinate staff permissions and administrative access.</p>
+                    <h1 className="text-3xl font-poppins font-black tracking-tight">Atlantis Force</h1>
+                    <p className="text-foreground/60">Manage your Atlantis internal team and permissions.</p>
                 </div>
 
                 <div className="flex items-center gap-4">

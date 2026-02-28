@@ -79,7 +79,7 @@ export default function AdminOrdersPage() {
         <div className="space-y-10 max-w-7xl mx-auto pb-20">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-black text-foreground tracking-tight">Enterprise Orders</h1>
+                    <h1 className="text-3xl font-black text-foreground tracking-tight">Atlantis Order Flow</h1>
                     <p className="text-muted-foreground font-medium">Global oversight of all transactions across the marketplace.</p>
                 </div>
 
