@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { AdminService } from './admin.service';
+import { TeamController } from './team.controller';
+import { EmailModule } from '../email/email.module';
 import { ExcelService } from './excel.service';
 import { ProductsModule } from '../products/products.module';
 import { DashboardController } from './dashboard.controller';
@@ -12,9 +15,9 @@ import { SecurityService } from './security.service';
 import { SecurityController } from './security.controller';
 
 @Module({
-    imports: [ProductsModule],
-    providers: [ExcelService, DashboardService, AnalyticsService, AuditService, AppConfigService],
-    controllers: [DashboardController, AuditController, AppConfigController],
+    imports: [ProductsModule, EmailModule],
+    providers: [AdminService, ExcelService, DashboardService, AnalyticsService, AuditService, AppConfigService],
+    controllers: [TeamController, DashboardController, AuditController, AppConfigController],
     exports: [ExcelService, DashboardService, AnalyticsService, AuditService, AppConfigService],
 })
 export class AdminModule { }

@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 import {
     Users,
     Shield,
@@ -48,6 +50,42 @@ export default function AdminTeamPage() {
     ];
 
     const [team, setTeam] = React.useState<TeamMember[]>([]);
+    const [isInviting, setIsInviting] = React.useState(false);
+    const [newMember, setNewMember] = React.useState({
+        name: '',
+        email: '',
+        role: 'Admin',
+        permissions: [] as string[]
+    });
+
+    const handleInvite = async () => {
+        if (!newMember.name || !newMember.email) {
+            toast.error('Please fill in all fields');
+            return;
+        }
+
+        setIsInviting(true);
+        try {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/admin/team/invite`, newMember);
+            toast.success('Invitation sent successfully!');
+            setIsAddModalOpen(false);
+            setNewMember({ name: '', email: '', role: 'Admin', permissions: [] });
+            // Optionally refresh team list
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || 'Failed to send invitation');
+        } finally {
+            setIsInviting(false);
+        }
+    };
+
+    const toggleNewMemberPermission = (perm: string) => {
+        setNewMember(prev => ({
+            ...prev,
+            permissions: prev.permissions.includes(perm)
+                ? prev.permissions.filter(p => p !== perm)
+                : [...prev.permissions, perm]
+        }));
+    };
 
     const filteredTeam = team.filter(m =>
         m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -254,7 +292,11 @@ export default function AdminTeamPage() {
 
                                 <div className="space-y-1.5">
                                     <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Assigned Role</label>
-                                    <select className="w-full h-12 bg-muted/50 border border-border/50 rounded-xl px-4 text-foreground text-sm outline-none focus:border-primary/50 transition-all font-medium appearance-none">
+                                    <select
+                                        value={newMember.role}
+                                        onChange={(e) => setNewMember({ ...newMember, role: e.target.value })}
+                                        className="w-full h-12 bg-muted/50 border border-border/50 rounded-xl px-4 text-foreground text-sm outline-none focus:border-primary/50 transition-all font-medium appearance-none"
+                                    >
                                         <option value="Admin">Super Admin</option>
                                         <option value="Moderator">Moderator</option>
                                         <option value="Support">Support Staff</option>
@@ -262,15 +304,41 @@ export default function AdminTeamPage() {
                                     </select>
                                 </div>
 
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Permissions</label>
+                                    <div className="grid grid-cols-2 gap-2 max-h-[150px] overflow-y-auto pr-2 no-scrollbar">
+                                        {AVAILABLE_PERMISSIONS.map(perm => (
+                                            <button
+                                                key={perm}
+                                                type="button"
+                                                onClick={() => toggleNewMemberPermission(perm)}
+                                                className={cn(
+                                                    "px-3 py-2 rounded-xl border text-[10px] font-black uppercase transition-all text-left",
+                                                    newMember.permissions.includes(perm)
+                                                        ? "bg-primary/20 border-primary/50 text-primary"
+                                                        : "bg-muted/30 border-border/50 text-muted-foreground hover:bg-muted/50"
+                                                )}
+                                            >
+                                                {perm.replace('_', ' ')}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
                                 <div className="pt-4 flex gap-4">
                                     <button
+                                        type="button"
                                         onClick={() => setIsAddModalOpen(false)}
                                         className="flex-1 h-12 bg-muted/50 text-muted-foreground font-black text-xs uppercase tracking-widest rounded-xl hover:bg-muted transition-all"
                                     >
                                         Cancel
                                     </button>
-                                    <button className="flex-[2] h-12 bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest rounded-xl hover:scale-105 transition-transform">
-                                        Send Invitation
+                                    <button
+                                        onClick={handleInvite}
+                                        disabled={isInviting}
+                                        className="flex-[2] h-12 bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest rounded-xl hover:scale-105 transition-transform flex items-center justify-center"
+                                    >
+                                        {isInviting ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Send Invitation'}
                                     </button>
                                 </div>
                             </form>

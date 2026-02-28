@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserDto } from '../common/dtos/base.dto';
 import { plainToInstance } from 'class-transformer';
@@ -27,7 +27,28 @@ export class AuthController {
         if (!user) {
             return { message: 'Invalid credentials' };
         }
+        if (!user.emailVerified) {
+            throw new UnauthorizedException('يرجى تفعيل بريدك الإلكتروني أولاً');
+        }
         return this.authService.login(user);
+    }
+
+    @Get('verify-email')
+    async verifyEmail(@Query('token') token: string) {
+        await this.authService.verifyEmail(token);
+        return { message: 'Email verified successfully' };
+    }
+
+    @Post('forgot-password')
+    async forgotPassword(@Body('email') email: string) {
+        await this.authService.forgotPassword(email);
+        return { message: 'If an account exists with this email, a reset link has been sent' };
+    }
+
+    @Post('reset-password')
+    async resetPassword(@Body() body: any) {
+        await this.authService.resetPassword(body.token, body.password);
+        return { message: 'Password reset successfully' };
     }
 
     @Post('seed-admin')
