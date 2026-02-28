@@ -1,7 +1,7 @@
 export const en = {
     navbar: {
         dashboard: "Dashboard",
-        marketplace: "Marketplace",
+        marketplace: "Atlantis",
         admin: "Admin",
         supplier: "Supplier",
         login: "Log in",

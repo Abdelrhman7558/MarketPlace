@@ -49,11 +49,11 @@ export default function Sidebar({ role = 'supplier' }: { role?: 'supplier' | 'bu
             {/* Branding Header */}
             <div className="p-6 flex items-center gap-4 border-b border-border/50">
                 <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-primary-foreground font-black text-2xl shadow-lg shadow-primary/20">
-                    MP
+                    AT
                 </div>
                 <div className="flex flex-col">
                     <h2 className="text-lg font-poppins font-bold tracking-tight text-foreground leading-none">
-                        MarketPlace
+                        Atlantis
                     </h2>
                     <span className="text-[10px] text-primary font-black uppercase tracking-[0.2em] mt-1">
                         {role} Portal

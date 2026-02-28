@@ -24,7 +24,7 @@ export default function AdminSettingsPage() {
     const [avatar, setAvatar] = React.useState<string | null>(null);
     const [name, setName] = React.useState(user?.name || 'Admin');
     const [phone, setPhone] = React.useState(user?.phone || '+20 100 000 0000');
-    const [email] = React.useState(user?.email || 'admin@marketplace.com');
+    const [email] = React.useState(user?.email || 'admin@atlantis.com');
 
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 

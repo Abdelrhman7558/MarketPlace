@@ -54,7 +54,7 @@ export default function TrustBadges() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h2 className="section-title">Why Choose <span className="text-[#FF6B00]">MarketPlace</span>?</h2>
+                    <h2 className="section-title">Why Choose <span className="text-[#FF8A00]">Atlantis</span>?</h2>
                     <p className="section-subtitle">
                         Trusted by over 500+ businesses worldwide. We make B2B procurement simple, secure, and scalable.
                     </p>

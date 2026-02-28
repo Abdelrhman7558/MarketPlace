@@ -84,7 +84,7 @@ export function UserMenu({ role }: UserMenuProps) {
                     <div className="text-left hidden lg:block">
                         <p className={cn(
                             "text-xs font-black group-hover:text-primary transition-colors",
-                            isAdminLayout ? "text-[#0F1111]" : "text-white"
+                            isAdminLayout ? "text-[#0F1111]" : "text-white !important"
                         )}>{user?.name}</p>
                         <div className="flex items-center gap-1.5">
                             <div className={cn(
@@ -104,7 +104,7 @@ export function UserMenu({ role }: UserMenuProps) {
                     size={16}
                     className={cn(
                         "transition-all",
-                        isAdminLayout ? "text-[#888] group-hover:text-[#0F1111]" : "text-white/40 group-hover:text-white",
+                        isAdminLayout ? "text-[#888] group-hover:text-[#0F1111]" : "text-white/60 group-hover:text-white !important",
                         isOpen && "rotate-180 text-primary"
                     )}
                 />

@@ -242,7 +242,7 @@ export default function ProductEditorModal({ isOpen, onClose, product, onSave }:
                                 <div className="pt-4">
                                     <Button type="submit" size="xl" className="w-full rounded-2xl font-black text-lg gap-3">
                                         <Save size={24} />
-                                        {product ? 'Save Changes' : 'Publish Product to Marketplace'}
+                                        {product ? 'Save Changes' : 'Publish Product to Atlantis'}
                                     </Button>
                                 </div>
                             </div>

@@ -214,11 +214,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {/* Sidebar Header */}
                 <div className="h-16 flex items-center justify-between px-4 border-b border-[#DDD] dark:border-white/10">
                     {isOpen ? (
-                        <Link href="/" className="font-heading font-black text-lg tracking-tighter text-[#0F1111] dark:text-white">
-                            Market<span className="text-[#FF9900]">Place</span>
+                        <Link href="/" className="font-heading font-black text-lg tracking-tighter text-[#0F1111] dark:text-white uppercase">
+                            Atlantis
                         </Link>
                     ) : (
-                        <div className="w-8 h-8 bg-[#FF9900] rounded flex items-center justify-center font-black text-xs text-white">M</div>
+                        <div className="w-8 h-8 bg-[#FF9900] rounded flex items-center justify-center font-black text-xs text-white uppercase">A</div>
                     )}
                     <button onClick={() => setIsOpen(!isOpen)} className="text-[#888] hover:text-[#0F1111] dark:hover:text-white transition-colors">
                         {isOpen ? <X size={18} /> : <Menu size={18} />}

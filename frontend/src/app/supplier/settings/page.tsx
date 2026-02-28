@@ -26,7 +26,7 @@ export default function SupplierSettingsPage() {
     const [name, setName] = React.useState(user?.name || 'Vendor');
     const [company, setCompany] = React.useState('Hellenic Beverages Ltd.');
     const [phone, setPhone] = React.useState(user?.phone || '+20 123 456 7890');
-    const [email] = React.useState(user?.email || 'vendor@marketplace.com');
+    const [email] = React.useState(user?.email || 'vendor@atlantis.com');
 
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 

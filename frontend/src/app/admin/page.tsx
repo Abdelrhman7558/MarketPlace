@@ -54,7 +54,7 @@ export default function AdminOverviewPage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div className="space-y-1">
                     <h1 className="text-3xl font-black text-foreground tracking-tight">System Overview</h1>
-                    <p className="text-muted-foreground font-medium">Real-time data for the MarketPlace ecosystem.</p>
+                    <p className="text-muted-foreground font-medium">Real-time data for the Atlantis ecosystem.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <button className="px-6 py-2.5 bg-primary text-primary-foreground font-black text-sm rounded-xl hover:scale-105 transition-transform shadow-lg shadow-primary/20">

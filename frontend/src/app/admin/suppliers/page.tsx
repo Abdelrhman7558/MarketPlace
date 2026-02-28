@@ -235,7 +235,7 @@ export default function AdminSuppliersPage() {
                                             </p>
                                         </div>
                                         <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-                                            {selectedSupplier.companyName || selectedSupplier.name} — registered supplier on the MarketPlace platform.
+                                            {selectedSupplier.companyName || selectedSupplier.name} — registered supplier on the Atlantis platform.
                                         </p>
                                     </div>
                                 </div>

@@ -17,13 +17,13 @@ export const generateEmailTemplate = (type: EmailTemplate, data: any): EmailPayl
 
     const header = `
         <div style="background-color: ${bgColor}; padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
-            <h1 style="color: white; font-family: sans-serif; margin: 0; letter-spacing: -1px;">Market<span style="color: ${primaryColor};">Place</span></h1>
+            <h1 style="color: white; font-family: sans-serif; margin: 0; letter-spacing: -1px;">Atlan<span style="color: ${primaryColor};">tis</span></h1>
         </div>
     `;
 
     const footer = `
         <div style="padding: 30px; text-align: center; color: #888; font-family: sans-serif; font-size: 12px;">
-            <p>&copy; 2026 MarketPlace Egypt. All rights reserved.</p>
+            <p>&copy; 2026 Atlantis Egypt. All rights reserved.</p>
             <p>123 Business Avenue, Cairo, Egypt</p>
         </div>
     `;
@@ -44,12 +44,12 @@ export const generateEmailTemplate = (type: EmailTemplate, data: any): EmailPayl
         case 'SIGNUP_PENDING':
             return {
                 to: data.email,
-                subject: 'Registration Received - MarketPlace',
+                subject: 'Registration Received - Atlantis',
                 body: `
                     ${header}
                     <div style="padding: 40px; font-family: sans-serif; line-height: 1.6; color: #333; background: white;">
                         <h2 style="margin-top: 0;">Hello ${data.name},</h2>
-                        <p>Thank you for registering at MarketPlace. Your application for the <strong>${data.role.toUpperCase()}</strong> role has been received.</p>
+                        <p>Thank you for registering at Atlantis. Your application for the <strong>${data.role.toUpperCase()}</strong> role has been received.</p>
                         <p>Our administration team is currently reviewing your details. This process typically takes 24-48 business hours.</p>
                         <p>We'll notify you as soon as your account is activated.</p>
                     </div>
@@ -60,12 +60,12 @@ export const generateEmailTemplate = (type: EmailTemplate, data: any): EmailPayl
         case 'SIGNUP_APPROVED':
             return {
                 to: data.email,
-                subject: 'Account Activated! Welcome to MarketPlace',
+                subject: 'Account Activated! Welcome to Atlantis',
                 body: `
                     ${header}
                     <div style="padding: 40px; font-family: sans-serif; line-height: 1.6; color: #333; background: white;">
                         <h2 style="margin-top: 0; color: #108910;">Congratulations!</h2>
-                        <p>Your MarketPlace account has been <strong>Approved</strong>.</p>
+                        <p>Your Atlantis account has been <strong>Approved</strong>.</p>
                         <p>You now have full access to your personalized dashboard and can start ${data.role === 'supplier' ? 'listing products' : 'placing orders'}.</p>
                         <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/login" style="${btnStyle}">Login to Dashboard</a>
                     </div>
@@ -76,12 +76,12 @@ export const generateEmailTemplate = (type: EmailTemplate, data: any): EmailPayl
         case 'ADMIN_INVITE':
             return {
                 to: data.email,
-                subject: 'You are Invited to Join MarketPlace',
+                subject: 'You are Invited to Join Atlantis',
                 body: `
                     ${header}
                     <div style="padding: 40px; font-family: sans-serif; line-height: 1.6; color: #333; background: white;">
                         <h2 style="margin-top: 0;">Exclusive Invitation</h2>
-                        <p>You have been invited by a MarketPlace Administrator to join our network as a <strong>${data.role.toUpperCase()}</strong>.</p>
+                        <p>You have been invited by an Atlantis Administrator to join our network as a <strong>${data.role.toUpperCase()}</strong>.</p>
                         <p>Click the secure link below to complete your onboarding:</p>
                         <a href="${data.inviteLink}" style="${btnStyle}">Complete Onboarding</a>
                         <p style="color: #888; font-size: 11px; margin-top: 20px;">* This link expires in 24 hours.</p>
@@ -93,7 +93,7 @@ export const generateEmailTemplate = (type: EmailTemplate, data: any): EmailPayl
         default:
             return {
                 to: data.email,
-                subject: 'MarketPlace Notification',
+                subject: 'Atlantis Notification',
                 body: `${header}<div style="padding: 40px;">System heartbeat message.</div>${footer}`
             };
     }

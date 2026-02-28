@@ -46,7 +46,7 @@ class AnalyticsManager {
     }
 
     public trackPlacementView(placementId: string, slot: string) {
-        this.track('placement_view', 'marketplace', placementId, undefined, { slot });
+        this.track('placement_view', 'atlantis', placementId, undefined, { slot });
     }
 
     public trackOrderSuccess(orderId: string, total: number, itemCount: number) {

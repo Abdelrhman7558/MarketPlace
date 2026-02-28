@@ -3,6 +3,7 @@
  * Defines core colors, spacing, and transition constants.
  * Supports Light/Dark mode via CSS variables.
  */
+export const BRAND_NAME = 'Atlantis';
 
 export const designTokens = {
     colors: {

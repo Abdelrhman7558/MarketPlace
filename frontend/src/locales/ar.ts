@@ -1,7 +1,7 @@
 export const ar = {
     navbar: {
         dashboard: "لوحة التحكم",
-        marketplace: "السوق",
+        marketplace: "أتلانتس",
         admin: "المدير",
         supplier: "المورد",
         login: "تسجيل الدخول",

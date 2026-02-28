@@ -18,8 +18,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-    title: "BevMarket — Premium Beverage Distribution",
-    description: "Your trusted B2B marketplace for Pepsi, Coca-Cola, Red Bull, Lipton and more. Wholesale beverage distribution for businesses.",
+    title: "Atlantis — Premium Beverage Distribution",
+    description: "Your trusted B2B Atlantis for Pepsi, Coca-Cola, Red Bull, Lipton and more. Wholesale beverage distribution for businesses.",
 };
 
 export default function RootLayout({

@@ -44,11 +44,11 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
                 {/* Sidebar Header */}
                 <div className="h-20 flex items-center justify-between px-6 border-b border-border/50">
                     {isOpen ? (
-                        <Link href="/" className="font-heading font-black text-xl tracking-tighter text-foreground">
-                            Market<span className="text-primary">Place</span>
+                        <Link href="/" className="font-heading font-black text-xl tracking-tighter text-foreground uppercase">
+                            Atlantis
                         </Link>
                     ) : (
-                        <div className="w-8 h-8 bg-primary rounded flex items-center justify-center font-black text-xs text-primary-foreground">S</div>
+                        <div className="w-8 h-8 bg-primary rounded flex items-center justify-center font-black text-xs text-primary-foreground uppercase">A</div>
                     )}
                     <button onClick={() => setIsOpen(!isOpen)} className="text-muted-foreground hover:text-foreground transition-colors">
                         {isOpen ? <X size={20} /> : <Menu size={20} />}

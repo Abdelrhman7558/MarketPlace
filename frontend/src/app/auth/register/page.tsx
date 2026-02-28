@@ -63,165 +63,181 @@ function RegisterForm() {
         submitRegister();
     };
 
-    const inputClass = "w-full bg-white border border-[#888] rounded-md px-3 pl-10 py-2.5 text-[#0F1111] text-sm outline-none focus:border-[#E77600] focus:shadow-[0_0_0_3px_rgba(228,121,17,0.5)] transition-all placeholder:text-gray-400";
-    const labelClass = "text-xs font-bold text-[#0F1111] ml-0.5";
-    const iconClass = "absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#888]";
+    const inputClass = "w-full bg-slate-50 border border-slate-200 rounded-2xl px-12 py-3.5 text-[#0A1A2F] text-sm outline-none focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-slate-400";
+    const labelClass = "text-xs font-black uppercase tracking-widest text-[#0A1A2F] ml-1";
+    const iconClass = "absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors";
 
     return (
-        <div className="min-h-screen bg-[#EAEDED] flex items-center justify-center p-6">
-            <div className="w-full max-w-[500px]">
+        <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6 relative overflow-hidden">
+            {/* Background Orbs */}
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[100px]" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/5 rounded-full blur-[100px]" />
+
+            <div className="w-full max-w-[600px] relative">
                 {/* Logo */}
-                <div className="text-center mb-5">
-                    <Link href="/" className="inline-block">
-                        <span className="font-black text-3xl tracking-tighter text-[#0A1A2F]">
-                            ATLANTIS
+                <div className="text-center mb-8">
+                    <Link href="/" className="inline-block group">
+                        <span className="font-heading font-black text-4xl tracking-tighter text-[#0A1A2F] italic">
+                            Atlan<span className="text-[#FF8A00] not-italic">tis</span>
                         </span>
                     </Link>
                 </div>
 
                 {/* Form Card */}
                 <motion.div
-                    initial={{ opacity: 0, y: 15 }}
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white border border-[#DDD] rounded-lg p-6 shadow-sm"
+                    className="bg-white border border-slate-200 rounded-[32px] p-10 shadow-2xl shadow-slate-200/50"
                 >
                     {isSuccess ? (
-                        <div className="flex flex-col items-center text-center py-8 space-y-4">
-                            <div className="w-16 h-16 rounded-full bg-[#067D62]/10 border-2 border-[#067D62]/20 flex items-center justify-center">
-                                <CheckCircle2 size={36} className="text-[#067D62]" />
+                        <div className="flex flex-col items-center text-center py-10 space-y-6">
+                            <div className="w-24 h-24 rounded-[32px] bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+                                <CheckCircle2 size={48} className="text-emerald-500" />
                             </div>
-                            <h2 className="text-xl font-bold text-[#0F1111]">Application Submitted</h2>
-                            <p className="text-[#555] text-sm max-w-sm leading-relaxed">
-                                Thank you for registering with Atlantis. Your account is currently <strong className="text-[#0A1A2F]">pending admin review.</strong>
-                            </p>
-                            <div className="p-4 bg-[#FEF8E8] border border-[#F0C14B] rounded-md w-full text-left space-y-2 text-sm text-[#0F1111]">
-                                <p className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-[#FF9900]" /> We will verify your business details.</p>
-                                <p className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-[#FF9900]" /> You will receive an email upon approval.</p>
+                            <div className="space-y-2">
+                                <h2 className="text-3xl font-black text-[#0A1A2F]">Success!</h2>
+                                <p className="text-slate-500 font-medium">Your application is being processed.</p>
                             </div>
-                            <Link href="/" className="mt-4 inline-block text-sm text-[#007185] hover:text-[#C45500] hover:underline font-medium">
+                            <div className="p-6 bg-slate-50 rounded-[24px] w-full text-left space-y-4">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                        <ShieldCheck size={18} className="text-primary" />
+                                    </div>
+                                    <div>
+                                        <p className="font-black text-xs uppercase tracking-widest text-[#0A1A2F]">Security Review</p>
+                                        <p className="text-sm text-slate-500 font-medium mt-1">We will verify your business and contact details.</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0">
+                                        <Mail size={18} className="text-secondary" />
+                                    </div>
+                                    <div>
+                                        <p className="font-black text-xs uppercase tracking-widest text-[#0A1A2F]">Email Confirmation</p>
+                                        <p className="text-sm text-slate-500 font-medium mt-1">Check your inbox for an approval notification.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <Link href="/" className="mt-4 px-8 py-3 bg-[#0A1A2F] text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#162a44] transition-all active:scale-[0.98]">
                                 Return to Home
                             </Link>
                         </div>
                     ) : (
                         <>
-                            <h1 className="text-2xl font-bold text-[#0F1111] mb-1">Create account</h1>
-                            <p className="text-sm text-[#555] mb-5">Join the world's most trusted B2B network.</p>
+                            <div className="mb-10">
+                                <h1 className="text-3xl font-black text-[#0A1A2F] mb-2">Create Account</h1>
+                                <p className="text-slate-500 font-medium">Join the premier B2B distribution network</p>
+                            </div>
 
                             {error && (
                                 <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="bg-[#FCF4F4] border border-[#C40000] rounded-md p-3 mb-4"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="bg-red-50 border border-red-100 rounded-2xl p-4 mb-8"
                                 >
-                                    <p className="text-[#C40000] text-sm font-medium">{error}</p>
+                                    <p className="text-red-600 text-sm font-medium">{error}</p>
                                 </motion.div>
                             )}
 
-                            <form onSubmit={handleRegister} className="space-y-4">
-                                <div className="space-y-1">
-                                    <label className={labelClass}>Your name</label>
-                                    <div className="relative">
-                                        <User className={iconClass} />
-                                        <input className={inputClass} placeholder="First and last name" value={form.name} onChange={e => update('name', e.target.value)} />
+                            <form onSubmit={handleRegister} className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className={labelClass}>Full Name</label>
+                                        <div className="relative group">
+                                            <User className={iconClass} />
+                                            <input className={inputClass} placeholder="John Doe" value={form.name} onChange={e => update('name', e.target.value)} />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className={labelClass}>Work Email</label>
+                                        <div className="relative group">
+                                            <Mail className={iconClass} />
+                                            <input className={inputClass} placeholder="john@company.com" value={form.email} disabled={!!inviteEmail} onChange={e => update('email', e.target.value)} />
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className={labelClass}>Email</label>
-                                    <div className="relative">
-                                        <Mail className={iconClass} />
-                                        <input className={inputClass} placeholder="name@company.com" value={form.email} disabled={!!inviteEmail} onChange={e => update('email', e.target.value)} />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className={labelClass}>Phone Number</label>
+                                        <div className="relative group">
+                                            <Phone className={iconClass} />
+                                            <input className={inputClass} placeholder="+1..." value={form.phone} onChange={e => update('phone', e.target.value)} />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className={labelClass}>Company Name</label>
+                                        <div className="relative group">
+                                            <Building2 className={iconClass} />
+                                            <input className={inputClass} placeholder="Acme Ltd" value={form.companyName} onChange={e => update('companyName', e.target.value)} />
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className={labelClass}>Phone number</label>
-                                    <div className="relative">
-                                        <Phone className={iconClass} />
-                                        <input className={inputClass} placeholder="+1 234 567 890" value={form.phone} onChange={e => update('phone', e.target.value)} />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-1">
-                                    <label className={labelClass}>Company name <span className="text-[#888] font-normal">(optional)</span></label>
-                                    <div className="relative">
-                                        <Building2 className={iconClass} />
-                                        <input className={inputClass} placeholder="e.g. Acme Corp" value={form.companyName} onChange={e => update('companyName', e.target.value)} />
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="space-y-1">
-                                        <label className={labelClass}>Website <span className="text-[#888] font-normal">(optional)</span></label>
-                                        <div className="relative">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className={labelClass}>Website</label>
+                                        <div className="relative group">
                                             <Globe className={iconClass} />
                                             <input className={inputClass} placeholder="https://..." value={form.website} onChange={e => update('website', e.target.value)} />
                                         </div>
                                     </div>
-                                    <div className="space-y-1">
-                                        <label className={labelClass}>Social links <span className="text-[#888] font-normal">(optional)</span></label>
-                                        <div className="relative">
+                                    <div className="space-y-2">
+                                        <label className={labelClass}>Social Link</label>
+                                        <div className="relative group">
                                             <LinkIcon className={iconClass} />
-                                            <input className={inputClass} placeholder="LinkedIn, etc." value={form.socialLinks} onChange={e => update('socialLinks', e.target.value)} />
+                                            <input className={inputClass} placeholder="LinkedIn..." value={form.socialLinks} onChange={e => update('socialLinks', e.target.value)} />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className={labelClass}>Password</label>
-                                    <div className="relative">
+                                <div className="space-y-2">
+                                    <label className={labelClass}>Account Password</label>
+                                    <div className="relative group">
                                         <Lock className={iconClass} />
                                         <input
                                             type={showPass ? 'text' : 'password'}
-                                            className={inputClass + ' pr-10'}
-                                            placeholder="At least 8 characters"
+                                            className={inputClass + ' pr-12'}
+                                            placeholder="Secure password"
                                             value={form.password}
                                             onChange={e => update('password', e.target.value)}
                                         />
-                                        <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#0F1111]">
-                                            {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors">
+                                            {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
                                     </div>
-                                    <div className="flex flex-wrap gap-1.5 pt-1">
+                                    <div className="flex flex-wrap gap-2 pt-2">
                                         {[
-                                            { label: '8+ chars', met: form.password.length >= 8 },
-                                            { label: 'A-Z', met: /[A-Z]/.test(form.password) },
-                                            { label: 'a-z', met: /[a-z]/.test(form.password) },
-                                            { label: '0-9', met: /[0-9]/.test(form.password) },
-                                            { label: 'Symbol', met: /[^A-Za-z0-9]/.test(form.password) }
+                                            { label: '8+ Characters', met: form.password.length >= 8 },
+                                            { label: 'Mixed Case', met: /[A-Z]/.test(form.password) && /[a-z]/.test(form.password) },
+                                            { label: 'Number/Symbol', met: /[0-9]/.test(form.password) || /[^A-Za-z0-9]/.test(form.password) }
                                         ].map((req, idx) => (
-                                            <span key={idx} className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ${req.met ? 'bg-[#067D62]/10 text-[#067D62] border-[#067D62]/20' : 'bg-[#F3F3F3] text-[#888] border-[#DDD]'}`}>
-                                                {req.met && <CheckCircle2 size={9} className="inline mr-0.5" />}
+                                            <span key={idx} className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border transition-all ${req.met ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100'}`}>
+                                                {req.met && <CheckCircle2 size={10} className="inline mr-1 -mt-0.5" />}
                                                 {req.label}
                                             </span>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className={labelClass}>Re-enter password</label>
-                                    <div className="relative">
-                                        <Lock className={iconClass} />
-                                        <input type={showPass ? 'text' : 'password'} className={inputClass} placeholder="••••••••" value={form.confirmPassword} onChange={e => update('confirmPassword', e.target.value)} />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-1.5">
-                                    <label className={labelClass}>Business role</label>
-                                    <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-3">
+                                    <label className={labelClass}>Business Intent</label>
+                                    <div className="grid grid-cols-2 gap-4">
                                         <button
                                             type="button"
                                             onClick={() => update('role', 'customer')}
-                                            className={`py-2.5 rounded-md text-sm font-bold border transition-all ${form.role === 'customer' ? 'bg-[#FEF8E8] border-[#FF9900] text-[#0F1111] shadow-sm' : 'bg-white border-[#DDD] text-[#555] hover:border-[#888]'}`}
+                                            className={`py-4 rounded-[20px] text-xs font-black uppercase tracking-[0.1em] border transition-all ${form.role === 'customer' ? 'bg-[#0A1A2F]/5 border-[#0A1A2F] text-[#0A1A2F] shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-slate-300'}`}
                                         >
-                                            Retail Buyer
+                                            Buyer
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => update('role', 'supplier')}
-                                            className={`py-2.5 rounded-md text-sm font-bold border transition-all ${form.role === 'supplier' ? 'bg-[#FEF8E8] border-[#FF9900] text-[#0F1111] shadow-sm' : 'bg-white border-[#DDD] text-[#555] hover:border-[#888]'}`}
+                                            className={`py-4 rounded-[20px] text-xs font-black uppercase tracking-[0.1em] border transition-all ${form.role === 'supplier' ? 'bg-[#FF8A00]/5 border-[#FF8A00] text-[#FF8A00] shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-slate-300'}`}
                                         >
-                                            Wholesale Supplier
+                                            Supplier
                                         </button>
                                     </div>
                                 </div>
@@ -229,21 +245,24 @@ function RegisterForm() {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full bg-gradient-to-b from-[#F7DFA5] to-[#F0C14B] border border-[#A88734] rounded-md py-2.5 text-sm font-bold text-[#0F1111] hover:from-[#F5D78E] hover:to-[#EEB933] disabled:opacity-50 transition-all shadow-sm mt-2"
+                                    className="w-full bg-[#0A1A2F] hover:bg-[#162a44] text-white rounded-[20px] py-4 text-xs font-black uppercase tracking-[0.25em] transition-all shadow-xl shadow-slate-900/10 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3 mt-4"
                                 >
                                     {loading ? (
-                                        <div className="w-5 h-5 border-2 border-[#0F1111]/30 border-t-[#0F1111] rounded-full animate-spin mx-auto" />
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                     ) : (
-                                        'Create your Atlantis account'
+                                        <>
+                                            <span>Create Account</span>
+                                            <ArrowRight size={18} />
+                                        </>
                                     )}
                                 </button>
                             </form>
 
-                            <div className="mt-5 pt-4 border-t border-[#DDD] text-center">
-                                <p className="text-sm text-[#555]">
-                                    Already have an account?{' '}
-                                    <Link href="/auth/login" className="text-[#007185] hover:text-[#C45500] hover:underline font-medium">
-                                        Sign in
+                            <div className="mt-8 pt-6 border-t border-slate-100 text-center">
+                                <p className="text-sm text-slate-500 font-medium">
+                                    Already a member?{' '}
+                                    <Link href="/auth/login" className="text-primary font-black uppercase tracking-wider text-xs hover:underline ml-1">
+                                        Sign In
                                     </Link>
                                 </p>
                             </div>
@@ -257,7 +276,7 @@ function RegisterForm() {
 
 export default function RegisterPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-[#EAEDED] flex justify-center items-center text-[#0F1111]">Loading...</div>}>
+        <Suspense fallback={<div className="min-h-screen bg-[#F8FAFC] flex justify-center items-center text-[#0A1A2F] font-black uppercase tracking-[0.2em] text-xs">Loading Atlantis...</div>}>
             <RegisterForm />
         </Suspense>
     );

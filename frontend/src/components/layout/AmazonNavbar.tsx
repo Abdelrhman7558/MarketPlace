@@ -51,13 +51,12 @@ export default function AmazonNavbar() {
     return (
         <header className="flex flex-col w-full z-50 sticky top-0 transition-shadow duration-300">
             {/* Top Bar */}
-            <div className="bg-[#131921] text-white py-1 px-4 flex items-center justify-between gap-4 h-14 md:h-16 shadow-lg">
+            <div className="bg-[#0A1A2F] text-white py-1 px-4 flex items-center justify-between gap-4 h-14 md:h-16 shadow-lg">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-1 p-1 hover:border-white/20 border border-transparent rounded transition-all h-full">
-                    <span className="font-heading font-extrabold text-xl md:text-2xl tracking-tight">
-                        Market<span className="text-primary">Place</span>
+                    <span className="font-heading font-black text-xl md:text-2xl tracking-tighter text-white">
+                        Atlan<span className="text-[#FF8A00]">tis</span>
                     </span>
-                    <span className="text-[10px] mt-2 font-semibold text-white/60">.eg</span>
                 </Link>
 
                 {/* Search Bar - Center Aligned */}
@@ -84,7 +83,7 @@ export default function AmazonNavbar() {
                     />
                     <button
                         type="submit"
-                        className="h-full px-5 bg-primary hover:bg-primary/90 text-[#131921] flex items-center justify-center transition-colors shadow-inner"
+                        className="h-full px-5 bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-colors shadow-inner"
                     >
                         <Search size={20} className="stroke-[2.5]" />
                     </button>
@@ -147,10 +146,10 @@ export default function AmazonNavbar() {
                     )}
 
                     {/* Cart */}
-                    <Link href="/cart" className="flex items-end p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full relative">
+                    <Link href="/cart" className="flex items-end p-1.5 hover:border-white/20 border border-transparent rounded transition-all h-full relative text-white">
                         <div className="relative">
                             <ShoppingCart size={28} className="stroke-[1.5]" />
-                            <span className="absolute -top-1 left-1/2 -translate-x-1/2 text-primary text-xs font-black bg-[#131921] px-0.5">
+                            <span className="absolute -top-1 left-1/2 -translate-x-1/2 text-primary text-xs font-black bg-[#0A1A2F] px-0.5">
                                 {cartCount}
                             </span>
                         </div>
@@ -160,7 +159,7 @@ export default function AmazonNavbar() {
             </div>
 
             {/* Bottom Bar */}
-            <div className="bg-[#232F3E] text-white py-0.5 px-4 flex items-center justify-start gap-4 h-9 relative shadow-md">
+            <div className="bg-[#1a2b3c] text-white py-0.5 px-4 flex items-center justify-start gap-4 h-9 relative shadow-md">
                 {/* Categories Dropdown Trigger */}
                 <div
                     className="relative group h-full flex items-center"

@@ -24,7 +24,7 @@ export default function SupplierOverviewPage() {
                     <p className="text-white/40 font-medium">Performance metrics for your wholesale catalog.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button className="px-6 py-2.5 bg-primary text-[#131921] font-black text-sm rounded-xl hover:scale-105 transition-transform shadow-lg shadow-primary/20 flex items-center gap-2">
+                    <button className="px-6 py-2.5 bg-primary text-white font-black text-sm rounded-xl hover:scale-105 transition-transform shadow-lg shadow-primary/20 flex items-center gap-2">
                         <Plus size={18} strokeWidth={3} /> Add New Product
                     </button>
                 </div>
@@ -40,7 +40,7 @@ export default function SupplierOverviewPage() {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: i * 0.1 }}
-                            className="bg-[#131921] p-6 rounded-2xl border border-white/5 layered-3d-shadow"
+                            className="bg-[#0A1A2F] p-6 rounded-2xl border border-white/5 layered-3d-shadow"
                         >
                             <div className="flex items-center justify-between mb-4">
                                 <div className={`w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center ${stat.color}`}>
@@ -62,7 +62,7 @@ export default function SupplierOverviewPage() {
             {/* Main Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Recent Orders Table Mock */}
-                <div className="lg:col-span-2 bg-[#131921] rounded-3xl border border-white/5 p-8 space-y-8">
+                <div className="lg:col-span-2 bg-[#0A1A2F] rounded-3xl border border-white/5 p-8 space-y-8">
                     <div className="flex items-center justify-between">
                         <h3 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
                             <TrendingUp className="text-primary" /> Recent Sales
@@ -95,7 +95,7 @@ export default function SupplierOverviewPage() {
                 </div>
 
                 {/* Placement Banner */}
-                <div className="bg-gradient-to-br from-primary to-[#FF8C33] rounded-3xl p-8 flex flex-col justify-between text-[#131921] layered-3d-shadow relative overflow-hidden">
+                <div className="bg-gradient-to-br from-primary to-[#FF8C33] rounded-3xl p-8 flex flex-col justify-between text-white layered-3d-shadow relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-8 opacity-20 rotate-12">
                         <Box size={140} strokeWidth={1} />
                     </div>
@@ -107,7 +107,7 @@ export default function SupplierOverviewPage() {
                         </p>
                     </div>
 
-                    <button className="relative z-10 w-full py-4 bg-[#131921] text-white font-black text-sm rounded-2xl hover:scale-[1.02] transition-transform shadow-xl">
+                    <button className="relative z-10 w-full py-4 bg-[#0A1A2F] text-white font-black text-sm rounded-2xl hover:scale-[1.02] transition-transform shadow-xl">
                         Request Placement
                     </button>
                 </div>
