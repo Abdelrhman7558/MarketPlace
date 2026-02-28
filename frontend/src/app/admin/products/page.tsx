@@ -140,7 +140,7 @@ export default function AdminProductsPage() {
                         <Settings2 className="text-primary" size={24} />
                         <h1 className="text-3xl font-poppins font-black tracking-tight">Atlantis Inventory</h1>
                     </div>
-                    <p className="text-muted-foreground font-medium">Manage and moderate all products across the entire marketplace.</p>
+                    <p className="text-muted-foreground font-medium">Manage and moderate all products across the entire Atlantis network.</p>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -309,7 +309,7 @@ export default function AdminProductsPage() {
                                     </div>
 
                                     <div className="pt-2">
-                                        <p className="text-sm text-muted-foreground font-medium">As an admin, you can edit or delete this product globally from the marketplace directory using the Actions menu.</p>
+                                        <p className="text-sm text-muted-foreground font-medium">As an admin, you can edit or delete this product globally from the Atlantis directory using the Actions menu.</p>
                                     </div>
                                 </div>
                             </div>

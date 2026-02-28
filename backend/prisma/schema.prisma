@@ -64,6 +64,11 @@ model User {
   companyName String?
   website     String?
   socialLinks String?
+  verificationToken String?
+  emailVerified     Boolean  @default(false)
+  resetPasswordToken String?
+  resetPasswordExpires DateTime?
+  permissions       Json?    // Array of permission strings
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

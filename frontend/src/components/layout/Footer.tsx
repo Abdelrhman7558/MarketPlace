@@ -49,7 +49,7 @@ export default function Footer() {
                             </span>
                         </Link>
                         <p className="text-white/70 text-sm leading-relaxed max-w-xs">
-                            The premier B2B wholesale marketplace for beverages and more, connecting global brands with local distributors as Atlantis.
+                            The premier B2B wholesale platform for beverages and more, connecting global brands with local distributors as Atlantis.
                         </p>
                         <div className="flex gap-3">
                             {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (

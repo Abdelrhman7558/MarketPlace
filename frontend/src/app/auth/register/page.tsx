@@ -145,7 +145,7 @@ function RegisterForm() {
                                 </div>
                             </div>
                             <Link href="/" className="h-16 px-12 bg-[#0A1A2F] text-white text-xs font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#162a44] transition-all flex items-center shadow-xl">
-                                Return to Global Marketplace
+                                Return to Atlantis
                             </Link>
                         </div>
                     ) : (

@@ -248,7 +248,7 @@ export default function AdminTeamPage() {
                                     <input
                                         type="email"
                                         className="w-full h-12 bg-muted/50 border border-border/50 rounded-xl px-4 text-foreground text-sm outline-none focus:border-primary/50 transition-all font-medium"
-                                        placeholder="john@marketplace.eg"
+                                        placeholder="john@atlantis.eg"
                                     />
                                 </div>
 

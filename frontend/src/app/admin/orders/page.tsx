@@ -80,7 +80,7 @@ export default function AdminOrdersPage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-1">
                     <h1 className="text-3xl font-black text-foreground tracking-tight">Atlantis Order Flow</h1>
-                    <p className="text-muted-foreground font-medium">Global oversight of all transactions across the marketplace.</p>
+                    <p className="text-muted-foreground font-medium">Global oversight of all transactions across Atlantis.</p>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -316,7 +316,7 @@ export default function AdminOrdersPage() {
                                                             <div className="flex items-center justify-between bg-primary/5 -mx-8 -mb-8 p-8 border-t border-primary/20">
                                                                 <div>
                                                                     <span className="block text-lg font-black text-primary uppercase tracking-widest">Platform Fee</span>
-                                                                    <span className="text-[10px] text-primary/60 font-bold uppercase tracking-widest mt-1">Marketplace Admin Profit</span>
+                                                                    <span className="text-[10px] text-primary/60 font-bold uppercase tracking-widest mt-1">Atlantis Admin Profit</span>
                                                                 </div>
                                                                 <span className="text-4xl font-black text-primary">${order.adminProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                                             </div>

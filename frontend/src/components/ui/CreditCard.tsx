@@ -95,7 +95,7 @@ const CreditCard: React.FC<CreditCardProps> = ({
 
                     {/* Contact Info */}
                     <div className="absolute bottom-4 left-4 right-16 text-[8px] text-gray-400 text-justify leading-tight">
-                        This card is property of Marketplace Inc. Use subject to terms and conditions. If found, please return to any branch or call support.
+                        This card is property of Atlantis Inc. Use subject to terms and conditions. If found, please return to any branch or call support.
                     </div>
                 </div>
             </div>

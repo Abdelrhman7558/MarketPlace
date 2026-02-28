@@ -48,7 +48,7 @@ export default function SupplierPlacement() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-black text-white tracking-tight">Atlantis Placements</h1>
-                    <p className="text-foreground/60">Boost your products to the top of the marketplace.</p>
+                    <p className="text-foreground/60">Boost your products to the top of Atlantis.</p>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 border border-success/20">
                     <ShieldCheck className="w-5 h-5 text-success" />

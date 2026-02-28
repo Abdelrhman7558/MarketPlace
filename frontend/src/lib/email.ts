@@ -1,5 +1,5 @@
 /**
- * Marketplace MVP Email Engine
+ * Atlantis B2B Email Engine
  * Handles generation of role-based notification templates.
  */
 

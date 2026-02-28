@@ -1,5 +1,5 @@
 /**
- * Design Tokens for Marketplace MVP
+ * Design Tokens for Atlantis B2B Platform
  * Defines core colors, spacing, and transition constants.
  * Supports Light/Dark mode via CSS variables.
  */
