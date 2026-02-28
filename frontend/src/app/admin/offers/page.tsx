@@ -35,6 +35,7 @@ interface Offer {
     startDate: string;
     endDate: string;
     image?: string;
+    showSponsored: boolean;
 }
 
 const STORAGE_KEY = 'admin-offers';
@@ -58,6 +59,9 @@ export default function AdminOffersPage() {
     const [searchTerm, setSearchTerm] = React.useState('');
     const [message, setMessage] = React.useState<{ type: 'success' | 'error'; text: string } | null>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
+    const imageUploadRef = React.useRef<HTMLInputElement>(null);
+    const [eanInput, setEanInput] = React.useState('');
+    const [eanLoading, setEanLoading] = React.useState(false);
 
     // Form state
     const [form, setForm] = React.useState({
@@ -68,7 +72,8 @@ export default function AdminOffersPage() {
         discount: '',
         startDate: '',
         endDate: '',
-        image: ''
+        image: '',
+        showSponsored: true
     });
 
     React.useEffect(() => {
@@ -81,7 +86,74 @@ export default function AdminOffersPage() {
     };
 
     const resetForm = () => {
-        setForm({ title: '', description: '', type: 'Discount', slot: 'FEATURED', discount: '', startDate: '', endDate: '', image: '' });
+        setForm({ title: '', description: '', type: 'Discount', slot: 'FEATURED', discount: '', startDate: '', endDate: '', image: '', showSponsored: true });
+        setEanInput('');
+    };
+
+    // Image upload handler (file → base64)
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) {
+            showMsg('error', 'Image must be under 5MB.');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const base64 = ev.target?.result as string;
+            setForm(f => ({ ...f, image: base64 }));
+            showMsg('success', 'Image uploaded!');
+        };
+        reader.readAsDataURL(file);
+        e.target.value = '';
+    };
+
+    // EAN barcode lookup — prioritizes front-facing product images
+    const lookupEAN = async () => {
+        const ean = eanInput.trim();
+        if (!ean) { showMsg('error', 'Please enter an EAN/barcode.'); return; }
+        setEanLoading(true);
+        try {
+            // Try Open Food Facts first — prioritize front product image, not nutrition labels
+            const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${ean}.json`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data?.status === 1 && data?.product) {
+                    const p = data.product;
+                    // Priority: front image > selected front > general image
+                    const bestImage =
+                        p.image_front_url ||
+                        p.selected_images?.front?.display?.en ||
+                        p.selected_images?.front?.display?.fr ||
+                        p.image_front_small_url ||
+                        p.image_url;
+                    if (bestImage) {
+                        // Get highest quality version (replace .400. with .full.)
+                        const hqImage = bestImage.replace(/\.\d+\.jpg/, '.full.jpg').replace(/\.\d+\.png/, '.full.png');
+                        setForm(f => ({ ...f, image: hqImage }));
+                        showMsg('success', `Product image found for EAN ${ean}!`);
+                        setEanLoading(false);
+                        return;
+                    }
+                }
+            }
+            // Fallback: UPC Item DB — usually has good product photos
+            const res2 = await fetch(`https://api.upcitemdb.com/prod/trial/lookup?upc=${ean}`);
+            if (res2.ok) {
+                const data2 = await res2.json();
+                if (data2?.items?.length > 0 && data2.items[0].images?.length > 0) {
+                    setForm(f => ({ ...f, image: data2.items[0].images[0] }));
+                    showMsg('success', `Product image found via UPC for ${ean}!`);
+                    setEanLoading(false);
+                    return;
+                }
+            }
+            showMsg('error', `No product image found for EAN ${ean}. Try uploading a professional image manually.`);
+        } catch (err) {
+            showMsg('error', 'Failed to lookup EAN. Check your connection.');
+        } finally {
+            setEanLoading(false);
+        }
     };
 
     const addOffer = () => {
@@ -100,7 +172,8 @@ export default function AdminOffersPage() {
             status: (form.startDate && form.startDate > today) ? 'SCHEDULED' : 'ACTIVE',
             startDate: form.startDate || today,
             endDate: form.endDate || '',
-            image: form.image || ''
+            image: form.image || '',
+            showSponsored: form.showSponsored
         };
         const updated = [newOffer, ...offers];
         setOffers(updated);
@@ -115,6 +188,12 @@ export default function AdminOffersPage() {
         setOffers(updated);
         saveOffers(updated);
         showMsg('success', 'Offer deleted.');
+    };
+
+    const toggleSponsored = (id: string) => {
+        const updated = offers.map(o => o.id === id ? { ...o, showSponsored: !o.showSponsored } : o);
+        setOffers(updated);
+        saveOffers(updated);
     };
 
     // CSV Upload
@@ -160,6 +239,7 @@ export default function AdminOffersPage() {
                         status: (startIdx !== -1 && cols[startIdx] > today) ? 'SCHEDULED' : 'ACTIVE',
                         startDate: startIdx !== -1 ? (cols[startIdx] || today) : today,
                         endDate: endIdx !== -1 ? (cols[endIdx] || '') : '',
+                        showSponsored: true
                     });
                 }
 
@@ -289,6 +369,7 @@ export default function AdminOffersPage() {
                                     <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider">Offer</th>
                                     <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider">Type</th>
                                     <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider">Discount</th>
+                                    <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider">Sponsored</th>
                                     <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider">Status</th>
                                     <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider">Duration</th>
                                     <th className="px-4 py-3 text-[10px] font-bold text-[#888] uppercase tracking-wider text-right">Actions</th>
@@ -308,6 +389,21 @@ export default function AdminOffersPage() {
                                         </td>
                                         <td className="px-4 py-3">
                                             <span className="text-sm font-bold text-[#067D62]">{offer.discount}</span>
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <button
+                                                onClick={() => toggleSponsored(offer.id)}
+                                                className={cn(
+                                                    "relative w-9 h-5 rounded-full transition-colors",
+                                                    offer.showSponsored ? "bg-[#FF9900]" : "bg-[#CCC] dark:bg-white/20"
+                                                )}
+                                                title={offer.showSponsored ? 'Sponsored: ON' : 'Sponsored: OFF'}
+                                            >
+                                                <span className={cn(
+                                                    "absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform",
+                                                    offer.showSponsored ? "left-[18px]" : "left-0.5"
+                                                )} />
+                                            </button>
                                         </td>
                                         <td className="px-4 py-3">
                                             <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase border", statusColors[offer.status])}>
@@ -428,11 +524,64 @@ export default function AdminOffersPage() {
                                     <div className="space-y-1.5">
                                         <label className="text-xs font-bold text-[#555] dark:text-[#999] uppercase tracking-wider">Image URL</label>
                                         <input
-                                            value={form.image}
+                                            value={form.image.startsWith('data:') ? '' : form.image}
                                             onChange={e => setForm(f => ({ ...f, image: e.target.value }))}
                                             placeholder="https://..."
                                             className="w-full h-10 border border-[#888] dark:border-white/20 rounded-md px-3 text-sm outline-none focus:border-[#E77600] focus:shadow-[0_0_0_3px_rgba(228,121,17,0.5)] bg-white dark:bg-[#0F1111] text-[#0F1111] dark:text-white transition-all"
                                         />
+                                    </div>
+                                </div>
+
+                                {/* Image Section: Upload / EAN Lookup */}
+                                <div className="space-y-3 border border-dashed border-[#DDD] dark:border-white/10 rounded-md p-3 bg-[#FAFAFA] dark:bg-white/5">
+                                    <label className="text-xs font-bold text-[#555] dark:text-[#999] uppercase tracking-wider block">Product Image</label>
+
+                                    {/* Preview */}
+                                    {form.image && (
+                                        <div className="relative inline-block">
+                                            <img src={form.image} alt="Preview" className="w-24 h-24 object-cover rounded-md border border-[#DDD] dark:border-white/10" />
+                                            <button
+                                                onClick={() => setForm(f => ({ ...f, image: '' }))}
+                                                className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#C40000] text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                                            >
+                                                <X size={10} />
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    <div className="flex flex-wrap gap-2">
+                                        {/* Upload File */}
+                                        <input type="file" ref={imageUploadRef} accept="image/*" onChange={handleImageUpload} className="hidden" />
+                                        <button
+                                            type="button"
+                                            onClick={() => imageUploadRef.current?.click()}
+                                            className="h-9 px-3 border border-[#DDD] dark:border-white/10 rounded-md text-xs font-bold text-[#555] dark:text-[#999] hover:border-[#FF9900] hover:text-[#FF9900] transition-all flex items-center gap-1.5 bg-white dark:bg-[#0F1111]"
+                                        >
+                                            <Upload size={13} /> Upload Image
+                                        </button>
+
+                                        {/* EAN Lookup */}
+                                        <div className="flex items-center gap-1 flex-1 min-w-[180px]">
+                                            <input
+                                                value={eanInput}
+                                                onChange={e => setEanInput(e.target.value)}
+                                                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), lookupEAN())}
+                                                placeholder="Enter EAN barcode..."
+                                                className="flex-1 h-9 border border-[#888] dark:border-white/20 rounded-md px-2.5 text-xs outline-none focus:border-[#E77600] bg-white dark:bg-[#0F1111] text-[#0F1111] dark:text-white transition-all"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={lookupEAN}
+                                                disabled={eanLoading}
+                                                className="h-9 px-3 bg-[#232F3E] text-white dark:bg-[#FF9900] dark:text-[#0F1111] rounded-md text-xs font-bold hover:opacity-90 transition-all flex items-center gap-1.5 disabled:opacity-50"
+                                            >
+                                                {eanLoading ? (
+                                                    <><span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Searching...</>
+                                                ) : (
+                                                    <><Search size={13} /> Find Image</>
+                                                )}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -455,6 +604,27 @@ export default function AdminOffersPage() {
                                             className="w-full h-10 border border-[#888] dark:border-white/20 rounded-md px-3 text-sm outline-none focus:border-[#E77600] bg-white dark:bg-[#0F1111] text-[#0F1111] dark:text-white cursor-pointer"
                                         />
                                     </div>
+                                </div>
+
+                                {/* SPONSORED Tag Toggle */}
+                                <div className="flex items-center justify-between bg-[#F9F9F9] dark:bg-white/5 border border-[#EAEDED] dark:border-white/10 rounded-md p-3">
+                                    <div>
+                                        <p className="text-xs font-bold text-[#0F1111] dark:text-white">Show "SPONSORED" Tag</p>
+                                        <p className="text-[10px] text-[#888] mt-0.5">Display a sponsored badge on this offer in the storefront</p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setForm(f => ({ ...f, showSponsored: !f.showSponsored }))}
+                                        className={cn(
+                                            "relative w-11 h-6 rounded-full transition-colors",
+                                            form.showSponsored ? "bg-[#FF9900]" : "bg-[#CCC] dark:bg-white/20"
+                                        )}
+                                    >
+                                        <span className={cn(
+                                            "absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform",
+                                            form.showSponsored ? "left-[22px]" : "left-0.5"
+                                        )} />
+                                    </button>
                                 </div>
                             </div>
 

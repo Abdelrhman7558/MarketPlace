@@ -15,12 +15,63 @@ interface AdItem {
     color: string;
     link: string;
     badge: string;
+    showSponsored?: boolean;
 }
 
 export function AdPlacements() {
     const { t } = useLanguage();
+    const [adminAds, setAdminAds] = React.useState<AdItem[]>([]);
 
-    const ADS: AdItem[] = [
+    // Load admin-created offers from localStorage
+    const loadAdminOffers = React.useCallback(() => {
+        try {
+            const stored = localStorage.getItem('admin-offers');
+            if (stored) {
+                const offers = JSON.parse(stored);
+                const typeColors: Record<string, string> = {
+                    'Discount': '#067D62',
+                    'Flash Sale': '#F40009',
+                    'Bundle': '#000B47',
+                    'BOGO': '#7B2D8E'
+                };
+                const typeBadges: Record<string, string> = {
+                    'Discount': '🏷️ Discount',
+                    'Flash Sale': '⚡ Flash Sale',
+                    'Bundle': '📦 Bundle',
+                    'BOGO': '🎁 BOGO'
+                };
+                const activeOffers = offers
+                    .filter((o: any) => o.status === 'ACTIVE')
+                    .map((o: any) => ({
+                        id: o.id,
+                        title: o.title,
+                        subtitle: o.description || `${o.discount} off`,
+                        image: o.image || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&fit=crop',
+                        color: typeColors[o.type] || '#FF9900',
+                        link: '/categories',
+                        badge: typeBadges[o.type] || o.type,
+                        showSponsored: o.showSponsored !== false
+                    }));
+                setAdminAds(activeOffers);
+            } else {
+                setAdminAds([]);
+            }
+        } catch { }
+    }, []);
+
+    React.useEffect(() => {
+        loadAdminOffers();
+        // Refresh when user switches back to this tab (e.g. after adding offers in admin)
+        const onFocus = () => loadAdminOffers();
+        window.addEventListener('focus', onFocus);
+        window.addEventListener('storage', onFocus);
+        return () => {
+            window.removeEventListener('focus', onFocus);
+            window.removeEventListener('storage', onFocus);
+        };
+    }, [loadAdminOffers]);
+
+    const DEMO_ADS: AdItem[] = [
         {
             id: 'ad-1',
             title: t('ads', 'cocaColaTitle'),
@@ -50,6 +101,9 @@ export function AdPlacements() {
         }
     ];
 
+    // Admin offers first, then demo ads
+    const ALL_ADS = [...adminAds, ...DEMO_ADS];
+
     return (
         <section className="py-12 px-4 container mx-auto">
             <div className="flex items-center justify-between mb-8 px-2">
@@ -68,7 +122,7 @@ export function AdPlacements() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {ADS.map((ad) => (
+                {ALL_ADS.map((ad) => (
                     <AdCard key={ad.id} ad={ad} />
                 ))}
             </div>
@@ -141,10 +195,12 @@ function AdCard({ ad }: { ad: AdItem }) {
                         <span className="px-3 py-1 bg-primary text-[#131921] text-[9px] font-black uppercase tracking-widest rounded-full">
                             {ad.badge}
                         </span>
-                        <div className="flex items-center gap-1 text-white/40 text-[9px] font-bold uppercase tracking-widest">
-                            <Tag size={10} />
-                            {t('ads', 'sponsored')}
-                        </div>
+                        {ad.showSponsored !== false && (
+                            <div className="flex items-center gap-1 text-white/40 text-[9px] font-bold uppercase tracking-widest">
+                                <Tag size={10} />
+                                {t('ads', 'sponsored')}
+                            </div>
+                        )}
                     </div>
 
                     <h3 className="text-2xl font-black text-white mb-2 leading-tight">

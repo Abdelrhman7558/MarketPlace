@@ -4,13 +4,15 @@ import * as React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const SLIDES = [
-    {
-        image: "C:/Users/AK/.gemini/antigravity/brain/c6a8e3a6-9bb6-4e8a-9ec6-466706da33a2/media__1771711698529.png",
-        title: "Bloom Zero Sugar: 100% Obsessed",
-        subtitle: "10 Calories. Guilt-Free. Bulk orders available now.",
-        badge: "Hot Deal"
-    },
+interface Slide {
+    image: string;
+    title: string;
+    subtitle: string;
+    badge: string;
+    isSponsored?: boolean;
+}
+
+const DEMO_SLIDES: Slide[] = [
     {
         image: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&q=80&w=2000",
         title: "Limited Time Offer: 30% Off Energy Drinks",
@@ -39,14 +41,53 @@ const SLIDES = [
 
 export default function AmazonHero() {
     const [current, setCurrent] = React.useState(0);
+    const [allSlides, setAllSlides] = React.useState<Slide[]>(DEMO_SLIDES);
 
-    const next = () => setCurrent((prev) => (prev + 1) % SLIDES.length);
-    const prev = () => setCurrent((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+    // Load hero banner ads from admin placements
+    const loadHeroAds = React.useCallback(() => {
+        try {
+            const stored = localStorage.getItem('admin-placements');
+            if (stored) {
+                const slots = JSON.parse(stored);
+                const heroSlot = slots.find((s: any) => s.id === 'hero-banner');
+                if (heroSlot?.ads?.length > 0) {
+                    const adminSlides: Slide[] = heroSlot.ads.map((ad: any) => ({
+                        image: ad.image,
+                        title: ad.title,
+                        subtitle: ad.subtitle || '',
+                        badge: ad.badge || 'Sponsored',
+                        isSponsored: true
+                    }));
+                    setAllSlides([...adminSlides, ...DEMO_SLIDES]);
+                    return;
+                }
+            }
+            setAllSlides(DEMO_SLIDES);
+        } catch {
+            setAllSlides(DEMO_SLIDES);
+        }
+    }, []);
+
+    React.useEffect(() => {
+        loadHeroAds();
+        const onFocus = () => loadHeroAds();
+        window.addEventListener('focus', onFocus);
+        window.addEventListener('storage', onFocus);
+        return () => {
+            window.removeEventListener('focus', onFocus);
+            window.removeEventListener('storage', onFocus);
+        };
+    }, [loadHeroAds]);
+
+    const next = React.useCallback(() => setCurrent((prev) => (prev + 1) % allSlides.length), [allSlides.length]);
+    const prev = () => setCurrent((prev) => (prev - 1 + allSlides.length) % allSlides.length);
 
     React.useEffect(() => {
         const timer = setInterval(next, 5000);
         return () => clearInterval(timer);
-    }, []);
+    }, [next]);
+
+    const slide = allSlides[current] || DEMO_SLIDES[0];
 
     return (
         <section className="relative w-full h-[600px] overflow-hidden group">
@@ -61,33 +102,66 @@ export default function AmazonHero() {
                 >
                     <div
                         className="w-full h-full bg-cover bg-center"
-                        style={{ backgroundImage: `url(${SLIDES[current].image})` }}
+                        style={{ backgroundImage: `url(${slide.image})` }}
                     >
-                        {/* Amazon Gradient Fade */}
+                        {/* Gradient Fade */}
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
                     </div>
                 </motion.div>
             </AnimatePresence>
 
-            {/* Content (Optional for Amazon style, usually just imagery) */}
+            {/* Content */}
             <div className="absolute top-1/4 left-10 z-10 hidden md:block">
+                {/* Sponsored tag */}
+                {slide.isSponsored && (
+                    <motion.span
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="inline-block px-3 py-1 bg-[#FF9900] text-white text-[10px] font-black uppercase tracking-widest rounded mb-3"
+                    >
+                        ⚡ SPONSORED
+                    </motion.span>
+                )}
+                {slide.badge && !slide.isSponsored && (
+                    <motion.span
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest rounded mb-3"
+                    >
+                        {slide.badge}
+                    </motion.span>
+                )}
                 <motion.h1
                     key={`title-${current}`}
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="text-white text-5xl font-black mb-4 drop-shadow-xl"
+                    className="text-white text-5xl font-black mb-4 drop-shadow-xl max-w-2xl"
                 >
-                    {SLIDES[current].title}
+                    {slide.title}
                 </motion.h1>
                 <motion.p
                     key={`sub-${current}`}
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.1 }}
-                    className="text-white/80 text-xl font-bold drop-shadow-md"
+                    className="text-white/80 text-xl font-bold drop-shadow-md max-w-xl"
                 >
-                    {SLIDES[current].subtitle}
+                    {slide.subtitle}
                 </motion.p>
+            </div>
+
+            {/* Slide indicators */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+                {allSlides.map((_, i) => (
+                    <button
+                        key={i}
+                        onClick={() => setCurrent(i)}
+                        className={`transition-all rounded-full ${i === current
+                            ? 'w-8 h-2 bg-white'
+                            : 'w-2 h-2 bg-white/40 hover:bg-white/60'
+                            }`}
+                    />
+                ))}
             </div>
 
             {/* Navigation */}
@@ -106,3 +180,4 @@ export default function AmazonHero() {
         </section>
     );
 }
+
