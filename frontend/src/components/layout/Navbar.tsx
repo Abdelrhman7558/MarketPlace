@@ -52,8 +52,11 @@ export default function Navbar() {
                 {/* Logo & Categories */}
                 <div className="flex items-center gap-6">
                     <Link href="/" className="flex items-center gap-2 group">
-                        <span className="font-heading font-black text-2xl tracking-tighter">
-                            Market<span className="text-secondary">Place</span>
+                        <span className={cn(
+                            "font-heading font-black text-2xl tracking-tighter",
+                            (scrolled || isWhiteBackgroundPage) ? "text-primary" : "text-white"
+                        )}>
+                            ATLANTIS
                         </span>
                     </Link>
 

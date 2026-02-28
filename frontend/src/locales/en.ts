@@ -6,7 +6,7 @@ export const en = {
         supplier: "Supplier",
         login: "Log in",
         logout: "Log out",
-        searchPlaceholder: "Search MarketPlace",
+        searchPlaceholder: "Search Atlantis",
         allCategories: "All Categories",
         helloSignIn: "Hello, Sign in",
         account: "Account",

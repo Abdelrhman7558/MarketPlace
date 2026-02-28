@@ -73,8 +73,8 @@ function RegisterForm() {
                 {/* Logo */}
                 <div className="text-center mb-5">
                     <Link href="/" className="inline-block">
-                        <span className="font-black text-3xl tracking-tighter text-[#0F1111]">
-                            Market<span className="text-[#FF9900]">Place</span>
+                        <span className="font-black text-3xl tracking-tighter text-[#0A1A2F]">
+                            ATLANTIS
                         </span>
                     </Link>
                 </div>
@@ -92,7 +92,7 @@ function RegisterForm() {
                             </div>
                             <h2 className="text-xl font-bold text-[#0F1111]">Application Submitted</h2>
                             <p className="text-[#555] text-sm max-w-sm leading-relaxed">
-                                Thank you for registering with MarketPlace. Your account is currently <strong className="text-[#0F1111]">pending admin review.</strong>
+                                Thank you for registering with Atlantis. Your account is currently <strong className="text-[#0A1A2F]">pending admin review.</strong>
                             </p>
                             <div className="p-4 bg-[#FEF8E8] border border-[#F0C14B] rounded-md w-full text-left space-y-2 text-sm text-[#0F1111]">
                                 <p className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-[#FF9900]" /> We will verify your business details.</p>
@@ -234,7 +234,7 @@ function RegisterForm() {
                                     {loading ? (
                                         <div className="w-5 h-5 border-2 border-[#0F1111]/30 border-t-[#0F1111] rounded-full animate-spin mx-auto" />
                                     ) : (
-                                        'Create your MarketPlace account'
+                                        'Create your Atlantis account'
                                     )}
                                 </button>
                             </form>

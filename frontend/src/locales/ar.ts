@@ -6,7 +6,7 @@ export const ar = {
         supplier: "المورد",
         login: "تسجيل الدخول",
         logout: "تسجيل الخروج",
-        searchPlaceholder: "ابحث في السوق",
+        searchPlaceholder: "ابحث في Atlantis",
         allCategories: "كل الفئات",
         helloSignIn: "مرحباً، سجل الدخول",
         account: "الحساب",

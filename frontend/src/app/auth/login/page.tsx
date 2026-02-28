@@ -55,8 +55,8 @@ export default function LoginPage() {
                 {/* Logo */}
                 <div className="text-center mb-6">
                     <Link href="/" className="inline-block">
-                        <span className="font-black text-3xl tracking-tighter text-[#0F1111]">
-                            Market<span className="text-[#FF9900]">Place</span>
+                        <span className="font-black text-3xl tracking-tighter text-[#0A1A2F]">
+                            ATLANTIS
                         </span>
                     </Link>
                 </div>
@@ -139,14 +139,14 @@ export default function LoginPage() {
                         <div className="w-full border-t border-[#DDD]" />
                     </div>
                     <div className="relative text-center">
-                        <span className="bg-[#EAEDED] px-3 text-xs text-[#767676]">New to MarketPlace?</span>
+                        <span className="bg-[#EAEDED] px-3 text-xs text-[#767676]">New to Atlantis?</span>
                     </div>
                 </div>
                 <Link
                     href="/auth/register"
                     className="mt-3 block w-full text-center bg-gradient-to-b from-[#F7F8FA] to-[#E7E9EC] border border-[#ADB1B8] rounded-md py-2 text-sm font-medium text-[#0F1111] hover:from-[#E7E8EA] hover:to-[#D8DADC] transition-all shadow-sm"
                 >
-                    Create your MarketPlace account
+                    Create your Atlantis account
                 </Link>
             </motion.div>
         </div>
