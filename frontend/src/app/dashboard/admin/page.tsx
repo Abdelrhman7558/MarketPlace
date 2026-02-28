@@ -246,7 +246,7 @@ export default function AdminDashboard() {
                             Approval Queue
                         </h2>
                         <div className="flex items-center gap-2 p-1 bg-muted/30 rounded-full flex-wrap">
-                            {['users', 'products', 'approved', 'brands', 'ads', 'settings'].map(tab => (
+                            {['users', 'products', 'approved', 'categories', 'brands', 'ads', 'settings'].map(tab => (
                                 <button
                                     key={tab}
                                     className={cn(
@@ -340,11 +340,6 @@ export default function AdminDashboard() {
                             </div>
                         ))}
 
-                        {activeTab === 'approved' && approvedProducts.length === 0 && !isLoading && (
-                            <div className="p-12 text-center text-foreground/40 font-bold">
-                                No approved products found.
-                            </div>
-                        )}
                         {activeTab === 'approved' && approvedProducts.map((product) => (
                             <div key={product.id} className="p-8 flex flex-col md:flex-row md:items-center justify-between hover:bg-muted/10 transition-colors group relative gap-4">
                                 <div className="flex items-start gap-4">
@@ -380,6 +375,42 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
                         ))}
+
+                        {activeTab === 'categories' && (
+                            <div className="p-8 space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-xl font-bold flex items-center gap-2">
+                                        <Tag className="w-5 h-5 text-primary" />
+                                        Categories Management
+                                    </h3>
+                                    <Button
+                                        onClick={() => window.open('/admin/categories', '_blank')}
+                                        variant="outline"
+                                        className="rounded-xl gap-2 h-10 px-4 font-bold border-foreground/10"
+                                    >
+                                        <ExternalLink size={14} /> Open Full Manager
+                                    </Button>
+                                </div>
+                                <p className="text-sm text-foreground/40 mb-6">
+                                    Product categories determine how items are grouped in the store. You can manage them in detail in the dedicated Categories page.
+                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Simplified view: showing count of categories based on products */}
+                                    <div className="p-6 bg-muted/20 border border-border/50 rounded-2xl">
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-foreground/40 mb-1">Active Categories</p>
+                                        <p className="text-2xl font-black">
+                                            {Array.from(new Set([...pendingProducts, ...approvedProducts].map(p => p.category))).length}
+                                        </p>
+                                    </div>
+                                    <div className="p-6 bg-muted/20 border border-border/50 rounded-2xl">
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-foreground/40 mb-1">Uncategorized Items</p>
+                                        <p className="text-2xl font-black">
+                                            {[...pendingProducts, ...approvedProducts].filter(p => !p.category).length}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         {activeTab === 'settings' && (
                             <div className="p-8 space-y-8 max-w-2xl">

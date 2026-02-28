@@ -20,89 +20,43 @@ interface AdItem {
 
 export function AdPlacements() {
     const { t } = useLanguage();
-    const [adminAds, setAdminAds] = React.useState<AdItem[]>([]);
+    const [ads, setAds] = React.useState<any[]>([]);
+    const [loading, setLoading] = React.useState(true);
 
-    // Load admin-created offers from localStorage
-    const loadAdminOffers = React.useCallback(() => {
+    const loadAds = React.useCallback(async () => {
+        setLoading(true);
         try {
-            const stored = localStorage.getItem('admin-offers');
-            if (stored) {
-                const offers = JSON.parse(stored);
-                const typeColors: Record<string, string> = {
-                    'Discount': '#067D62',
-                    'Flash Sale': '#F40009',
-                    'Bundle': '#000B47',
-                    'BOGO': '#7B2D8E'
-                };
-                const typeBadges: Record<string, string> = {
-                    'Discount': '🏷️ Discount',
-                    'Flash Sale': '⚡ Flash Sale',
-                    'Bundle': '📦 Bundle',
-                    'BOGO': '🎁 BOGO'
-                };
-                const activeOffers = offers
-                    .filter((o: any) => o.status === 'ACTIVE')
-                    .map((o: any) => ({
-                        id: o.id,
-                        title: o.title,
-                        subtitle: o.description || `${o.discount} off`,
-                        image: o.image || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&fit=crop',
-                        color: typeColors[o.type] || '#FF9900',
-                        link: '/categories',
-                        badge: typeBadges[o.type] || o.type,
-                        showSponsored: o.showSponsored !== false
-                    }));
-                setAdminAds(activeOffers);
-            } else {
-                setAdminAds([]);
+            const response = await fetch('http://localhost:3005/ads?placement=SPONSORED_PRODUCT');
+            if (response.ok) {
+                const data = await response.json();
+                setAds(data);
             }
-        } catch { }
+        } catch (error) {
+            console.error('Failed to load sponsored highlights:', error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
     React.useEffect(() => {
-        loadAdminOffers();
-        // Refresh when user switches back to this tab (e.g. after adding offers in admin)
-        const onFocus = () => loadAdminOffers();
+        loadAds();
+        // Refresh when user switches back to this tab
+        const onFocus = () => loadAds();
         window.addEventListener('focus', onFocus);
-        window.addEventListener('storage', onFocus);
         return () => {
             window.removeEventListener('focus', onFocus);
-            window.removeEventListener('storage', onFocus);
         };
-    }, [loadAdminOffers]);
+    }, [loadAds]);
 
-    const DEMO_ADS: AdItem[] = [
-        {
-            id: 'ad-1',
-            title: t('ads', 'cocaColaTitle'),
-            subtitle: t('ads', 'cocaColaSubtitle'),
-            image: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?w=800&fit=crop',
-            color: '#F40009',
-            link: '/categories?brand=Coca-Cola',
-            badge: t('ads', 'topSeller')
-        },
-        {
-            id: 'ad-2',
-            title: t('ads', 'redBullTitle'),
-            subtitle: t('ads', 'redBullSubtitle'),
-            image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&fit=crop',
-            color: '#000B47',
-            link: '/categories?brand=Red Bull',
-            badge: t('ads', 'dealOfDay')
-        },
-        {
-            id: 'ad-3',
-            title: t('ads', 'coffeeTitle'),
-            subtitle: t('ads', 'coffeeSubtitle'),
-            image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=800&fit=crop',
-            color: '#4B3621',
-            link: '/categories?category=Coffee & Tea',
-            badge: t('ads', 'newArrival')
-        }
-    ];
-
-    // Admin offers first, then demo ads
-    const ALL_ADS = [...adminAds, ...DEMO_ADS];
+    if (loading && ads.length === 0) {
+        return (
+            <div className="py-12 px-4 container mx-auto text-center">
+                <div className="animate-pulse text-muted-foreground font-black tracking-widest uppercase">
+                    Loading Highlights...
+                </div>
+            </div>
+        );
+    }
 
     return (
         <section className="py-12 px-4 container mx-auto">
@@ -116,15 +70,26 @@ export function AdPlacements() {
                     </Link>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('ads', 'premiumVendor')}</p>
                 </div>
-                <Link href="/categories" className="text-sm font-black text-primary hover:underline flex items-center gap-1">
-                    {t('ads', 'manageAds')} <ArrowRight size={14} />
-                </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {ALL_ADS.map((ad) => (
-                    <AdCard key={ad.id} ad={ad} />
+                {ads.map((ad) => (
+                    <AdCard key={ad.adId} ad={{
+                        id: ad.adId,
+                        title: ad.product.name,
+                        subtitle: ad.product.description,
+                        image: ad.product.images?.[0] || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&fit=crop',
+                        color: '#FF9900',
+                        link: `/products/${ad.product.id}`,
+                        badge: 'Sponsored',
+                        showSponsored: true
+                    }} />
                 ))}
+                {ads.length === 0 && !loading && (
+                    <div className="col-span-full py-12 text-center text-muted-foreground font-bold">
+                        No active highlights at the moment.
+                    </div>
+                )}
             </div>
         </section>
     );
