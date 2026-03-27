@@ -1,0 +1,461 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SUPPLIER
+  CUSTOMER
+  MODERATOR
+  SUPPORT
+  EDITOR
+  DEVELOPER
+  LOGISTICS
+}
+
+enum UserStatus {
+  PENDING_APPROVAL
+  ACTIVE
+  REJECTED
+  BLOCKED
+}
+
+enum KYCStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum ProductStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PlacementType {
+  HERO
+  FEATURED
+  LISTING
+  BANNER
+}
+
+enum PlacementStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ACTIVE
+  INACTIVE
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id                   String     @id @default(uuid())
+  email                String     @unique
+  password             String
+  name                 String
+  role                 Role       @default(CUSTOMER)
+  status               UserStatus @default(PENDING_APPROVAL)
+  phone                String?
+  avatar               String?
+  companyName          String?
+  website              String?
+  socialLinks          String?
+  verificationToken    String?
+  emailVerified        Boolean    @default(false)
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  permissions          Json? // Array of permission strings
+
+  // Two-Factor Authentication
+  twoFactorEnabled     Boolean   @default(false)
+  twoFactorSecret      String?   // Encrypted TOTP secret
+  emailOtpCode         String?   // Temporary email OTP
+  emailOtpExpiry       DateTime? // OTP expiration
+
+  // Business & Financial Fields
+  vatNumber   String? @unique
+  taxId       String?
+  country     String?
+  bankAddress String? // Supplier specific
+  iban        String?
+  swiftCode   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products     Product[]
+  orders       Order[]
+  adminActions AdminActionLog[] @relation("AdminActions")
+  notifications Notification[]
+  sentMessages  SupportMessage[] @relation("SentMessages")
+
+  kycStatus     KYCStatus @default(UNVERIFIED)
+  kycDocuments  KYCDocument[]
+}
+
+model KYCDocument {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  documentType  String    // e.g., "NATIONAL_ID", "PASSPORT"
+  frontImageUrl String
+  backImageUrl  String?
+  selfieUrl     String?   // Camera captured snapshot
+  livenessScore Float?    // Score indicating real human
+
+  status        KYCStatus @default(PENDING)
+  adminNotes    String?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Product {
+  id          String        @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  basePrice   Float?
+  stock       Int           @default(0)
+  category    String
+  images      String[]
+  ean         String?
+  brand       String?
+  unit        String        @default("carton")
+  variants    Json?
+  status      ProductStatus @default(PENDING)
+  adminNotes  String?
+  moq         Int?          // Minimum Order Quantity
+
+  rating       Float @default(0.0)
+  reviewsCount Int   @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  supplierId String
+  supplier   User   @relation(fields: [supplierId], references: [id])
+
+  warehouseId String?
+  warehouse   Warehouse? @relation(fields: [warehouseId], references: [id])
+
+  placements   ProductPlacement[]
+  orderItems   OrderItem[]
+  tieredPrices TieredPrice[]
+}
+
+model ProductPlacement {
+  id            String          @id @default(uuid())
+  placementType PlacementType
+  status        PlacementStatus @default(PENDING)
+  price         Float           @default(0)
+  priorityOrder Int             @default(0)
+
+  startDate DateTime?
+  endDate   DateTime?
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  history ProductPlacementHistory[]
+  coupons Coupon[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductPlacementHistory {
+  id          String           @id @default(uuid())
+  placementId String
+  placement   ProductPlacement @relation(fields: [placementId], references: [id])
+
+  previousStatus PlacementStatus?
+  newStatus      PlacementStatus
+  changedById    String
+  reason         String?
+
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  totalAmount Float
+  status      OrderStatus @default(PENDING)
+
+  shippingCompany String?
+  shippingCost    Float?
+
+  buyerId String
+  buyer   User   @relation(fields: [buyerId], references: [id])
+
+  items   OrderItem[]
+  history OrderStatusHistory[]
+  invoices Invoice[]
+  shipment Shipment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderStatusHistory {
+  id      String @id @default(uuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  previousStatus OrderStatus?
+  newStatus      OrderStatus
+  changedById    String
+  reason         String?
+
+  createdAt DateTime @default(now())
+}
+
+model OrderItem {
+  id       String @id @default(uuid())
+  quantity Int
+  price    Float
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model AdminActionLog {
+  id         String @id @default(uuid())
+  action     String // e.g., "APPROVE_PLACEMENT", "REJECT_SUPPLIER"
+  entityType String // e.g., "ProductPlacement", "Supplier"
+  entityId   String
+  details    Json?
+
+  adminId String
+  admin   User   @relation("AdminActions", fields: [adminId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model SecurityLog {
+  id          String   @id @default(uuid())
+  level       String // INFO, WARN, CRITICAL
+  eventType   String // BRUTE_FORCE, XSS_ATTEMPT, SQLI_ATTEMPT, UNAUTHORIZED_ACCESS, etc.
+  description String
+  ip          String?
+  userId      String?
+  path        String?
+  method      String?
+  payload     Json?
+  headers     Json?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+}
+
+model BlockedIp {
+  id          String    @id @default(uuid())
+  ip          String    @unique
+  reason      String
+  expiresAt   DateTime?
+  isPermanent Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model SecurityConfig {
+  id          String   @id @default(uuid())
+  key         String   @unique // e.g., "EMERGENCY_LOCKDOWN", "BRUTE_FORCE_THRESHOLD"
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Coupon {
+  id              String   @id @default(uuid())
+  code            String   @unique
+  discountPercent Float
+  expirationDate  DateTime
+
+  placementId String
+  placement   ProductPlacement @relation(fields: [placementId], references: [id])
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AppConfig {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      String   @default("INFO") // INFO, SUCCESS, WARNING, ERROR
+  data      Json?    // Store exact errors array or other structured data
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model TieredPrice {
+  id              String  @id @default(uuid())
+  minQty          Int
+  maxQty          Int?    // null = unlimited (e.g., 100+)
+  discountPercent Float   // e.g., 5.0 means 5% off
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId, minQty])
+}
+
+model CustomerPriceGroup {
+  id              String  @id @default(uuid())
+  name            String  @unique
+  discountPercent Float   // group-wide extra discount %
+  description     String?
+
+  members  CustomerGroupMember[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CustomerGroupMember {
+  id      String @id @default(uuid())
+  userId  String
+  groupId String
+
+  group CustomerPriceGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, groupId])
+}
+
+model Invoice {
+  id            String   @id @default(uuid())
+  invoiceNumber String   @unique
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id])
+  buyerId       String
+  amount        Float
+  tax           Float    @default(0)
+  totalAmount   Float
+  currency      String   @default("USD")
+  status        String   @default("ISSUED") // ISSUED, PAID, OVERDUE, CANCELLED
+  dueDate       DateTime?
+  paidAt        DateTime?
+  pdfUrl        String?  // path to generated PDF
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model CreditTerm {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  creditLimit     Float    @default(0)     // max outstanding balance
+  usedCredit      Float    @default(0)     // current outstanding
+  paymentTermDays Int      @default(30)    // Net 30, Net 60, etc.
+  status          String   @default("ACTIVE") // ACTIVE, SUSPENDED, CLOSED
+  approvedBy      String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model TaxExemption {
+  id              String   @id @default(uuid())
+  userId          String
+  certificateUrl  String   // uploaded file path
+  certificateType String   @default("VAT_EXEMPT") // VAT_EXEMPT, TAX_FREE_ZONE, etc.
+  status          String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  validFrom       DateTime?
+  validUntil      DateTime?
+  reviewedBy      String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Warehouse {
+  id        String   @id @default(uuid())
+  name      String
+  address   String
+  city      String
+  country   String
+  zipCode   String?
+  latitude  Float?
+  longitude Float?
+  supplierId String
+  isDefault Boolean  @default(false)
+  products  Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SupportMessage {
+  id          String   @id @default(uuid())
+  senderId    String
+  sender      User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId  String?  // if null, it's addressed to general support
+  content     String?
+  imageUrl    String?
+  isRead      Boolean  @default(false)
+  isBot       Boolean  @default(false)
+  assignedTeam String? // e.g., 'DEVELOPER', 'LOGISTICS'
+  createdAt   DateTime @default(now())
+}
+
+model Shipment {
+  id              String   @id @default(uuid())
+  orderId         String   @unique
+  order           Order    @relation(fields: [orderId], references: [id])
+  trackingNumber  String   @unique
+  carrier         String?
+  status          String   @default("PENDING")
+  expectedDelivery DateTime?
+  
+  updates         ShipmentUpdate[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ShipmentUpdate {
+  id          String   @id @default(uuid())
+  shipmentId  String
+  shipment    Shipment @relation(fields: [shipmentId], references: [id])
+  status      String
+  description String
+  location    String?
+  createdAt   DateTime @default(now())
+}

@@ -1,0 +1,212 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+    :root {
+        /* Professional B2B - Glass & Classic Edition */
+        --background: 216 25% 96%; /* #F2F4F7 Cool Gray */
+        --foreground: 0 0% 18%;    /* #2E2E2E Dark Gray */
+        --card: 0 0% 100%;
+        --card-foreground: 222 47% 11%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222 47% 11%;
+
+        /* Primary: Teal #1BC7C9 (consistent with dark mode actions) */
+        --primary: 181 76% 45%;
+        --primary-foreground: 215 65% 11%;
+
+        /* Sidebar: Navy Blue #0A1A2F */
+        --sidebar: 215 65% 11%;
+        --sidebar-foreground: 210 40% 98%;
+
+        /* Secondary: Aqua #1BC7C9 */
+        --secondary: 181 76% 45%;
+        --secondary-foreground: 215 65% 11%;
+
+        /* Accent: Orange #FF8A00 */
+        --accent: 32 100% 50%;
+        --accent-foreground: 0 0% 100%;
+
+        --muted: 210 40% 96%;
+        --muted-foreground: 215 16% 47%;
+
+        --border: 214 32% 91%;
+        --input: 214 32% 91%;
+        --ring: 214 65% 11%;
+        --radius: 1rem;
+
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.3);
+        --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    }
+
+    .dark {
+        /* Atlantis Official Palette - Dark Mode */
+        --background: 216 60% 5%;    /* #050B14 Deep Base */
+        --foreground: 210 40% 98%;   /* #E6EDF3 Primary Text */
+        --card: 215 59% 13%;         /* #0E1F36 Surface */
+        --card-foreground: 210 40% 98%;
+        --popover: 213 57% 17%;      /* #132A46 Elevated */
+        --popover-foreground: 210 40% 98%;
+
+        /* Primary: Teal #1BC7C9 (replacing orange for actions) */
+        --primary: 181 76% 45%;
+        --primary-foreground: 215 65% 11%;
+
+        /* Sidebar: Navy Blue #0A1A2F */
+        --sidebar: 215 65% 11%;
+        --sidebar-foreground: 210 40% 98%;
+
+        /* Secondary: Aqua #17B3B5 */
+        --secondary: 181 77% 40%;
+        --secondary-foreground: 216 60% 5%;
+
+        /* Accent: Navy Blue #0A1A2F (replacing orange) */
+        --accent: 215 65% 11%;
+        --accent-foreground: 210 40% 98%;
+
+        --muted: 215 32% 12%;
+        --muted-foreground: 215 20% 65%;
+
+        --border: 215 32% 15%;
+        --input: 215 32% 15%;
+        --ring: 181 77% 40%;
+
+        --glass-bg: rgba(14, 31, 54, 0.8);
+        --glass-border: rgba(255, 255, 255, 0.05);
+        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    /* Force light mode for auth pages that use hardcoded light-mode colors */
+    .force-light,
+    .force-light * {
+        --foreground: 0 0% 18%;
+        --card: 216 25% 96%;
+        --card-foreground: 0 0% 18%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 18%;
+        --primary: 214 65% 11%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 181 76% 45%;
+        --secondary-foreground: 214 65% 11%;
+        --accent: 32 100% 50%;
+        --accent-foreground: 0 0% 100%;
+        --muted: 216 10% 88%;
+        --muted-foreground: 0 0% 40%;
+        --border: 216 15% 88%;
+        --input: 216 15% 88%;
+        --ring: 214 65% 11%;
+        --sidebar: 215 65% 11%;
+        --sidebar-foreground: 210 40% 98%;
+        color-scheme: light;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    html {
+        overscroll-behavior: none;
+    }
+
+    body {
+        @apply bg-background text-foreground antialiased;
+        font-feature-settings: "rlig" 1, "calt" 1;
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+
+    /* Responsive Typography with clamp() */
+    h1 {
+        @apply font-heading text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight;
+    }
+
+    h2 {
+        @apply font-heading text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight;
+    }
+
+    h3 {
+        @apply font-heading text-2xl sm:text-3xl font-bold;
+    }
+
+    h4 {
+        @apply font-heading text-xl font-bold;
+    }
+}
+
+@layer components {
+    .glass {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+    }
+
+    .glass-card {
+        @apply glass rounded-[2rem];
+    }
+
+    .glass-card-strong {
+        @apply glass rounded-[2rem] border-primary/20;
+    }
+
+    .btn-primary {
+        @apply bg-primary text-primary-foreground font-black px-6 py-2.5 rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-lg shadow-primary/20;
+    }
+
+    .btn-secondary {
+        @apply bg-secondary text-secondary-foreground font-black px-6 py-2.5 rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-lg shadow-secondary/20;
+    }
+
+    .btn-glass {
+        @apply glass font-bold px-6 py-2.5 rounded-2xl hover:bg-primary/10 transition-all;
+    }
+
+    .premium-shadow {
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Smooth color transitions for dark mode — scoped to interactive elements only */
+body,
+nav,
+header,
+footer,
+a,
+button,
+.glass,
+.glass-card,
+.glass-card-strong,
+.trust-card {
+    transition-property: background-color, border-color, color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+}
+
+/* Fix for Chrome autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #FFFFFF inset !important;
+    -webkit-text-fill-color: #0F1111 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+
+
+/* Brand Logos Marquee Animation */
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+    animation: marquee 40s linear infinite;
+}

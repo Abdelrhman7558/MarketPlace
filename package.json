@@ -1,0 +1,26 @@
+{
+    "name": "b2b-marketplace-root",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "frontend",
+        "backend"
+    ],
+    "scripts": {
+        "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+        "backend": "cd backend && npm run start:dev",
+        "frontend": "cd frontend && npm run dev",
+        "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend",
+        "prisma:generate": "npm run build --prefix backend",
+        "db:push": "cd backend && npx prisma db push",
+        "build": "npm run install:all && npm --prefix backend run build && npm --prefix frontend run build",
+        "start": "pm2 start ecosystem.config.js"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    },
+    "dependencies": {
+        "cross-fetch": "^4.1.0",
+        "jsdom": "^28.1.0"
+    }
+}

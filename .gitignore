@@ -1,0 +1,102 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Production
+build/
+
+# Misc
+.DS_Store
+*.pem
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Marketplace Cleanup
+test-ssh.js
+tunnel_url.txt
+parallelbroker.html
+scraped_products.json
+bing_test.js
+check_api.js
+fetch_images_and_generate.js
+receiver.js
+scrape_playwright.js
+*.exe
+*.log
+backend.log
+frontend.log
+b_prod.txt
+bubble_init.json
+backend_public.log
+backend_public_final.log
+backend_public_reboot.log
+backend_tunnel.txt
+backend_url.txt
+frontend_public.log
+frontend_public_final.log
+frontend_public_reboot.log
+frontend_url.txt
+frontend_dev.log
+backend_dev.log
+tunnel_output.txt
+tunnels.log
+tunnel_error.txt
+build_log.txt
+dev_debug.log
+dev_final.log
+dist.css
+homepage.html
+get_tunnel.py
+start_tunnels.py
+ai-video-editor-pro.skill
+check_products.js
+check_admin_status.js
+check_users_v2.ts
+check_users_v3.ts
+check_vat.ts
+cleanup-brands.ts
+create_user.js
+get_admin.js
+list_users.js
+query.js
+update.js
+seed-brands.ts
+fix-encoding.js
+fix-escape.js
+fix-exact.js
+replace-urls.js
+test-connection.js
+prisma_studio.log
+Website_Screenshots/
+CLAUDE.md
+
+# Local env files
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+
+# Vercel
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDEs
+.vscode/
+.idea/
