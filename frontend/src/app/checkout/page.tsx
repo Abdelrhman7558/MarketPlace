@@ -31,7 +31,7 @@ export default function CheckoutPage() {
         ? JSON.parse(localStorage.getItem(ADDR_KEY) || '{}')
         : {};
     const [addrName, setAddrName] = useState<string>(savedAddr.name || user?.name || '');
-    const [addrCompany, setAddrCompany] = useState<string>(savedAddr.company || user?.companyName || '');
+    const [addrCompany, setAddrCompany] = useState<string>(savedAddr.company || (user as any)?.companyName || '');
     const [addrStreet, setAddrStreet] = useState<string>(savedAddr.street || '');
     const [addrCity, setAddrCity] = useState<string>(savedAddr.city || '');
     const [addrPostal, setAddrPostal] = useState<string>(savedAddr.postal || '');
