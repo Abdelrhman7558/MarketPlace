@@ -8,6 +8,9 @@ interface User {
     email: string;
     phone?: string;
     avatar?: string;
+    companyName?: string;
+    country?: string;
+    vatNumber?: string;
     role: string;
     status: 'PENDING_APPROVAL' | 'ACTIVE' | 'REJECTED' | 'BLOCKED';
 }
