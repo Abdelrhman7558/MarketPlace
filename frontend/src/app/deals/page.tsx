@@ -22,7 +22,7 @@ export default function DealsPage() {
             setIsLoading(true);
             try {
                 const token = localStorage.getItem('bev-token');
-                const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
+                const authHeader: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
 
                 const [productsRes, couponsRes] = await Promise.all([
                     fetch(`${API_URL}/products?status=APPROVED&sort=newest&limit=48`),
