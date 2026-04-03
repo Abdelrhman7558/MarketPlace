@@ -45,11 +45,11 @@ export const authOptions: NextAuthOptions = {
             return token;
         },
         async session({ session, token }) {
-            (session as any).backendToken = token.backendToken;
-            (session as any).backendUser = token.backendUser;
-            (session as any).pendingApproval = token.pendingApproval;
-            (session as any).pendingEmail = token.pendingEmail;
-            (session as any).authError = token.authError;
+            session.backendToken = token.backendToken;
+            session.backendUser = token.backendUser;
+            session.pendingApproval = token.pendingApproval;
+            session.pendingEmail = token.pendingEmail;
+            session.authError = token.authError;
             return session;
         },
     },

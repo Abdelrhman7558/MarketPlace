@@ -3,6 +3,18 @@
 import * as React from 'react';
 import { motion } from 'framer-motion';
 import { Star, Trash2, Search, Filter, Loader2, MessageSquare } from 'lucide-react';
+import { User } from '@/lib/auth';
+
+interface Review {
+    id: string;
+    rating: number;
+    comment?: string;
+    createdAt: string;
+    user?: Partial<User>;
+    product?: {
+        name: string;
+    };
+}
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -18,7 +30,7 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export default function AdminReviewsPage() {
-    const [reviews, setReviews] = React.useState<any[]>([]);
+    const [reviews, setReviews] = React.useState<Review[]>([]);
     const [total, setTotal] = React.useState(0);
     const [page, setPage] = React.useState(1);
     const [totalPages, setTotalPages] = React.useState(1);

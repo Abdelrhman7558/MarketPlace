@@ -19,7 +19,7 @@ export default function GoogleSyncPage() {
         }
 
         if (status === 'authenticated' && session) {
-            const s = session as any;
+            const s = session;
 
             if (s.authError) {
                 setErrorMsg(s.authError);
@@ -31,8 +31,8 @@ export default function GoogleSyncPage() {
                 return;
             }
 
-            const backendToken: string = s.backendToken;
-            const backendUser: any = s.backendUser;
+            const backendToken = s.backendToken || '';
+            const backendUser = s.backendUser;
 
             if (backendToken && backendUser) {
                 localStorage.setItem('bev-token', backendToken);
