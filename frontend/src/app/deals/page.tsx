@@ -46,7 +46,7 @@ export default function DealsPage() {
     }, []);
 
     const handleAddToCart = (product: any) => {
-        addItem({ id: product.id, name: product.name, price: product.price, image: product.images?.[0] });
+        addItem({ id: product.id, name: product.name, price: product.price, image: product.images?.[0], unit: product.unit || 'unit', brand: product.brand || '' });
         setAddedIds(prev => new Set(prev).add(product.id));
         setTimeout(() => setAddedIds(prev => { const s = new Set(prev); s.delete(product.id); return s; }), 2000);
     };
