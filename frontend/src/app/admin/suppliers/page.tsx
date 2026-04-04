@@ -35,7 +35,7 @@ export default function AdminSuppliersPage() {
     const loadSuppliers = async () => {
         try {
             const token = localStorage.getItem('bev-token');
-            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001') + '/users', {
+            const res = await fetch(('/api') + '/users', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {

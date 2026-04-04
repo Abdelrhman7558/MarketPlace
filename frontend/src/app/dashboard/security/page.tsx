@@ -9,7 +9,7 @@ import {
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_URL = '/api';
 
 export default function SecuritySettingsPage() {
     const token = typeof window !== 'undefined' ? localStorage.getItem('bev-token') : '';

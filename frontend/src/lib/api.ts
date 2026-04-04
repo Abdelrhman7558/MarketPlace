@@ -1,6 +1,6 @@
 import { Product, ProductStatus } from './products';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_URL = '/api';
 
 export interface ProductFilters {
     q?: string;

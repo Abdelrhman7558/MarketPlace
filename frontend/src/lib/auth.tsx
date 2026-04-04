@@ -96,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         locale?: string;
     }): Promise<boolean | string> => {
         try {
-            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001') + '/auth/register', {
+            const res = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
@@ -125,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if ((email === '7bd0205@gmail.com' || email === '7bd02025@gmail.com') && (password === 'Admin@2025!' || password === 'Admin@123')) {
             try {
                 // Try login first (fast path — admin already exists)
-                const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001') + '/auth/login', {
+                const res = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password }),
@@ -143,7 +143,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
 
                 // Login failed — seed admin then retry login
-                const seedRes = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001') + '/auth/seed-admin', {
+                const seedRes = await fetch('/api/auth/seed-admin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password, name: 'Super Admin', secret: process.env.NEXT_PUBLIC_SEED_ADMIN_SECRET || 'atlantis_seed_2025_secure' }),
@@ -156,7 +156,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     }
                 }
 
-                const retryRes = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001') + '/auth/login', {
+                const retryRes = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password }),
@@ -183,7 +183,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         try {
-            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001') + '/auth/login', {
+            const res = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -218,7 +218,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const verify2FALogin = async (partialToken: string, code: string): Promise<{ success: boolean; user?: User; message?: string }> => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/auth/2fa/login-verify`, {
+            const res = await fetch('/api/auth/2fa/login-verify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ partialToken, code }),
@@ -242,7 +242,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!user) return;
         try {
             const token = localStorage.getItem('bev-token');
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/users/${user.id}`, {
+            const res = await fetch(`/api/users/${user.id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
