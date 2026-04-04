@@ -97,10 +97,18 @@ async function bootstrap() {
 
     app.enableCors({
         origin: (origin, callback) => {
-            // Allow requests with no origin (curl, Postman, mobile apps, server-to-server)
             if (!origin) return callback(null, true);
-            if (allowedOrigins.includes(origin)) return callback(null, true);
-            callback(new Error(`CORS: origin ${origin} not allowed`));
+            
+            const isAllowed = allowedOrigins.some(allowed => origin.startsWith(allowed)) || 
+                             origin.endsWith('.vercel.app') ||
+                             origin.includes('localhost') ||
+                             origin.includes('127.0.0.1');
+
+            if (isAllowed) {
+                callback(null, true);
+            } else {
+                callback(new Error(`CORS: origin ${origin} not allowed`));
+            }
         },
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

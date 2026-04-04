@@ -9,7 +9,7 @@ const nextConfig = {
         const destination = apiUrl.startsWith('http') ? apiUrl : `https://${apiUrl}`;
         return [
             {
-                source: '/api/:path((?!auth).*)',
+                source: '/api/:path*',
                 destination: `${destination}/:path*`,
             },
         ];
