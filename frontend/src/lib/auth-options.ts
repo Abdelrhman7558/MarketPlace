@@ -3,7 +3,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import type { NextAuthOptions } from 'next-auth';
 import type { GoogleProfile } from 'next-auth/providers/google';
 
-const API_URL = '/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 export const authOptions: NextAuthOptions = {
     providers: [

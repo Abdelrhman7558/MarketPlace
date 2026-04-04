@@ -7,16 +7,26 @@ const nextConfig = {
     async rewrites() {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
         if (!apiUrl) {
-            // No API URL defined! This will fail in production.
             return [];
         }
         const destination = apiUrl.startsWith('http') ? apiUrl : `https://${apiUrl}`;
-        return [
-            {
-                source: '/api/:path*',
-                destination: `${destination.replace(/\/$/, '')}/:path*`, // Ensure no double slashes
-            },
-        ];
+        return {
+            beforeFiles: [
+                // NextAuth routes are handled by Next.js API route handler — do NOT proxy them
+            ],
+            afterFiles: [
+                {
+                    source: '/api/auth/:path*',
+                    destination: '/api/auth/:path*', // Keep NextAuth routes local
+                },
+            ],
+            fallback: [
+                {
+                    source: '/api/:path*',
+                    destination: `${destination.replace(/\/$/, '')}/:path*`,
+                },
+            ],
+        };
     },
 };
 
