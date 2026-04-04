@@ -5,12 +5,16 @@ const nextConfig = {
         domains: ['images.unsplash.com', 'plus.unsplash.com'],
     },
     async rewrites() {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:3001';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        if (!apiUrl) {
+            // No API URL defined! This will fail in production.
+            return [];
+        }
         const destination = apiUrl.startsWith('http') ? apiUrl : `https://${apiUrl}`;
         return [
             {
                 source: '/api/:path*',
-                destination: `${destination}/:path*`,
+                destination: `${destination.replace(/\/$/, '')}/:path*`, // Ensure no double slashes
             },
         ];
     },

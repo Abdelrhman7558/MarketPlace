@@ -177,9 +177,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
             } catch (err) {
                 console.error("Super Admin backend sync failed", err);
+                return { 
+                    success: false, 
+                    message: `تعذر الاتصال بالسيرفر (Backend). تأكد من ضبط NEXT_PUBLIC_API_URL في Vercel.` 
+                };
             }
-            // لو كل المحاولات فشلت — أرجع خطأ واضح بدل LOCAL_ONLY
-            return { success: false, message: 'تعذر الاتصال بالسيرفر. تأكد من تشغيل الـ Backend.' };
+            return { success: false, message: 'فشل تسجيل الدخول. تأكد من بيانات الأدمن.' };
         }
 
         try {
