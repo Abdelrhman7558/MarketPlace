@@ -121,69 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const login = async (email: string, password: string): Promise<{ success: boolean; user?: User; message?: string; requiresTwoFactor?: boolean; partialToken?: string }> => {
-        // Super Admin Shortcut with Backend Sync
-        if ((email === '7bd0205@gmail.com' || email === '7bd02025@gmail.com') && (password === 'Abdo@2025!' || password === 'Admin@123')) {
-            try {
-                // Try login first (fast path — admin already exists)
-                const res = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password }),
-                });
 
-                if (res.ok) {
-                    const result = await res.json();
-                    if (result.access_token) {
-                        const userData = { ...result.user, role: 'admin', status: 'ACTIVE' as const };
-                        setUser(userData);
-                        localStorage.setItem('bev-user', JSON.stringify(userData));
-                        localStorage.setItem('bev-token', result.access_token);
-                        return { success: true, user: userData };
-                    }
-                }
-
-                // Login failed — seed admin then retry login
-                const seedRes = await fetch('/api/auth/seed-admin', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, name: 'Super Admin', secret: process.env.NEXT_PUBLIC_SEED_ADMIN_SECRET || 'atlantis_seed_2025_secure' }),
-                });
-
-                if (!seedRes.ok) {
-                    const seedError = await seedRes.json().catch(() => ({}));
-                    if (seedError.message === 'User already exists') {
-                        console.warn("Super Admin exists but password mismatch. Please check backend seeds.");
-                    }
-                }
-
-                const retryRes = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password }),
-                });
-
-                if (retryRes.ok) {
-                    const result = await retryRes.json();
-                    if (result.access_token) {
-                        const userData = { ...result.user, role: 'ADMIN', status: 'ACTIVE' as const };
-                        setUser(userData);
-                        localStorage.setItem('bev-user', JSON.stringify(userData));
-                        localStorage.setItem('bev-token', result.access_token);
-                        return { success: true, user: userData };
-                    }
-                } else {
-                    const errorData = await retryRes.json().catch(() => ({}));
-                    console.error("Super Admin retry failed:", errorData.message);
-                }
-            } catch (err) {
-                console.error("Super Admin backend sync failed", err);
-                return { 
-                    success: false, 
-                    message: `تعذر الاتصال بالسيرفر (Backend). تأكد من ضبط NEXT_PUBLIC_API_URL في Vercel.` 
-                };
-            }
-            return { success: false, message: 'فشل تسجيل الدخول. تأكد من بيانات الأدمن.' };
-        }
 
         try {
             const res = await fetch('/api/auth/login', {
