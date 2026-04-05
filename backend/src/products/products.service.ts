@@ -178,9 +178,8 @@ export class ProductsService {
             if (!product) throw new BadRequestException('Product not found');
 
             const errors = [];
-            const hasRealImage = product.images?.some(img => img && img.trim() !== '');
-            if (!product.description || product.description.trim() === '') errors.push('description');
-            if (!hasRealImage) errors.push('images');
+            // Relaxed validation: Allow Admin to approve even with thin content.
+            if (!product.name || product.name.trim() === '') errors.push('name');
             if (!product.price || product.price <= 0) errors.push('price');
             if (!product.category || product.category.trim() === '') errors.push('category');
 

@@ -46,7 +46,9 @@ export async function fetchProductsWithFilters(filters: ProductFilters = {}): Pr
         if (!response.ok) return [];
         const text = await response.text();
         if (!text) return [];
-        return JSON.parse(text).map(mapProduct);
+        const json = JSON.parse(text);
+        const products = Array.isArray(json) ? json : (json.data || []);
+        return products.map(mapProduct);
     } catch (error) {
         console.error('Error fetching products with filters:', error);
         return [];
@@ -61,8 +63,9 @@ export async function fetchProducts(): Promise<Product[]> {
         }
         const text = await response.text();
         if (!text) return [];
-        const data = JSON.parse(text);
-        // The backend returns an array of products.
+        const json = JSON.parse(text);
+        const data = Array.isArray(json) ? json : (json.data || []);
+        // The backend returns an array of products (possibly nested in 'data').
         // We'll map them to match our frontend Product interface if necessary
         return data.map((item: any) => ({
             id: item.id,
