@@ -63,13 +63,15 @@ export async function fetchProducts(): Promise<Product[]> {
         }
         const text = await response.text();
         const json = JSON.parse(text);
-        console.log('API Fetch Success:', json);
+        console.log('--- MARKETPLACE DATA DIAGNOSTICS ---');
         
         // Support multiple data structures
         let data: any[] = [];
         if (Array.isArray(json)) data = json;
         else if (json.data && Array.isArray(json.data)) data = json.data;
         else if (json.products && Array.isArray(json.products)) data = json.products;
+        
+        console.table(data.map(p => ({ id: p.id, name: p.name, status: p.status, stock: p.stock })));
         
         if (data.length === 0) console.warn('API returned no approved products.');
         

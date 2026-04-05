@@ -123,7 +123,8 @@ export default function Navbar() {
                         </button>
 
                         {isCategoriesOpen && (
-                            <div className="absolute top-full mt-4 start-0 w-72 bg-card border border-border/50 rounded-xl shadow-2xl py-3 z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div className="absolute top-full -mt-1 pt-4 start-0 w-72 z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
+                                <div className="bg-card border border-border/50 rounded-xl shadow-2xl py-3 whitespace-nowrap overflow-hidden">
                                 <div className="px-4 pb-2 mb-2 border-b border-border/50">
                                     <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                                         {t('navbar', 'browseCategories') || 'Browse Categories'}
@@ -153,6 +154,7 @@ export default function Navbar() {
                                     </Link>
                                 </div>
                             </div>
+                        </div>
                         )}
                     </div>
                 </div>
