@@ -8,38 +8,42 @@ export class EmailService {
   private readonly fromName = 'Atlantis Marketplace';
 
   constructor() {
+    // Explicit configuration for Hostinger based on user provided settings
     const host = process.env.EMAIL_HOST || 'smtp.hostinger.com';
     const port = Number(process.env.EMAIL_PORT) || 465;
     const user = process.env.EMAIL_USER || 'Info@atlantisfmcg.com';
     const pass = process.env.EMAIL_PASS || 'AliDawara@22';
 
-    // Auto-detections: 465 usually SSL (secure:true), 587 usually STARTTLS (secure:false)
+    // Port 465 REQUIRES secure: true. Port 587 REQUIRES secure: false.
     const secure = port === 465;
 
-    console.log(`[SMTP] Initializing transporter: ${host}:${port} (Secure: ${secure}) User: ${user}`);
+    console.log(`[SMTP] Initializing for Hostinger: ${host}:${port} (Secure: ${secure})`);
 
     this.transporter = nodemailer.createTransport({
       host,
       port,
       secure,
+      pool: true, // Use pooling for better performance with Hostinger
+      maxConnections: 5,
+      maxMessages: 100,
       auth: { user, pass },
       tls: {
-        // Essential for some cloud providers and self-signed certs
-        rejectUnauthorized: false,
-        minVersion: 'TLSv1.2'
+        // Essential for Hostinger's SSL certificates compatibility
+        rejectUnauthorized: false
       },
-      // Increase timeouts for slower SMTP servers (like Hostinger sometimes)
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-    });
+      // Increased timeouts for Hostinger shared hosting reliability
+      connectionTimeout: 20000,
+      greetingTimeout: 20000,
+      socketTimeout: 20000,
+    } as any);
 
-    // Verify connection on startup
+    // Immediate sanity check
     this.transporter.verify((error, success) => {
       if (error) {
-        console.error('❌ SMTP CONNECTION ERROR:', error);
-        console.error('Check your EMAIL_USER/EMAIL_PASS and PORT 465/587 in Railway settings.');
+        console.error('❌ SMTP CONNECTION FAILED:', error.message);
+        console.error('Check if your Hosting firewall blocks outgoing port 465.');
       } else {
-        console.log('✅ SMTP SERVER IS READY TO TAKE OUR MESSAGES');
+        console.log('✅ SMTP CONNECTION ESTABLISHED - Ready to send emails');
       }
     });
   }
