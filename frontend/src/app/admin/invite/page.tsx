@@ -19,8 +19,9 @@ import {
     AlertTriangle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { API_BASE_URL } from '@/lib/config';
 
-const API_URL = '/api';
+const API_URL = API_BASE_URL;
 
 interface InviteToken {
     token: string;
@@ -127,7 +128,7 @@ export default function AdminInvitePage() {
             } else {
                 setEmailResult({
                     success: false,
-                    message: data.message || 'Failed to send email. Check backend connection.',
+                    message: data.error || data.message || 'Failed to send email. Check backend connection.',
                 });
             }
         } catch (err) {
