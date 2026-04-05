@@ -162,16 +162,19 @@ export class EmailService {
     senderName?: string;
   }) {
     const html = getInvitationEmailHtml(params);
+    const text = `🎉 You're invited to join Atlantis as a ${params.role}! \n\nClick here to join: ${params.inviteLink}`;
 
     try {
       const info = await this.transporter.sendMail({
         from: this.getFrom(),
         to: params.recipientEmail,
-        subject: `🎉 You're Invited to Join Atlantis as a ${params.role === 'supplier' ? 'Supplier Partner' : 'Strategic Buyer'}`,
+        subject: `🎉 Invitation: Join Atlantis as a ${params.role === 'supplier' ? 'Supplier' : 'Strategic Buyer'}`,
+        text, // Adding plain text fallback for better deliverability
         html,
       });
 
-      return { messageId: info.messageId, previewUrl: nodemailer.getTestMessageUrl(info) };
+      console.log(`[SMTP] SENT SUCCESS: ${info.messageId} Accepted: ${info.accepted}`);
+      return { messageId: info.messageId, accepted: info.accepted };
     } catch (error) {
       console.error('SMTP ERROR [sendInviteEmail]:', error);
       throw error;
