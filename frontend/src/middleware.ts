@@ -21,7 +21,7 @@ export function middleware(request: NextRequest) {
     }
 
     // Proxy all other /api/* routes to the backend
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL;
     if (apiUrl && pathname.startsWith('/api/')) {
         const backendPath = pathname.replace(/^\/api/, '');
         const backendBase = apiUrl.replace(/\/$/, '');
