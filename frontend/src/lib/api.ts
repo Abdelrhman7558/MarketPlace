@@ -1,6 +1,7 @@
 import { Product, ProductStatus } from './products';
+import { API_BASE_URL } from './config';
 
-const API_URL = '/api';
+const API_URL = API_BASE_URL;
 
 export interface ProductFilters {
     q?: string;

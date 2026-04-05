@@ -6,6 +6,7 @@ import { ExternalLink, Tag, Zap, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { API_BASE_URL } from '@/lib/config';
 
 interface AdItem {
     id: string;
@@ -28,7 +29,7 @@ export function AdPlacements() {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s timeout
-            const response = await fetch(('/api') + '/ads?placement=SPONSORED_PRODUCT', {
+            const response = await fetch(`${API_BASE_URL}/ads?placement=SPONSORED_PRODUCT`, {
                 signal: controller.signal,
             });
             clearTimeout(timeoutId);

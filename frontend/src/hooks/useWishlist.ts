@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/lib/auth';
+import { API_BASE_URL } from '@/lib/config';
 
-const API_URL = '/api';
+const API_URL = API_BASE_URL;
 
 export function useWishlist() {
     const { user } = useAuth();
