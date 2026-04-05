@@ -8,49 +8,40 @@ export class EmailService {
   private readonly fromName = 'Atlantis Marketplace';
 
   constructor() {
-    // Explicit configuration for Hostinger based on user provided settings
+    // Switch to Port 587 (TLS) which is often more reliable on cloud platforms than 465 (SSL)
     const host = process.env.EMAIL_HOST || 'smtp.hostinger.com';
-    const port = Number(process.env.EMAIL_PORT) || 465;
+    const port = 587; // Forcing 587 for better compatibility
     const user = process.env.EMAIL_USER || 'Info@atlantisfmcg.com';
     const pass = process.env.EMAIL_PASS || 'AliDawara@22';
 
-    // Port 465 REQUIRES secure: true. Port 587 REQUIRES secure: false.
-    const secure = port === 465;
-
-    console.log(`[SMTP] Initializing for Hostinger: ${host}:${port} (Secure: ${secure})`);
+    console.log(`[SMTP] Initializing GOLD standard: ${host}:${port} (TLS Mode)`);
 
     this.transporter = nodemailer.createTransport({
       host,
       port,
-      secure,
-      pool: true, // Use pooling for better performance with Hostinger
-      maxConnections: 5,
-      maxMessages: 100,
+      secure: false, // Port 587 must be false
+      pool: true,
       auth: { user, pass },
       tls: {
-        // Essential for Hostinger's SSL certificates compatibility
-        rejectUnauthorized: false
-      },
-      // Increased timeouts for Hostinger shared hosting reliability
-      connectionTimeout: 20000,
-      greetingTimeout: 20000,
-      socketTimeout: 20000,
-    } as any);
+        // Essential for Hostinger's STARTTLS handshake
+        rejectUnauthorized: false,
+        minVersion: 'TLSv1.2'
+      }
+    });
 
-    // Immediate sanity check
     this.transporter.verify((error, success) => {
       if (error) {
-        console.error('❌ SMTP CONNECTION FAILED:', error.message);
-        console.error('Check if your Hosting firewall blocks outgoing port 465.');
+        console.error('❌ SMTP DUAL-PORT FAILURE:', error.message);
       } else {
-        console.log('✅ SMTP CONNECTION ESTABLISHED - Ready to send emails');
+        console.log('✅ SMTP GOLD CONNECTION READY - Delivery prioritized');
       }
     });
   }
 
   private getFrom() {
     const user = process.env.EMAIL_USER || 'Info@atlantisfmcg.com';
-    return user;
+    // Back to branded from, but simple format for Hostinger
+    return `"Atlantis Market" <${user}>`;
   }
 
   async sendVerificationEmail(email: string, token: string) {
