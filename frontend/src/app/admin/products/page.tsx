@@ -6,7 +6,8 @@ import {
     Clock, Tag, BarChart3, User, Hash, 
     Calendar, ImageIcon, Pencil, Save, AlertTriangle,
     Filter, Download, MoreVertical, Layers, Box,
-    ChevronRight, ArrowRight, ExternalLink, X
+    ChevronRight, ArrowRight, ExternalLink, X,
+    Upload, Sparkles, Loader2
 } from 'lucide-react';
 import { CATEGORIES_LIST } from '@/lib/products';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -59,8 +60,13 @@ function ProductDetailModal({ product, onClose, onApprove, onReject, onDelete, o
         category: product.category,
         brand: product.brand,
         unit: product.unit || 'carton',
+        ean: product.ean || '',
         images: product.images || [],
     });
+
+    const [isFetchingEan, setIsFetchingEan] = React.useState(false);
+    const [isUploading, setIsUploading] = React.useState(false);
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const handleSave = async () => {
         try {
@@ -70,6 +76,76 @@ function ProductDetailModal({ product, onClose, onApprove, onReject, onDelete, o
         } catch (error) {
             console.error('Failed to update product:', error);
             showIPhoneToast(t('admin', 'failedToUpdate'), 'error');
+        }
+    };
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        try {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const img = new globalThis.Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let { width, height } = img;
+                    const maxDim = 1200;
+                    if (width > height && width > maxDim) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    } else if (height > maxDim) {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    if (ctx) {
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const compressedDataUrl = canvas.toDataURL('image/webp', 0.8);
+                        const newImages = [...editedData.images];
+                        newImages[activeImage] = compressedDataUrl;
+                        setEditedData(prev => ({ ...prev, images: newImages }));
+                        showIPhoneToast('Image uploaded & compressed', 'success');
+                    }
+                };
+                img.src = reader.result as string;
+            };
+            reader.readAsDataURL(file);
+        } catch (err) {
+            showIPhoneToast('Upload failed', 'error');
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const handleFetchByEan = async () => {
+        if (!editedData.ean) {
+            showIPhoneToast('Please provide an EAN first', 'info');
+            return;
+        }
+
+        setIsFetchingEan(true);
+        try {
+            const backendBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const res = await fetch(`${backendBase}/products/ean/${editedData.ean}`);
+            if (res.ok) {
+                const { imageUrl } = await res.json();
+                if (imageUrl) {
+                    const newImages = [...editedData.images];
+                    newImages[activeImage] = imageUrl;
+                    setEditedData(prev => ({ ...prev, images: newImages }));
+                    showIPhoneToast('Magic! Image found.', 'success');
+                } else {
+                    showIPhoneToast('No image found for this EAN', 'info');
+                }
+            }
+        } catch (err) {
+            showIPhoneToast('Network error during EAN search', 'error');
+        } finally {
+            setIsFetchingEan(false);
         }
     };
 
@@ -102,16 +178,35 @@ function ProductDetailModal({ product, onClose, onApprove, onReject, onDelete, o
                     {isEditing && (
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ms-2">Primary Image URL</label>
-                            <input 
-                                className="w-full bg-card border border-border/50 rounded-xl px-4 py-2 text-[10px] font-medium outline-none focus:border-primary/50 transition-all"
-                                value={editedData.images[activeImage] || ''}
-                                onChange={e => {
-                                    const newImages = [...editedData.images];
-                                    newImages[activeImage] = e.target.value;
-                                    setEditedData({...editedData, images: newImages});
-                                }}
-                                placeholder="Paste image URL..."
-                            />
+                            <div className="flex gap-2">
+                                <input 
+                                    className="flex-1 bg-card border border-border/50 rounded-xl px-4 py-2 text-[10px] font-medium outline-none focus:border-primary/50 transition-all"
+                                    value={editedData.images[activeImage] || ''}
+                                    onChange={e => {
+                                        const newImages = [...editedData.images];
+                                        newImages[activeImage] = e.target.value;
+                                        setEditedData({...editedData, images: newImages});
+                                    }}
+                                    placeholder="Paste image URL..."
+                                />
+                                <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
+                                <button 
+                                    type="button"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className="w-10 h-10 glass rounded-xl flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-lg"
+                                    title="Upload from computer"
+                                >
+                                    {isUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+                                </button>
+                                <button 
+                                    type="button"
+                                    onClick={handleFetchByEan}
+                                    className="w-10 h-10 glass rounded-xl flex items-center justify-center hover:bg-secondary hover:text-white transition-all shadow-lg"
+                                    title="Fetch by EAN"
+                                >
+                                    {isFetchingEan ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+                                </button>
+                            </div>
                         </div>
                     )}
 
@@ -155,9 +250,24 @@ function ProductDetailModal({ product, onClose, onApprove, onReject, onDelete, o
                                 )}>
                                     {product.status}
                                 </div>
-                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                                    SKU: PRD-{product.id.substring(0, 8).toUpperCase()}
-                                </p>
+                                <div className="space-y-2">
+                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center justify-between">
+                                        SKU: PRD-{product.id.substring(0, 8).toUpperCase()}
+                                        {isEditing ? (
+                                            <span className="flex items-center gap-2">
+                                                EAN: 
+                                                <input 
+                                                    className="bg-transparent border-b border-primary/20 outline-none px-2 w-32 focus:border-primary"
+                                                    value={editedData.ean}
+                                                    onChange={e => setEditedData({...editedData, ean: e.target.value})}
+                                                    placeholder="EAN Code"
+                                                />
+                                            </span>
+                                        ) : (
+                                            product.ean && <span>EAN: {product.ean}</span>
+                                        )}
+                                    </p>
+                                </div>
                             </div>
                             {isEditing ? (
                                 <input 
