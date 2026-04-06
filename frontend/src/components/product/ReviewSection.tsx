@@ -67,24 +67,57 @@ export default function ReviewSection({ productId, onReviewSubmitted }: { produc
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!myRating) { setError('يرجى اختيار تقييم'); return; }
+        
+        // Validation: If no rating is selected, show an error and stop.
+        if (!myRating) {
+            setError('يرجى اختيار تقييم بالنجوم لإرسال مراجعتك'); 
+            return; 
+        }
+        
         setError('');
         setSubmitting(true);
+        
         try {
             const token = localStorage.getItem('bev-token');
+            if (!token) {
+                setError('يجب تسجيل الدخول لإضافة تقييم');
+                return;
+            }
+
             const res = await fetch(`${API_URL}/products/${productId}/reviews`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ rating: myRating, comment: myComment }),
             });
-            if (!res.ok) { const e = await res.json(); setError(e.message || 'فشل الإرسال'); return; }
-            const all = await res.json(); // Usually returns the new/updated review, but we need totals
+
+            if (!res.ok) { 
+                let msg = 'فشل إرسال التقييم';
+                try {
+                    const errorData = await res.json();
+                    msg = errorData.message || msg;
+                } catch (e) {}
+                setError(msg); 
+                return; 
+            }
+
+            // Successful submission: Reload reviews and notify parent
             await load();
             
-            // Calculate new totals from the reloaded reviews
-            const newReviews = await (await fetch(`${API_URL}/products/${productId}/reviews`)).json();
-            const avg = newReviews.length > 0 ? newReviews.reduce((s: any, r: any) => s + r.rating, 0) / newReviews.length : 0;
-            onReviewSubmitted?.(avg, newReviews.length);
+            // Re-calculate totals from current reviews list after load() finishes
+            // Note: reviews state might not be updated within the same function execution 
+            // after load() completes due to React batching, so we fetch once more to be safe.
+            const updatedRes = await fetch(`${API_URL}/products/${productId}/reviews`);
+            if (updatedRes.ok) {
+                const latestReviews = await updatedRes.json();
+                const avg = latestReviews.length > 0 
+                    ? latestReviews.reduce((s: any, r: any) => s + r.rating, 0) / latestReviews.length 
+                    : 0;
+                onReviewSubmitted?.(avg, latestReviews.length);
+            }
+            
+        } catch (err) {
+            console.error('Review submission error:', err);
+            setError('حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى');
         } finally {
             setSubmitting(false);
         }
@@ -152,7 +185,7 @@ export default function ReviewSection({ productId, onReviewSubmitted }: { produc
                     />
                     <button
                         type="submit"
-                        disabled={submitting || !myRating}
+                        disabled={submitting}
                         className="px-8 py-3 bg-[#0A1A2F] hover:bg-[#FF8A00] text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all disabled:opacity-50"
                     >
                         {submitting ? 'جاري الإرسال...' : 'إرسال التقييم'}
