@@ -28,8 +28,8 @@ function mapProduct(item: any): Product {
         inStock: item.stock > 0,
         category: item.category,
         ean: item.ean,
-        rating: 4.5 + (Math.random() * 0.5),
-        reviews: Math.floor(Math.random() * 100) + 10,
+        rating: item.rating || 0,
+        reviews: item.reviewsCount || 0,
         status: item.status || ProductStatus.APPROVED,
     };
 }
@@ -93,8 +93,8 @@ export async function fetchProducts(): Promise<Product[]> {
             inStock: item.stock > 0,
             category: item.category,
             ean: item.ean,
-            rating: 4.5 + (Math.random() * 0.5),
-            reviews: Math.floor(Math.random() * 100) + 10,
+            rating: item.rating || 0,
+            reviews: item.reviewsCount || 0,
             status: item.status || ProductStatus.APPROVED,
         }));
     } catch (error) {
@@ -129,8 +129,8 @@ export async function fetchMyProducts(token: string): Promise<Product[]> {
             inStock: item.stock > 0,
             category: item.category,
             ean: item.ean,
-            rating: 4.5 + (Math.random() * 0.5),
-            reviews: Math.floor(Math.random() * 100) + 10,
+            rating: item.rating || 0,
+            reviews: item.reviewsCount || 0,
             status: item.status || ProductStatus.APPROVED,
         }));
     } catch (error) {

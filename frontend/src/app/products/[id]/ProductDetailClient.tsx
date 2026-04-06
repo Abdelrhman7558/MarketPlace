@@ -30,10 +30,7 @@ export default function ProductDetailClient() {
     const [isAdded, setIsAdded] = useState(false);
     const router = useRouter();
     const { locale } = useLanguage();
-    const { user } = useAuth();
-
-    const [userRating, setUserRating] = useState(0);
-    const [isSubmittingRating, setIsSubmittingRating] = useState(false);
+    const { user, isLoggedIn } = useAuth();
     const [localRating, setLocalRating] = useState(0);
     const [localReviewsCount, setLocalReviewsCount] = useState(0);
 
@@ -94,32 +91,6 @@ export default function ProductDetailClient() {
         ? similarProducts
         : products.filter(p => p.id !== id && p.category === product?.category).slice(0, 4);
 
-    const handleRate = async (rating: number) => {
-        if (!user || userRating > 0 || isSubmittingRating || !product) return;
-        setIsSubmittingRating(true);
-        try {
-            const token = localStorage.getItem('bev-token');
-            const res = await fetch(`${'/api'}/products/${product.id}/rate`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ rating })
-            });
-            if (res.ok) {
-                setUserRating(rating);
-                const newCount = localReviewsCount + 1;
-                const newAvg = ((localRating * localReviewsCount) + rating) / newCount;
-                setLocalRating(newAvg);
-                setLocalReviewsCount(newCount);
-            }
-        } catch (e) {
-            console.error(e);
-        } finally {
-            setIsSubmittingRating(false);
-        }
-    };
 
     if (!product) {
         return (
@@ -141,6 +112,10 @@ export default function ProductDetailClient() {
     }
 
     const handleAdd = () => {
+        if (!isLoggedIn) {
+            router.push('/login?redirect=' + encodeURIComponent(window.location.pathname));
+            return;
+        }
         addItem({
             id: product.id,
             name: product.name,
@@ -221,7 +196,13 @@ export default function ProductDetailClient() {
 
                             {product && (
                                 <button
-                                    onClick={() => toggleWishlist(product.id)}
+                                    onClick={() => {
+                                        if (!isLoggedIn) {
+                                            router.push('/login?redirect=' + encodeURIComponent(window.location.pathname));
+                                        } else {
+                                            toggleWishlist(product.id);
+                                        }
+                                    }}
                                     className={cn(
                                         "absolute top-8 end-8 w-12 h-12 backdrop-blur-md border rounded-2xl flex items-center justify-center shadow-xl transition-all z-20 hover:scale-110",
                                         isSaved(product.id)
@@ -281,26 +262,6 @@ export default function ProductDetailClient() {
                                         <>
                                             <span className="w-1 h-1 rounded-full bg-border" />
                                             <span className="flex items-center gap-1.5"><Star size={14} className="text-muted-foreground" /> <span className="text-foreground">0</span> (0 Rated)</span>
-                                        </>
-                                    )}
-                                    {user && (
-                                        <>
-                                            <span className="w-1 h-1 rounded-full bg-border" />
-                                            <div className="flex items-center gap-1">
-                                                <span className="text-[10px] me-1">Rate:</span>
-                                                {[1, 2, 3, 4, 5].map((star) => (
-                                                    <Star
-                                                        key={star}
-                                                        size={14}
-                                                        onClick={() => handleRate(star)}
-                                                        className={cn(
-                                                            "transition-colors",
-                                                            userRating > 0 ? "cursor-default" : "cursor-pointer hover:scale-110",
-                                                            userRating >= star ? "fill-amber-400 text-amber-400" : "text-border hover:text-amber-400"
-                                                        )}
-                                                    />
-                                                ))}
-                                            </div>
                                         </>
                                     )}
                                 </div>
@@ -373,7 +334,7 @@ export default function ProductDetailClient() {
                                             {isAdded ? (
                                                 <><Check size={28} /> Added to Procurement</>
                                             ) : (
-                                                <><ShoppingCart size={28} /> Get Wholesale Quote</>
+                                                <><ShoppingCart size={28} /> {isLoggedIn ? 'Get Wholesale Quote' : 'Login to Order'}</>
                                             )}
                                         </Button>
                                     </div>
@@ -427,7 +388,13 @@ export default function ProductDetailClient() {
                 </div>
 
                 {/* Reviews */}
-                <ReviewSection productId={product.id} />
+                <ReviewSection
+                    productId={product.id}
+                    onReviewSubmitted={(newRating, newCount) => {
+                        setLocalRating(newRating);
+                        setLocalReviewsCount(newCount);
+                    }}
+                />
 
                 {/* Related Products */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 px-6 mt-16">

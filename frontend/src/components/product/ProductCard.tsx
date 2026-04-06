@@ -15,7 +15,7 @@ import { translateText } from '@/lib/translator';
 export default function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
     const [isAdded, setIsAdded] = useState(false);
     const { addItem } = useCart();
-    const { user } = useAuth();
+    const { user, isLoggedIn } = useAuth();
     const { locale } = useLanguage();
 
     const [translatedName, setTranslatedName] = useState(product.name);
@@ -39,6 +39,10 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        if (!isLoggedIn) {
+            window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+            return;
+        }
         if (isAdded) return;
 
         addItem({

@@ -38,7 +38,7 @@ function StarRating({ value, onChange, size = 20 }: { value: number; onChange?: 
     );
 }
 
-export default function ReviewSection({ productId }: { productId: string }) {
+export default function ReviewSection({ productId, onReviewSubmitted }: { productId: string; onReviewSubmitted?: (newRating: number, newCount: number) => void }) {
     const { user, isLoggedIn } = useAuth();
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState(true);
@@ -78,7 +78,13 @@ export default function ReviewSection({ productId }: { productId: string }) {
                 body: JSON.stringify({ rating: myRating, comment: myComment }),
             });
             if (!res.ok) { const e = await res.json(); setError(e.message || 'فشل الإرسال'); return; }
+            const all = await res.json(); // Usually returns the new/updated review, but we need totals
             await load();
+            
+            // Calculate new totals from the reloaded reviews
+            const newReviews = await (await fetch(`${API_URL}/products/${productId}/reviews`)).json();
+            const avg = newReviews.length > 0 ? newReviews.reduce((s: any, r: any) => s + r.rating, 0) / newReviews.length : 0;
+            onReviewSubmitted?.(avg, newReviews.length);
         } finally {
             setSubmitting(false);
         }
@@ -127,7 +133,7 @@ export default function ReviewSection({ productId }: { productId: string }) {
             )}
 
             {/* Write Review */}
-            {isLoggedIn && (
+            {isLoggedIn ? (
                 <form onSubmit={handleSubmit} className="bg-white border border-slate-100 rounded-2xl p-6 mb-8 shadow-sm">
                     <h3 className="font-black text-[#0A1A2F] mb-4">
                         {reviews.find(r => r.user.id === user?.id) ? 'تعديل تقييمك' : 'اكتب تقييمك'}
@@ -152,6 +158,16 @@ export default function ReviewSection({ productId }: { productId: string }) {
                         {submitting ? 'جاري الإرسال...' : 'إرسال التقييم'}
                     </button>
                 </form>
+            ) : (
+                <div className="bg-slate-50 border border-dashed border-slate-200 rounded-2xl p-8 mb-8 text-center">
+                    <p className="text-slate-600 font-bold mb-4">يرجى تسجيل الدخول لتتمكن من إضافة تقييم لهذا المنتج</p>
+                    <button
+                        onClick={() => window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname)}
+                        className="px-6 py-2 bg-[#0A1A2F] text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-[#FF8A00] transition-all"
+                    >
+                        تسجيل الدخول
+                    </button>
+                </div>
             )}
 
             {/* Reviews List */}
