@@ -14,6 +14,8 @@ interface Review {
 }
 
 const API_URL = '/api';
+// Direct backend URL for multipart uploads (middleware rewrite drops FormData body)
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 function StarRating({ value, onChange, size = 20 }: { value: number; onChange?: (v: number) => void; size?: number }) {
     const [hovered, setHovered] = useState(0);
@@ -111,7 +113,13 @@ export default function ReviewSection({ productId, onReviewSubmitted }: { produc
                 formData.append('images', file);
             });
 
-            const res = await fetch(`${API_URL}/products/${productId}/reviews`, {
+            // Use direct backend URL for multipart uploads — Next.js middleware
+            // rewrite drops the FormData body, causing the POST to fail.
+            const postUrl = BACKEND_URL
+                ? `${BACKEND_URL}/products/${productId}/reviews`
+                : `${API_URL}/products/${productId}/reviews`;
+
+            const res = await fetch(postUrl, {
                 method: 'POST',
                 headers: { 
                     Authorization: `Bearer ${token}` 
